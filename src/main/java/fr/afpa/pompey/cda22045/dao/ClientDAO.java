@@ -54,7 +54,7 @@ public class ClientDAO extends DAO<Client> {
                         rollbackException.printStackTrace();
                     }
                 }
-            
+
                 e.printStackTrace();
             } finally {
             if (statement != null) {
