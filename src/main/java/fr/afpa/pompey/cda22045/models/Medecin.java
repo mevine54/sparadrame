@@ -8,7 +8,7 @@ public class Medecin extends Utilisateur {
     // Constructeur
     public Medecin(Integer medId, String nom, String prenom, Adresse adresse, String telephone, String email, String numeroAgrement) {
         super(userId, nom, prenom, adresse, telephone, email);
-        this.numeroAgrement = numeroAgrement;
+        setNumeroAgrement(numeroAgrement);
     }
 
     // Getters et setters

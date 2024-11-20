@@ -3,14 +3,14 @@ package fr.afpa.pompey.cda22045.models;
 import fr.afpa.pompey.cda22045.enums.Specialite;
 
 public class Specialiste extends Medecin {
-    private int id;
+    private Integer id;
     private Specialite specialite;
 
     // Constructeur
-    public Specialiste(int id, String nom, String prenom, Adresse adresse, String telephone, String email,
+    public Specialiste(Integer id, String nom, String prenom, Adresse adresse, String telephone, String email,
                        String numeroAgrement, Specialite specialite) {
         super(id, nom, prenom, adresse, telephone, email, numeroAgrement);
-        this.specialite = specialite;
+        setSpecialite(specialite);
     }
 
     // Getter pour la spécialité
@@ -18,7 +18,7 @@ public class Specialiste extends Medecin {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

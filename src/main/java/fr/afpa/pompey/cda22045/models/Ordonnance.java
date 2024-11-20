@@ -3,7 +3,7 @@ package fr.afpa.pompey.cda22045.models;
 import java.util.List;
 
 public class Ordonnance {
-    private int id;
+    private Integer id;
     private String date;
     private Medecin medecin;
     private Client patient;
@@ -11,13 +11,13 @@ public class Ordonnance {
     private Specialiste specialiste;
 
     // Constructeur
-    public Ordonnance(int id, String date, Medecin medecin, Client patient, List<Medicament> medicaments, Specialiste specialiste) {
-        this.id = id;
-        this.date = date;
-        this.medecin = medecin;
-        this.patient = patient;
-        this.medicaments = medicaments;
-        this.specialiste = specialiste;
+    public Ordonnance(Integer id, String date, Medecin medecin, Client patient, List<Medicament> medicaments, Specialiste specialiste) {
+        setId(id);
+        setDate(date);
+        setMedecin(medecin);
+        setPatient(patient);
+        setMedicaments(medicaments);
+        setSpecialiste(specialiste);
     }
 
     // Getters et setters
@@ -25,7 +25,7 @@ public class Ordonnance {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

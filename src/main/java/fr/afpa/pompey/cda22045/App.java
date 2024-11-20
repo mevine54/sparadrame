@@ -39,7 +39,7 @@ public class App {
 //            e.printStackTrace();
 //        }
 //
-        Singleton.closeInstanceDB();
+//        Singleton.closeInstanceDB();
 
         // *** Affichage de l'interface graphique (Swing) ***
         SwingUtilities.invokeLater(() -> {

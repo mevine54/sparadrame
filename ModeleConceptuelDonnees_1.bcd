@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?PowerDesigner AppLocale="UTF16" ID="{1F6D4B7C-AA4F-4218-8CEC-7C44AED51372}" Label="" LastModificationDate="1730877872" Name="ModeleConceptuelDonnees_1" Objects="187" Symbols="37" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" signature="CDM_DATA_MODEL_XML" version="16.7.1.6488"?>
+<?PowerDesigner AppLocale="UTF16" ID="{1F6D4B7C-AA4F-4218-8CEC-7C44AED51372}" Label="" LastModificationDate="1731052524" Name="ModeleConceptuelDonnees_1" Objects="188" Symbols="37" Type="{1E597170-9350-11D1-AB3C-0020AF71E433}" signature="CDM_DATA_MODEL_XML" version="16.7.1.6488"?>
 <!-- Veuillez ne pas modifier ce fichier -->
 
 <Model xmlns:a="attribute" xmlns:c="collection" xmlns:o="object">
@@ -13,7 +13,7 @@
 <a:Code>MODELECONCEPTUELDONNEES_1</a:Code>
 <a:CreationDate>1730810233</a:CreationDate>
 <a:Creator>USER-3</a:Creator>
-<a:ModificationDate>1730820382</a:ModificationDate>
+<a:ModificationDate>1731052524</a:ModificationDate>
 <a:Modifier>USER-3</a:Modifier>
 <a:PackageOptionsText>[FolderOptions]
 
@@ -1847,7 +1847,7 @@ Shadow=0</a:DisplayPreferences>
 <o:AssociationLinkSymbol Id="o23">
 <a:CreationDate>1730813320</a:CreationDate>
 <a:ModificationDate>1730813418</a:ModificationDate>
-<a:Rect>((4484,20531), (16692,21909))</a:Rect>
+<a:Rect>((4484,20494), (16692,21909))</a:Rect>
 <a:ListOfPoints>((16292,21509),(4884,21509))</a:ListOfPoints>
 <a:CornerStyle>2</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -1868,7 +1868,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o27">
 <a:CreationDate>1730813320</a:CreationDate>
 <a:ModificationDate>1730813320</a:ModificationDate>
-<a:Rect>((-4750,21109), (2825,22478))</a:Rect>
+<a:Rect>((-4750,21109), (2825,22438))</a:Rect>
 <a:ListOfPoints>((-4350,21509),(2425,21509))</a:ListOfPoints>
 <a:CornerStyle>2</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2079,8 +2079,8 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o54">
 <a:CreationDate>1730820245</a:CreationDate>
 <a:ModificationDate>1730820253</a:ModificationDate>
-<a:Rect>((-68555,-16013), (-52264,-6254))</a:Rect>
-<a:ListOfPoints>((-68155,-15613),(-52664,-15613),(-52664,-6654))</a:ListOfPoints>
+<a:Rect>((-63649,-16014), (-52264,-6254))</a:Rect>
+<a:ListOfPoints>((-63249,-15614),(-52664,-15614),(-52664,-6654))</a:ListOfPoints>
 <a:CornerStyle>2</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
 <a:LineColor>16744576</a:LineColor>
@@ -2100,8 +2100,8 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o57">
 <a:CreationDate>1730820249</a:CreationDate>
 <a:ModificationDate>1730820253</a:ModificationDate>
-<a:Rect>((-70919,-24768), (-68757,-17213))</a:Rect>
-<a:ListOfPoints>((-70519,-17613),(-70519,-24368))</a:ListOfPoints>
+<a:Rect>((-70509,-24768), (-66736,-17612))</a:Rect>
+<a:ListOfPoints>((-68536,-18012),(-68536,-20355),(-70109,-20355),(-70109,-24368))</a:ListOfPoints>
 <a:CornerStyle>2</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
 <a:LineColor>16744576</a:LineColor>
@@ -2121,7 +2121,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o60">
 <a:CreationDate>1730820249</a:CreationDate>
 <a:ModificationDate>1730820249</a:ModificationDate>
-<a:Rect>((-72319,-30271), (-70119,-25638))</a:Rect>
+<a:Rect>((-72281,-30271), (-70119,-25638))</a:Rect>
 <a:ListOfPoints>((-70519,-29871),(-70519,-26038))</a:ListOfPoints>
 <a:CornerStyle>2</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2453,7 +2453,7 @@ EntityPrimaryAttribute 0 Arial,8,U</a:FontList>
 <a:CreationDate>1730820212</a:CreationDate>
 <a:ModificationDate>1730820253</a:ModificationDate>
 <a:IconMode>-1</a:IconMode>
-<a:Rect>((-78221,-17613), (-68155,-13614))</a:Rect>
+<a:Rect>((-83127,-18012), (-63249,-13218))</a:Rect>
 <a:LineColor>4227200</a:LineColor>
 <a:FillColor>8637161</a:FillColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -3087,7 +3087,7 @@ EntityPrimaryAttribute 0 Arial,8,U</a:FontList>
 <a:Code>ACHAT</a:Code>
 <a:CreationDate>1730820212</a:CreationDate>
 <a:Creator>USER-3</a:Creator>
-<a:ModificationDate>1730820329</a:ModificationDate>
+<a:ModificationDate>1731052524</a:ModificationDate>
 <a:Modifier>USER-3</a:Modifier>
 <c:Identifiers>
 <o:Identifier Id="o153">
@@ -3116,6 +3116,17 @@ EntityPrimaryAttribute 0 Arial,8,U</a:FontList>
 <a:BaseAttribute.Mandatory>1</a:BaseAttribute.Mandatory>
 <c:DataItem>
 <o:DataItem Ref="o155"/>
+</c:DataItem>
+</o:EntityAttribute>
+<o:EntityAttribute Id="o156">
+<a:ObjectID>59BD564B-168B-427A-B790-BBFAB55BB90E</a:ObjectID>
+<a:CreationDate>1731052497</a:CreationDate>
+<a:Creator>USER-3</a:Creator>
+<a:ModificationDate>1731052524</a:ModificationDate>
+<a:Modifier>USER-3</a:Modifier>
+<a:BaseAttribute.Mandatory>1</a:BaseAttribute.Mandatory>
+<c:DataItem>
+<o:DataItem Ref="o157"/>
 </c:DataItem>
 </o:EntityAttribute>
 </c:Attributes>
@@ -3525,6 +3536,17 @@ EntityPrimaryAttribute 0 Arial,8,U</a:FontList>
 <a:Modifier>USER-3</a:Modifier>
 <a:DataType>I</a:DataType>
 </o:DataItem>
+<o:DataItem Id="o157">
+<a:ObjectID>8FF6F2A8-388C-406E-AD7F-86EEDF6E3A68</a:ObjectID>
+<a:Name>enum(direct, ordonnance)</a:Name>
+<a:Code>ENUM_DIRECT__ORDONNANCE_</a:Code>
+<a:CreationDate>1731052497</a:CreationDate>
+<a:Creator>USER-3</a:Creator>
+<a:ModificationDate>1731052524</a:ModificationDate>
+<a:Modifier>USER-3</a:Modifier>
+<a:DataType>A40</a:DataType>
+<a:Length>40</a:Length>
+</o:DataItem>
 </c:DataItems>
 <c:InheritanceLinks>
 <o:InheritanceLink Id="o13">
@@ -3831,7 +3853,7 @@ EntityPrimaryAttribute 0 Arial,8,U</a:FontList>
 </o:AssociationLink>
 </c:AssociationsLinks>
 <c:TargetModels>
-<o:TargetModel Id="o156">
+<o:TargetModel Id="o158">
 <a:ObjectID>06E1194C-5B28-4401-BFAC-B202DA0EC3EF</a:ObjectID>
 <a:Name>ModeleConceptuelDonnees_1</a:Name>
 <a:Code>MODELECONCEPTUELDONNEES_1</a:Code>
@@ -3847,7 +3869,7 @@ EntityPrimaryAttribute 0 Arial,8,U</a:FontList>
 <o:Shortcut Ref="o3"/>
 </c:SessionShortcuts>
 </o:TargetModel>
-<o:TargetModel Id="o157">
+<o:TargetModel Id="o159">
 <a:ObjectID>9EF5526A-E313-474D-9AA2-E250C713E4C6</a:ObjectID>
 <a:Name>ModeleConceptuelDonnees_1</a:Name>
 <a:Code>MODELECONCEPTUELDONNEES_1</a:Code>
@@ -3862,7 +3884,7 @@ EntityPrimaryAttribute 0 Arial,8,U</a:FontList>
 <o:Shortcut Ref="o4"/>
 </c:SessionShortcuts>
 </o:TargetModel>
-<o:TargetModel Id="o158">
+<o:TargetModel Id="o160">
 <a:ObjectID>3470690C-3751-4880-8330-F1FF084F6670</a:ObjectID>
 <a:Name>ModeleConceptuelDonnees_2</a:Name>
 <a:Code>MODELECONCEPTUELDONNEES_2</a:Code>

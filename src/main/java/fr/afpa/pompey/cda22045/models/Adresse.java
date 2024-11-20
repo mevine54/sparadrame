@@ -2,26 +2,26 @@ package fr.afpa.pompey.cda22045.models;
 
 // Classe Adresse
 public class Adresse {
-    private int id;
+    private Integer adrId;
     private String rue;
     private String codePostal;
     private String ville;
 
     // Constructeur de la classe Adresse
-    public Adresse(int id, String rue, String codePostal, String ville) {
-        this.id = id;
-        this.rue = rue;
-        this.codePostal = codePostal;
-        this.ville = ville;
+    public Adresse(Integer adrId, String rue, String codePostal, String ville) {
+        setAdrId(adrId);
+        setRue(rue);
+        setCodePostal(codePostal);
+        setVille(ville);
     }
 
     // Getters et setters
-    public int getId() {
-        return id;
+    public int getAdrId() {
+        return adrId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAdrId(Integer adrId) {
+        this.adrId = adrId;
     }
 
     public String getRue() {

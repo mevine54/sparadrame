@@ -3,7 +3,7 @@ package fr.afpa.pompey.cda22045.models;
 import fr.afpa.pompey.cda22045.enums.CategorieMedicament;
 
 public class Medicament {
-    private int id;
+    private Integer id;
     private String nom;
     private CategorieMedicament categorie;
     private double prix;
@@ -11,13 +11,13 @@ public class Medicament {
     private int quantite;
 
     // Constructeur
-    public Medicament(int id, String nom, CategorieMedicament categorie, double prix, String dateMiseEnService, int quantite) {
-        this.id = id;
-        this.nom = nom;
-        this.categorie = categorie;
-        this.prix = prix;
-        this.dateMiseEnService = dateMiseEnService;
-        this.quantite = quantite;
+    public Medicament(Integer id, String nom, CategorieMedicament categorie, double prix, String dateMiseEnService, int quantite) {
+        setId(id);
+        setNom(nom);
+        setCategorie(categorie);
+        setPrix(prix);
+        setDateMiseEnService(dateMiseEnService);
+        setQuantite(quantite);
     }
 
     // Getters et setters
@@ -25,7 +25,7 @@ public class Medicament {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

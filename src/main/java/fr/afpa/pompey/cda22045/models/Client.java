@@ -12,10 +12,10 @@ public class Client extends Utilisateur {
     public Client(Integer cliId, String nom, String prenom, Adresse adresse, String telephone, String email,
                   String numeroSecuriteSocial, String dateNaissance, Mutuelle mutuelle, Medecin medecinTraitant) {
         super(userId, nom, prenom, adresse, telephone, email);
-        this.numeroSecuriteSocial = numeroSecuriteSocial;
-        this.dateNaissance = dateNaissance;
-        this.mutuelle = mutuelle;
-        this.medecinTraitant = medecinTraitant;
+        setNumeroSecuriteSocial(numeroSecuriteSocial);
+        setDateNaissance(dateNaissance);
+        setMutuelle(mutuelle);
+        setMedecinTraitant(medecinTraitant);
     }
 
     // Getters et setters
@@ -56,7 +56,7 @@ public class Client extends Utilisateur {
         return medecinTraitant;
     }
 
-    public void setMedecinTraitant() {
+    public void setMedecinTraitant(Medecin medecinTraitant) {
         this.medecinTraitant = medecinTraitant;
     }
 

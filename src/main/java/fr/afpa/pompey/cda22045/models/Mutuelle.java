@@ -1,7 +1,7 @@
 package fr.afpa.pompey.cda22045.models;
 
 public class Mutuelle {
-    private int id;
+    private Integer mutId;
     private String nom;
     private Adresse adresse;
     private String telephone;
@@ -10,23 +10,23 @@ public class Mutuelle {
     private double tauxPriseEnCharge;
 
     // Constructeur
-    public Mutuelle(int id, String nom, Adresse adresse, String telephone, String email, String departement, double tauxPriseEnCharge) {
-        this.id = id;
-        this.nom = nom;
-        this.adresse = adresse;
-        this.telephone = telephone;
-        this.email = email;
-        this.departement = departement;
-        this.tauxPriseEnCharge = tauxPriseEnCharge;
+    public Mutuelle(Integer mutId, String nom, Adresse adresse, String telephone, String email, String departement, double tauxPriseEnCharge) {
+        setMutId(mutId);
+        setNom(nom);
+        setAdresse(adresse);
+        setTelephone(telephone);
+        setEmail(email);
+        setDepartement(departement);
+        setTauxPriseEnCharge(tauxPriseEnCharge);
     }
 
     // Getters et setters
-    public int getId() {
-        return id;
+    public int getMutId() {
+        return mutId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMutId(Integer mutId) {
+        this.mutId = mutId;
     }
 
     public String getNom() {

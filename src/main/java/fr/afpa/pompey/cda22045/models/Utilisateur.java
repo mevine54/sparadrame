@@ -10,12 +10,12 @@ public class Utilisateur {
 
     // Constructeur
     public Utilisateur(Integer userId, String nom, String prenom, Adresse adresse, String telephone, String email) {
-        this.userId = userId;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.adresse = adresse;
-        this.telephone = telephone;
-        this.email = email;
+        setUserId(userId);
+        setNom(nom);
+        setPrenom(prenom);
+        setAdresse(adresse);
+        setTelephone(telephone);
+        setEmail(email);
     }
 
     // Getters et setters
