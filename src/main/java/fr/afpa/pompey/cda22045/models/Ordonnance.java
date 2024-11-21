@@ -1,18 +1,19 @@
 package fr.afpa.pompey.cda22045.models;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class Ordonnance {
-    private Integer id;
-    private String date;
+    private Integer ordId;
+    private LocalDate date;
     private Medecin medecin;
     private Client patient;
     private List<Medicament> medicaments;
     private Specialiste specialiste;
 
     // Constructeur
-    public Ordonnance(Integer id, String date, Medecin medecin, Client patient, List<Medicament> medicaments, Specialiste specialiste) {
-        setId(id);
+    public Ordonnance(Integer ordId, LocalDate date, Medecin medecin, Client patient, List<Medicament> medicaments, Specialiste specialiste) {
+        setOrdId(ordId);
         setDate(date);
         setMedecin(medecin);
         setPatient(patient);
@@ -21,19 +22,19 @@ public class Ordonnance {
     }
 
     // Getters et setters
-    public int getId() {
-        return id;
+    public Integer getOrdId() {
+        return ordId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setOrdId(Integer ordId) {
+        this.ordId = ordId;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

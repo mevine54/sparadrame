@@ -1,5 +1,7 @@
 package fr.afpa.pompey.cda22045.models;
 
+import java.time.LocalDate;
+
 public class Utilisateur {
     private Integer userId;
     private String nom;
@@ -7,6 +9,7 @@ public class Utilisateur {
     private Adresse adresse;
     private String telephone;
     private String email;
+
 
     // Constructeur
     public Utilisateur(Integer userId, String nom, String prenom, Adresse adresse, String telephone, String email) {
@@ -66,6 +69,8 @@ public class Utilisateur {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
 
     @Override
     public String toString() {

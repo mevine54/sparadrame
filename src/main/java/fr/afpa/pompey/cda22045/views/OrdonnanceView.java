@@ -17,7 +17,7 @@ public class OrdonnanceView {
             System.out.println(" - " + medicament.getNom() + " (Quantité: " + medicament.getQuantite() + ", Catégorie: " + medicament.getCategorie() + ")");
         }
         if (ordonnance.getSpecialiste() != null) {
-            System.out.println("Spécialiste : " + ordonnance.getSpecialiste().getNom() + " (" + ordonnance.getSpecialiste().getSpecialite() + ")");
+            System.out.println("Spécialiste : " + ordonnance.getSpecialiste().getNom() + " (" + ordonnance.getSpecialiste().getTypeSpecialiste() + ")");
         }
     }
 

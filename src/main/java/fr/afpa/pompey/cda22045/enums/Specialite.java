@@ -6,6 +6,14 @@ public enum Specialite {
     DERMATOLOGUE,
     OPHTALMOLOGUE,
     GENERALISTE,
-    ORL,
-    AUTRE
+    ORL;
+
+    public static boolean isValid(String value) {
+        for (Specialite specialite : Specialite.values()) {
+            if (specialite.name().equalsIgnoreCase(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +42,9 @@ public class ClientDAO extends DAO<Client> {
                 statement.setString(4, obj.getTelephone());
                 statement.setString(5, obj.getEmail());
                 statement.setString(6, obj.getNumeroSecuriteSocial());
-                statement.setString(7, obj.getDateNaissance());
+                statement.setDate(7, java.sql.Date.valueOf(obj.getDateNaissance()));
                 statement.setInt(8, obj.getMutuelle().getMutId());
-                statement.setInt(9, obj.getMedecinTraitant().getMedId());
-
+                statement.setInt(9, obj.getMedecinTraitant().getUserId());
 
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
@@ -66,17 +66,17 @@ public class ClientDAO extends DAO<Client> {
 
                 e.printStackTrace();
             } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
                     e.printStackTrace();
+                    }
                 }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
+                if (connection != null) {
+                    try {
+                     connection.close();
+                    } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -140,9 +140,9 @@ public class ClientDAO extends DAO<Client> {
             statement.setString(4, obj.getTelephone());
             statement.setString(5, obj.getEmail());
             statement.setString(6, obj.getNumeroSecuriteSocial());
-            statement.setString(7, obj.getDateNaissance());
+            statement.setDate(7, java.sql.Date.valueOf(obj.getDateNaissance()));
             statement.setInt(8, obj.getMutuelle().getMutId());
-            statement.setInt(9, obj.getMedecinTraitant().getMedId());
+            statement.setInt(9, obj.getMedecinTraitant().getUserId());
             statement.setInt(10, obj.getCliId());
 
             int affectedRows = statement.executeUpdate();
@@ -206,7 +206,7 @@ public class ClientDAO extends DAO<Client> {
 //                client.setNumeroSecuriteSocial(resultSet.getString("numeroSecuriteSocial"));
                 String numeroSecuriteSocial = resultSet.getString("cli_num_secu_social");
 //                client.setDateNaissance(resultSet.getString("dateNaissance"));
-                String dateNaissance = resultSet.getString("cli_date_naissance");
+                LocalDate dateNaissance = resultSet.getDate("cli_date_naissance").toLocalDate();
 //                client.setAdresse(new Adresse(resultSet.getInt("adresse_id")));
                 Integer adrId = resultSet.getInt("adr_id");
 //                client.setMutuelle(new Mutuelle(resultSet.getInt("mut_id")));
@@ -264,9 +264,11 @@ public class ClientDAO extends DAO<Client> {
                 "m.med_id AS medecin_id " +
                 "FROM " +
                 "CLIENT c " +
-                "JOIN ADRESSE a ON c.adr_id = a.adr_id " +
+                "JOIN MEDECIN m ON c.med_id = m.med_id " +
+                "JOIN ORDONNANCE o ON m.uti_id = o.uti_id " +
                 "JOIN MUTUELLE mu ON c.mut_id = mu.mut_id " +
-                "JOIN MEDECIN m ON c.med_id = m.med_id";
+                "JOIN SPECIALISTE s ON m.med_id = s.med_id " +
+                "JOIN ADRESSE a ON m.adr_id = a.adr_id";
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -276,27 +278,27 @@ public class ClientDAO extends DAO<Client> {
         try {
             connection = getConnection();
             statement = connection.prepareStatement(sql);
-            resultSet= statement.executeQuery();
+            resultSet = statement.executeQuery();
 
-           while (resultSet.next()) {
-               Integer cliId = resultSet.getInt("cli_id");
-               String nom = resultSet.getString("uti_nom");
-               String prenom = resultSet.getString("uti_prenom");
-               String telephone = resultSet.getString("uti_tel");
-               String email = resultSet.getString("uti_email");
-               String numeroSecuriteSociale = resultSet.getString("cli_num_Secu_Social");
-               String dateNaissance = resultSet.getString("cli_date_naissance");
-               Integer adrId = resultSet.getInt("adresse_id");
-               Integer mutId = resultSet.getInt("mutuelle_id");
-               Integer medId = resultSet.getInt("medecin_id");
+            while (resultSet.next()) {
+                Integer cliId = resultSet.getInt("cli_id");
+                String nom = resultSet.getString("uti_nom");
+                String prenom = resultSet.getString("uti_prenom");
+                String telephone = resultSet.getString("uti_tel");
+                String email = resultSet.getString("uti_email");
+                String numeroSecuriteSociale = resultSet.getString("cli_num_secu_social");
+                LocalDate dateNaissance = resultSet.getDate("cli_date_naissance").toLocalDate();
+                Integer adrId = resultSet.getInt("adr_id");
+                Integer mutId = resultSet.getInt("mut_id");
+                Integer medId = resultSet.getInt("med_id");
 
-               Adresse adresse = adresseDAO.getById(adrId);
-               Mutuelle mutuelle = mutuelleDAO.getById(mutId);
-               Medecin medecin = medecinTraitantDAO.getById(medId);
+                Adresse adresse = adresseDAO.getById(adrId);
+                Mutuelle mutuelle = mutuelleDAO.getById(mutId);
+                Medecin medecin = medecinTraitantDAO.getById(medId);
 
-               Client client = new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSociale, dateNaissance, mutuelle, medecin);
-               clients.add(client);
-           }
+                Client client = new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSociale, dateNaissance, mutuelle, medecin);
+                clients.add(client);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

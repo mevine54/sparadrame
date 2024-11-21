@@ -1,16 +1,19 @@
 package fr.afpa.pompey.cda22045.dao;
 
+import fr.afpa.pompey.cda22045.models.Adresse;
 import fr.afpa.pompey.cda22045.models.Mutuelle;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static fr.afpa.pompey.cda22045.Singleton.getConnection;
 
 public class MutuelleDAO extends DAO<Mutuelle> {
+    private AdresseDAO adresseDAO = new AdresseDAO();
 
     @Override
     public Mutuelle create(Mutuelle obj) {
@@ -152,11 +155,97 @@ public class MutuelleDAO extends DAO<Mutuelle> {
 
     @Override
     public Mutuelle getById(int id) {
-        return null;
+        String sql = "SELECT * FROM mutuelle WHERE mut_id = ?";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Mutuelle mutuelle = null;
+
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                Integer mutId = resultSet.getInt("mut_id");
+                String nom = resultSet.getString("mut_nom");
+                Integer adrId = resultSet.getInt("adr_id");
+                String telephone = resultSet.getString("mut_tel");
+                String email = resultSet.getString("mut_email");
+                String departement = resultSet.getString("mut_departement");
+                Integer tauxPriseEnCharge =resultSet.getInt("mut_taux_prise_en_charge");
+
+                Adresse adresse = adresseDAO.getById(adrId);
+
+                mutuelle = new Mutuelle(mutId, nom, adresse, telephone, email, departement, tauxPriseEnCharge);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return mutuelle;
     }
 
     @Override
     public List<Mutuelle> getAll() {
-        return List.of();
+        String sql = "SELECT" +
+                "m.mut_id, " +
+                "m.mut_nom, " +
+                "m.mut_tel, " +
+                "m.mut_email, " +
+                "m.mut_departement, " +
+                "m.mut_taux_prise_en_charge, " +
+                "a.adr_id " +
+                "FROM" +
+                "MUTUELLE m " +
+                "JOIN CLIENT c ON m.mut_id = c.mut_id " +
+                "JOIN UTILISATEUR u ON c.uti_id = u.uti_id " +
+                "ADRESSE a ON u.adr_id = a.adr_id";
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Mutuelle> mutuelles = new ArrayList<>();
+
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Integer mutId = resultSet.getInt("mut_id");
+                String nom = resultSet.getString("mut_nom");
+                Integer adrId = resultSet.getInt("adr_id");
+                String telephone = resultSet.getString("mut_tel");
+                String email = resultSet.getString("mut_email");
+                String departement = resultSet.getString("mut_departement");
+                Integer tauxPriseEnCharge = resultSet.getInt("mut_taux_prise_en_charge");
+
+                Adresse adresse = adresseDAO.getById(adrId);
+
+                Mutuelle mutuelle = new Mutuelle(mutId, nom, adresse, telephone, email, departement, tauxPriseEnCharge);
+                mutuelles.add(mutuelle);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return mutuelles;
     }
 }

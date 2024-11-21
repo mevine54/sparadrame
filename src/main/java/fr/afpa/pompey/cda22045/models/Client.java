@@ -1,16 +1,18 @@
 package fr.afpa.pompey.cda22045.models;
 
+import java.time.LocalDate;
+
 public class Client extends Utilisateur {
     private static final Integer userId = 0;
     private Integer cliId;
     private String numeroSecuriteSocial;
-    private String dateNaissance;
+    private LocalDate dateNaissance;
     private Mutuelle mutuelle;
     private Medecin medecinTraitant;
 
     // Constructeur
     public Client(Integer cliId, String nom, String prenom, Adresse adresse, String telephone, String email,
-                  String numeroSecuriteSocial, String dateNaissance, Mutuelle mutuelle, Medecin medecinTraitant) {
+                  String numeroSecuriteSocial, LocalDate dateNaissance, Mutuelle mutuelle, Medecin medecinTraitant) {
         super(userId, nom, prenom, adresse, telephone, email);
         setNumeroSecuriteSocial(numeroSecuriteSocial);
         setDateNaissance(dateNaissance);
@@ -36,11 +38,11 @@ public class Client extends Utilisateur {
         this.numeroSecuriteSocial = numeroSecuriteSocial;
     }
 
-    public String getDateNaissance() {
+    public LocalDate getDateNaissance() {
         return dateNaissance;
     }
 
-    public void setDateNaissance(String dateNaissance) {
+    public void setDateNaissance(LocalDate dateNaissance) {
         this.dateNaissance = dateNaissance;
     }
 
