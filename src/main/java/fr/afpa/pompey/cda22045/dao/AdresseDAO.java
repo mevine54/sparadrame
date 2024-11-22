@@ -11,11 +11,10 @@ import java.util.List;
 
 import static fr.afpa.pompey.cda22045.Singleton.getConnection;
 
-
 public class AdresseDAO extends DAO<Adresse> {
+
     @Override
     public Adresse create(Adresse obj) {
-
         String sql = "INSERT INTO adresse (adr_rue, adr_code_postal, adr_ville) VALUES (?, ?, ?)";
         Connection connection = null;
         PreparedStatement statement = null;
@@ -25,7 +24,6 @@ public class AdresseDAO extends DAO<Adresse> {
             connection.setAutoCommit(false);
 
             statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-
             statement.setString(1, obj.getRue());
             statement.setString(2, obj.getCodePostal());
             statement.setString(3, obj.getVille());
@@ -56,20 +54,20 @@ public class AdresseDAO extends DAO<Adresse> {
                     e.printStackTrace();
                 }
             }
-//            if (connection != null) {
-//                try {
-//                    connection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return obj;
     }
 
     @Override
     public boolean delete(long id) {
-        String sql = "DELETE FROM adresse WHERE id = ?";
+        String sql = "DELETE FROM adresse WHERE adr_id = ?";
         Connection connection = null;
         PreparedStatement statement = null;
 
@@ -102,13 +100,13 @@ public class AdresseDAO extends DAO<Adresse> {
                     e.printStackTrace();
                 }
             }
-//            if (connection != null) {
-//                try {
-//                    connection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -150,13 +148,13 @@ public class AdresseDAO extends DAO<Adresse> {
                     e.printStackTrace();
                 }
             }
-//            if (connection != null) {
-//                try {
-//                    connection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -175,13 +173,9 @@ public class AdresseDAO extends DAO<Adresse> {
 
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-//                adresse.setId(resultSet.getInt("adr_id"));
                 Integer adrId = resultSet.getInt("adr_id");
-//                adresse.setRue(resultSet.getString("rue"));
                 String rue = resultSet.getString("adr_rue");
-//                adresse.setCodePostal(resultSet.getString("codePostal"));
                 String codePostal = resultSet.getString("adr_code_postal");
-//                adresse.setVille(resultSet.getString("ville"));
                 String ville = resultSet.getString("adr_ville");
                 adresse = new Adresse(adrId, rue, codePostal, ville);
             }
@@ -202,13 +196,13 @@ public class AdresseDAO extends DAO<Adresse> {
                     e.printStackTrace();
                 }
             }
-//            if (connection != null) {
-//                try {
-//                    connection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return adresse;
     }
@@ -222,23 +216,17 @@ public class AdresseDAO extends DAO<Adresse> {
         List<Adresse> adresses = new ArrayList<>();
 
         try {
-            connection =getConnection();
+            connection = getConnection();
             statement = connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-
-//                adresse.setId(resultSet.getInt("adr_id"));
                 Integer adrId = resultSet.getInt("adr_id");
-//                adresse.setRue(resultSet.getString("rue"));
                 String rue = resultSet.getString("adr_rue");
-//                adresse.setCodePostal(resultSet.getString("codePostal"));
                 String codePostal = resultSet.getString("adr_code_postal");
-//                adresse.setVille(resultSet.getString("ville"));
                 String ville = resultSet.getString("adr_ville");
                 Adresse adresse = new Adresse(adrId, rue, codePostal, ville);
                 adresses.add(adresse);
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -257,13 +245,13 @@ public class AdresseDAO extends DAO<Adresse> {
                     e.printStackTrace();
                 }
             }
-//            if (connection != null) {
-//                try {
-//                    connection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return adresses;
     }

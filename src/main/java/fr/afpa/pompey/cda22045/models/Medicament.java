@@ -1,76 +1,78 @@
 package fr.afpa.pompey.cda22045.models;
 
-import fr.afpa.pompey.cda22045.enums.CategorieMedicament;
+import fr.afpa.pompey.cda22045.enums.TypeMedicamentEnum;
+
+import java.time.LocalDate;
 
 public class Medicament {
-    private Integer id;
-    private String nom;
-    private CategorieMedicament categorie;
-    private double prix;
-    private String dateMiseEnService;
-    private int quantite;
+    private Integer mediId;
+    private String mediNom;
+    private TypeMedicamentEnum typeMedicament;
+    private double mediPrix;
+    private LocalDate mediDateMiseEnService;
+    private int mediQuantite;
 
     // Constructeur
-    public Medicament(Integer id, String nom, CategorieMedicament categorie, double prix, String dateMiseEnService, int quantite) {
-        setId(id);
-        setNom(nom);
-        setCategorie(categorie);
-        setPrix(prix);
-        setDateMiseEnService(dateMiseEnService);
-        setQuantite(quantite);
+    public Medicament(Integer mediId, String mediNom, TypeMedicamentEnum typeMedicament, double mediPrix, LocalDate mediDateMiseEnService, int mediQuantite) {
+        setMediId(mediId);
+        setMediNom(mediNom);
+        setTypeMedicament(typeMedicament);
+        setMediPrix(mediPrix);
+        setMediDateMiseEnService(mediDateMiseEnService);
+        setMediQuantite(mediQuantite);
     }
 
     // Getters et setters
-    public int getId() {
-        return id;
+    public Integer getMediId() {
+        return mediId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setMediId(Integer id) {
+        this.mediId = mediId;
     }
 
-    public String getNom() {
-        return nom;
+    public String getMediNom() {
+        return mediNom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setMediNom(String mediNom) {
+        this.mediNom = mediNom;
     }
 
-    public CategorieMedicament getCategorie() {
-        return categorie;
+    public TypeMedicamentEnum getTypeMedicament() {
+        return typeMedicament;
     }
 
-    public void setCategorie(CategorieMedicament categorie) {
-        this.categorie = categorie;
+    public void setTypeMedicament(TypeMedicamentEnum typeMedicament) {
+        this.typeMedicament = typeMedicament;
     }
 
-    public double getPrix() {
-        return prix;
+    public double getMediPrix() {
+        return mediPrix;
     }
 
-    public void setPrix(double prix) {
-        this.prix = prix;
+    public void setMediPrix(double mediPrix) {
+        this.mediPrix = mediPrix;
     }
 
-    public String getDateMiseEnService() {
-        return dateMiseEnService;
+    public LocalDate getMediDateMiseEnService() {
+        return mediDateMiseEnService;
     }
 
-    public void setDateMiseEnService(String dateMiseEnService) {
-        this.dateMiseEnService = dateMiseEnService;
+    public void setMediDateMiseEnService(LocalDate mediDateMiseEnService) {
+        this.mediDateMiseEnService = mediDateMiseEnService;
     }
 
-    public int getQuantite() {
-        return quantite;
+    public int getMediQuantite() {
+        return mediQuantite;
     }
 
-    public void setQuantite(int quantite) {
-        this.quantite = quantite;
+    public void setMediQuantite(int mediQuantite) {
+        this.mediQuantite = mediQuantite;
     }
 
     @Override
     public String toString() {
-        return nom + " (" + categorie + "), Prix: " + prix + "€, Quantité: " + quantite;
+        return mediNom + " (" + typeMedicament + "), Prix: " + mediPrix + "€, Quantité: " + mediQuantite;
     }
 }

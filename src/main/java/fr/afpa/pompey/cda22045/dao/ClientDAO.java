@@ -73,14 +73,14 @@ public class ClientDAO extends DAO<Client> {
                     e.printStackTrace();
                     }
                 }
-                if (connection != null) {
-                    try {
-                     connection.close();
-                    } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+//                if (connection != null) {
+//                    try {
+//                     connection.close();
+//                    } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
             }
-        }
+
         return obj;
     }
 
