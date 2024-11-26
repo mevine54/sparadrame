@@ -1,217 +1,206 @@
+CREATE DATABASE IF NOT EXISTS sparadrap;
+USE sparadrap;
+
+-- Suppression des contraintes existantes pour éviter les conflits lors des modifications
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Table : UTILISATEUR
-INSERT INTO UTILISATEUR (UTI_ID, ADR_ID, UTI_NOM, UTI_PRENOM, UTI_TEL, UTI_EMAIL) VALUES
-(1, 1, 'Dupont', 'Jean', '0123456789', 'jean.dupont@example.com'),
-(2, 2, 'Martin', 'Marie', '0987654321', 'marie.martin@example.com'),
-(3, 3, 'Durand', 'Pierre', '0123456789', 'pierre.durand@example.com');
-
-SELECT u.uti_id AS utilisateur_id, uti_nom AS utilisateur_nom, uti_prenom AS utilisateur_prenom, uti_tel AS utilisateur_tel, uti_email AS utilisateur_email, a.adr_id AS adresse_id
-FROM utilisateur u
-JOIN adresse a ON u.adr_id = a.adr_id;
+CREATE TABLE UTILISATEUR (
+    uti_id INT AUTO_INCREMENT PRIMARY KEY,
+    uti_nom VARCHAR(30),
+    uti_prenom VARCHAR(30),
+    uti_tel VARCHAR(14),
+    uti_email VARCHAR(50)
+);
 
 -- Table : ADRESSE
-INSERT INTO ADRESSE (ADR_ID, ADR_RUE, ADR_CODE_POSTAL, ADR_VILLE) VALUES
-(1, '1 rue de la Paix', '75000', 'Paris'),
-(2, '2 rue de la Liberté', '69000', 'Lyon'),
-(3, '3 rue de la République', '13000', 'Marseille');
+CREATE TABLE ADRESSE (
+    adr_id INT AUTO_INCREMENT PRIMARY KEY,
+    adr_rue VARCHAR(30),
+    adr_code_postal VARCHAR(5),
+    adr_ville VARCHAR(40)
+);
 
--- ALTER TABLE adresse MODIFY COLUMN ADR_ID INT AUTO_INCREMENT;
--- ALTER TABLE adresse MODIFY COLUMN ADR_ID INT AUTO_INCREMENT PRIMARY KEY;
+-- Table : CLIENT (hérite de UTILISATEUR)
+CREATE TABLE CLIENT (
+    cli_id INT AUTO_INCREMENT PRIMARY KEY,
+    cli_num_secu_social VARCHAR(15),
+    cli_date_naissance DATE,
+    uti_id INT UNIQUE,
+    FOREIGN KEY (uti_id) REFERENCES UTILISATEUR(uti_id)
+);
 
+-- Table : MEDECIN (hérite de UTILISATEUR)
+CREATE TABLE MEDECIN (
+    med_id INT AUTO_INCREMENT PRIMARY KEY,
+    med_num_agreement VARCHAR(18),
+    uti_id INT UNIQUE,
+    FOREIGN KEY (uti_id) REFERENCES UTILISATEUR(uti_id)
+);
 
+-- Table : SPECIALISTE (hérite de MEDECIN)
+CREATE TABLE SPECIALISTE (
+    spe_id INT AUTO_INCREMENT PRIMARY KEY,
+    spe_nom VARCHAR(30),
+    spe_specialite ENUM('Cardiologue', 'Dermatologue', 'Ophtalmologue', 'Generaliste', 'ORL'),
+    med_id INT UNIQUE,
+    FOREIGN KEY (med_id) REFERENCES MEDECIN(med_id)
+);
 
-select * from adresse;
+-- Table : MUTUELLE
+CREATE TABLE MUTUELLE (
+    mut_id INT AUTO_INCREMENT PRIMARY KEY,
+    mut_nom VARCHAR(30),
+    mut_tel BIGINT,
+    mut_email VARCHAR(50),
+    mut_departement VARCHAR(3),
+    mut_taux_prise_en_charge TINYINT
+);
 
--- Table : CLIENT
--- ALTER TABLE client MODIFY CLI_DATE_NAISSANCE DATE;
-
--- ALTER TABLE CLIENT
--- ADD CONSTRAINT fk_client_med FOREIGN KEY (med_id) REFERENCES MEDECIN(med_id);
-
--- ALTER TABLE CLIENT
--- ADD CONSTRAINT fk_client_uti FOREIGN KEY (UTI_ID) REFERENCES UTILISATEUR(UTI_ID),
--- ADD CONSTRAINT fk_client_mut FOREIGN KEY (MUT_ID) REFERENCES MUTUELLE(MUT_ID),
--- ADD CONSTRAINT fk_client_adr FOREIGN KEY (ADR_ID) REFERENCES ADRESSE(ADR_ID);
-
-
-INSERT INTO CLIENT (UTI_ID, MUT_ID, ADR_ID, UTI_NOM, UTI_PRENOM, UTI_TEL, UTI_EMAIL, CLI_ID, CLI_DATE_NAISSANCE, CLI_MEDECIN_TRAITANT) VALUES
-(1, 1, 1, 'Dupont', 'Jean', '0123456789', 'jean.dupont@example.com', 1, '123456789012345', '1980-01-01', 'Mutuelle A', 'Dr. Smith'),
-(2, 2, 2, 'Martin', 'Marie', '0987654321', 'marie.martin@example.com', 2, '543210987654321', '1990-02-02', 'Mutuelle B', 'Dr. Johnson'),
-(3, 3, 3, 'Durand', 'Pierre', '0123456789', 'pierre.durand@example.com', 3, '987654321098765', '1970-03-03', 'Mutuelle C', 'Dr. Brown'),
-(4, 4, 4, 'Dorand', 'Pierre', '0123456789', 'pierre.dorand@example.com', 3, '987654321098765', '1970-03-03', 'Mutuelle C', 'Dr. Brown');
-
--- Table : MEDECIN
--- CREATE INDEX idx_med_id ON MEDECIN(med_id);
--- ALTER TABLE MEDECIN MODIFY MED_NUM_AGREEMENT VARCHAR(50);
-
--- ALTER TABLE MEDECIN
--- ADD CONSTRAINT fk_medecin_uti FOREIGN KEY (UTI_ID) REFERENCES UTILISATEUR(UTI_ID),
--- ADD CONSTRAINT fk_medecin_adr FOREIGN KEY (ADR_ID) REFERENCES ADRESSE(ADR_ID);
-
-INSERT INTO MEDECIN (UTI_ID, ADR_ID, UTI_NOM, UTI_PRENOM, UTI_TEL, UTI_EMAIL, MED_ID, MED_NUM_AGREEMENT) VALUES
-(4, 4, 'Smith', 'John', '0123456789', 'john.smith@example.com', 1, '123456789012345678'),
-(5, 5, 'Johnson', 'Jane', '0987654321', 'jane.johnson@example.com', 2, '543210987654321098'),
-(6, 6, 'Brown', 'Bob', '0123456789', 'bob.brown@example.com', 3, '987654321098765432');
-
-SELECT m.med_id, m.uti_nom AS medecin_nom, m.uti_prenom AS medecin_prenom, m.uti_tel AS medecin_tel, m.uti_email AS medecin_email, m.med_num_agreement AS medecin_numero_agrement, a.adr_id AS adresse_id
-FROM medecin m
-JOIN adresse a ON m.adr_id = a.adr_id;
+-- Table : TYPEMEDICAMENT
+CREATE TABLE TYPEMEDICAMENT (
+    type_med_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_med_nom VARCHAR(50) UNIQUE
+);
 
 -- Table : MEDICAMENT
-
-DROP TABLE medicament;
-CREATE TABLE medicament (
-    medi_id INT PRIMARY KEY,
+CREATE TABLE MEDICAMENT (
+    medi_id INT AUTO_INCREMENT PRIMARY KEY,
     medi_nom VARCHAR(30),
     medi_prix DECIMAL(4, 2),
     medi_date_mise_service DATE,
     medi_quantite INT,
-    type_id INT,
-    CONSTRAINT fk_type_medicament
-    FOREIGN KEY (type_id) REFERENCES typemedicament(tm_type_id)
+    type_med_id INT,
+    FOREIGN KEY (type_med_id) REFERENCES TYPEMEDICAMENT(type_med_id)
 );
-INSERT INTO MEDICAMENT (MEDI_ID, MEDI_NOM, MEDI_PRIX, MEDI_DATE_MISE_SERVICE, MEDI_QUANTITE, tm_type_id) VALUES
-(1, 'Aspirine', 5.00, '2020-01-01', 100, '1'),
-(2, 'Paracetamol', 3.50, '2021-02-02', 200, '2'),
-(3, 'Amoxicilline', 7.00, '2022-03-03', 50, '3');
-
-select * from medicament;
-SELECT m.medi_id, m.medi_nom, m.medi_prix, m.medi_date_mise_service, m.medi_quantite, t.tm_type_nom
-FROM medicament m
-JOIN typemedicament t ON m.type_id = t.tm_type_id;
-
-ALTER TABLE medicament
-CHANGE COLUMN type_id tm_type_id INT;
-
-ALTER TABLE medicament
-ADD CONSTRAINT fk_type_medicament
-FOREIGN KEY (tm_type_id) REFERENCES typemedicament(tm_type_id);
-
--- Table : MUTUELLE
-INSERT INTO MUTUELLE (MUT_ID, MUT_NOM, MUT_TEL, MUT_EMAIL, MUT_DEPARTEMENT, MUT_TAUX_PRISE_EN_CHARGE) VALUES
-(1, 'Mutuelle A', 12345678901234, 'mutuelleA@example.com', '75', 80),
-(2, 'Mutuelle B', 54321098765432, 'mutuelleB@example.com', '69', 70),
-(3, 'Mutuelle C', 98765432109876, 'mutuelleC@example.com', '13', 90);
-
-SELECT m.mut_id AS mutuelle_id, m.mut_nom AS mutuelle_nom, m.mut_tel AS mutuelle_id, m.mut_email AS mutuelle_email, m.mut_departement AS mutuelle_departement, m.mut_taux_prise_en_charge AS mutuelle_tauxPriseEnCharge, a.adr_id
-FROM mutuelle m
-JOIN client c ON m.mut_id = c.mut_id
-JOIN utilisateur u ON c.uti_id = u.uti_id
-JOIN adresse a ON u.adr_id = a.adr_id;
-
--- ALTER TABLE mutuelle ADD ADR_ID INT;
--- ALTER TABLE mutuelle
--- ADD CONSTRAINT fk_mutuelle_adr FOREIGN KEY (ADR_ID) REFERENCES ADRESSE (ADR_ID);
-
 
 -- Table : ORDONNANCE
-INSERT INTO ORDONNANCE (ORD_ID, SPE_UTI_ID, SPE_ID, UTI_ID, CLI_UTI_ID, ORD_DATE, ORD_NOM_CLIENT, ORD_NOM_MEDECIN, ORD_NOM_SPECIALISTE) VALUES
-(1, 4, 1, 1, 1, '2023-01-01', 'Jean Dupont', 'Dr. Smith', 'Dr. Johnson'),
-(2, 5, 2, 2, 2, '2023-02-02', 'Marie Martin', 'Dr. Johnson', 'Dr. Brown'),
-(3, 6, 3, 3, 3, '2023-03-03', 'Pierre Durand', 'Dr. Brown', 'Dr. Smith');
-
--- ALTER TABLE ordonnance MODIFY ORD_DATE DATE;
-
--- Table : PROCEDER
-INSERT INTO PROCEDER (ACH_ID, MEDI_ID) VALUES
-(1, 1),
-(2, 2),
-(3, 3);
-
--- Table : SPECIALISTE
-CREATE TABLE SPECIALISTE (
-    spe_ID INT PRIMARY KEY,
-    spe_nom VARCHAR(30) NOT NULL,
-    type_id INT NOT NULL,
-    FOREIGN KEY (type_id) REFERENCES TypeSpecialiste(type_id)
+CREATE TABLE ORDONNANCE (
+    ord_id INT AUTO_INCREMENT PRIMARY KEY,
+    ord_date DATE,
+    ord_nom_client VARCHAR(30),
+    ord_nom_medecin VARCHAR(30),
+    ord_nom_specialiste VARCHAR(30)
 );
--- CREATE INDEX idx_spe_id ON SPECIALISTE(med_id);
--- ALTER TABLE specialiste ADD MED_ID INT;
--- ALTER TABLE specialiste ADD ADR_ID INT;
-
--- ALTER TABLE specialiste ADD CONSTRAINT fk_specialiste_adresse FOREIGN KEY (ADR_ID) REFERENCES ADRESSE (ADR_ID);
-
-INSERT INTO SPECIALISTE (UTI_ID, SPE_ID, ADR_ID, UTI_NOM, UTI_PRENOM, UTI_TEL, UTI_EMAIL, MED_ID, MED_NUM_AGREEMENT, SPE_NOM, ENUM_CARDIOLOGUE__DERMATOLOGUE__OPHTALMOLOGUE__GENERALISTE__ORL_) VALUES
-(7, 1, 7, 'Johnson', 'Jane', '0987654321', 'jane.johnson@example.com', 1, '543210987654321098', 'Dr. Johnson', 'CARDIOLOGUE'),
-(8, 2, 8, 'Brown', 'Bob', '0123456789', 'bob.brown@example.com', 2, '987654321098765432', 'Dr. Brown', 'DERMATOLOGUE'),
-(9, 3, 9, 'Smith', 'John', '0123456789', 'john.smith@example.com', 3, '123456789012345678', 'Dr. Smith', 'OPHTALMOLOGUE');
-
-SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
-FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-WHERE REFERENCED_TABLE_NAME = 'specialiste';
-
-SELECT s.spe_id AS specialiste_id, s.spe_nom AS specialiste_nom, s.type_id AS specialite_type_id, med_id AS medecin_id, adr_id AS adresse_id
-FROM specialiste s
-JOIN typespecialiste ts ON s.type_id = ts.type_id;
-
-
--- Types de spécialistes
-CREATE TABLE TypeSpecialiste (
-    type_id INT AUTO_INCREMENT PRIMARY KEY,
-    type_nom VARCHAR(50) UNIQUE NOT NULL
-);
-
--- Ajout de la clé étrangère dans Specialiste
--- ALTER TABLE SPECIALISTE 
--- ADD COLUMN type_id INT,
--- ADD CONSTRAINT fk_specialiste_type FOREIGN KEY (type_id) REFERENCES TypeSpecialiste (type_id);
-
-SELECT o.ORD_DATE, u.UTI_NOM AS client_nom, m.UTI_NOM AS medecin_nom
-FROM ORDONNANCE o
-JOIN CLIENT c ON o.CLI_UTI_ID = c.CLI_ID
-JOIN UTILISATEUR u ON c.UTI_ID = u.UTI_ID
-JOIN MEDECIN m ON o.SPE_UTI_ID = m.UTI_ID;
 
 -- Table : ACHAT
-INSERT INTO ACHAT (ACH_ID, UTI_ID) VALUES
-(1, 1),
-(2, 2),
-(3, 3);
-
-SELECT *
-FROM client c 
-JOIN utilisateur u ON c.UTI_ID = u.UTI_ID
-JOIN mutuelle m ON c.MUT_ID = m.MUT_ID
-JOIN medecin med ON u.UTI_ID = med.UTI_ID;
-
-SELECT a.ADR_RUE, a.ADR_CODE_POSTAL, a.ADR_VILLE, u.UTI_NOM, u.UTI_PRENOM, u.UTI_TEL, u.UTI_EMAIL
-FROM adresse a
-JOIN utilisateur u ON a.ADR_ID = u.ADR_ID;
-
-
--- Types de médicaments
-CREATE TABLE TypeMedicament (
-    type_id INT AUTO_INCREMENT PRIMARY KEY,
-    type_nom VARCHAR(50) UNIQUE NOT NULL
+CREATE TABLE ACHAT (
+    ach_id INT AUTO_INCREMENT PRIMARY KEY,
+    ach_type ENUM('Direct', 'Ordonnance')
 );
--- ALTER TABLE medicament DROP FOREIGN KEY medicament_ibfk_1;
--- SHOW CREATE TABLE typemedicament;
--- ALTER TABLE typemedicament CHANGE type_nom tm_type_nom VARCHAR(50), ALGORITHM=COPY;
--- ALTER TABLE medicament ADD CONSTRAINT medicament_ibfk_1 FOREIGN KEY (type_id) REFERENCES typemedicament(tm_type_id); 
+
+-- Association : Posséder (Utilisateur - Adresse)
+CREATE TABLE Posseder (
+    poss_id INT AUTO_INCREMENT PRIMARY KEY,
+    uti_id INT,
+    adr_id INT,
+    type_possession ENUM('Résidentiel', 'Professionnel', 'Autre'),
+    FOREIGN KEY (uti_id) REFERENCES UTILISATEUR(uti_id),
+    FOREIGN KEY (adr_id) REFERENCES ADRESSE(adr_id)
+);
+
+-- Association : Adhérer (Client - Mutuelle)
+CREATE TABLE Adherer (
+    adh_id INT AUTO_INCREMENT PRIMARY KEY,
+    cli_id INT,
+    mut_id INT,
+    date_adhesion DATE,
+    niveau_couverture VARCHAR(50),
+    FOREIGN KEY (cli_id) REFERENCES CLIENT(cli_id),
+    FOREIGN KEY (mut_id) REFERENCES MUTUELLE(mut_id)
+);
+
+-- Association : Fournir (Specialiste - TypeSpecialite)
+CREATE TABLE TypeSpecialite (
+    type_spe_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_spe_nom VARCHAR(50) UNIQUE
+);
+
+CREATE TABLE Fournir (
+    fournir_id INT AUTO_INCREMENT PRIMARY KEY,
+    spe_id INT,
+    type_spe_id INT,
+    date_debut DATE,
+    date_fin DATE,
+    FOREIGN KEY (spe_id) REFERENCES SPECIALISTE(spe_id),
+    FOREIGN KEY (type_spe_id) REFERENCES TypeSpecialite(type_spe_id)
+);
+
+-- Association : Effectuer (Achat - Utilisateur)
+CREATE TABLE Effectuer (
+    effectuer_id INT AUTO_INCREMENT PRIMARY KEY,
+    ach_id INT,
+    uti_id INT,
+    date_achat DATE,
+    mode_paiement ENUM('Carte', 'Espèces', 'Virement'),
+    FOREIGN KEY (ach_id) REFERENCES ACHAT(ach_id),
+    FOREIGN KEY (uti_id) REFERENCES UTILISATEUR(uti_id)
+);
+
+-- Association : Delivrer (Ordonnance - Medicament)
+CREATE TABLE Delivrer (
+    delivrer_id INT AUTO_INCREMENT PRIMARY KEY,
+    ord_id INT,
+    medi_id INT,
+    quantite_prescrite INT,
+    duree_validite INT,
+    FOREIGN KEY (ord_id) REFERENCES ORDONNANCE(ord_id),
+    FOREIGN KEY (medi_id) REFERENCES MEDICAMENT(medi_id)
+);
+
+-- Ajout des données
+INSERT INTO UTILISATEUR (uti_nom, uti_prenom, uti_tel, uti_email) VALUES
+('Dupont', 'Jean', '0123456789', 'jean.dupont@example.com'),
+('Martin', 'Marie', '0987654321', 'marie.martin@example.com'),
+('Durand', 'Pierre', '0123456789', 'pierre.durand@example.com');
+
+INSERT INTO ADRESSE (adr_rue, adr_code_postal, adr_ville) VALUES
+('1 rue de la Paix', '75000', 'Paris'),
+('2 rue de la Liberté', '69000', 'Lyon'),
+('3 rue de la République', '13000', 'Marseille');
+
+INSERT INTO CLIENT (cli_num_secu_social, cli_date_naissance, uti_id) VALUES
+('123456789012345', '1980-01-01', 1),
+('543210987654321', '1990-02-02', 2);
+
+INSERT INTO MEDECIN (med_num_agreement, uti_id) VALUES
+('123456789012345', 3);
+
+INSERT INTO SPECIALISTE (spe_nom, spe_specialite, med_id) VALUES
+('Dr. Smith', 'Cardiologue', 1);
+
+INSERT INTO TypeSpecialite (type_spe_nom) VALUES
+('Cardiologie'), ('Dermatologie');
+
+INSERT INTO ORDONNANCE (ord_date, ord_nom_client, ord_nom_medecin, ord_nom_specialiste) VALUES
+('2023-01-10', 'Jean Dupont', 'Dr. Durand', 'Dr. Bernard');
 
 
--- Ajout de la clé étrangère dans Medicament
--- ALTER TABLE MEDICAMENT 
--- ADD COLUMN type_id INT,
--- ADD CONSTRAINT fk_medicament_type FOREIGN KEY (type_id) REFERENCES TypeMedicament (type_id);
+INSERT INTO Fournir (spe_id, type_spe_id, date_debut, date_fin) VALUES
+(1, 1, '2020-01-01', NULL);
+
+INSERT INTO Adherer (cli_id, mut_id, date_adhesion, niveau_couverture) VALUES
+(1, 1, '2020-01-01', 'Standard'), -- Jean Dupont - Mutuelle Santé
+(2, 2, '2021-06-15', 'Premium');  -- Marie Martin - Mutuelle Plus
 
 
+INSERT INTO ACHAT (ach_type) VALUES
+('Direct'), ('Ordonnance');
 
-select * from ordonnance;
+INSERT INTO Effectuer (ach_id, uti_id, date_achat, mode_paiement) VALUES
+(1, 1, '2023-11-26', 'Carte');
 
-SELECT
-    TABLE_NAME,
-    COLUMN_NAME,
-    CONSTRAINT_NAME,
-    REFERENCED_TABLE_NAME,
-    REFERENCED_COLUMN_NAME
-FROM
-    INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-WHERE
-    REFERENCED_TABLE_NAME = 'typemedicament' AND
-    TABLE_SCHEMA = 'sparadrap';
+INSERT INTO MEDICAMENT (medi_nom, medi_prix, medi_date_mise_service, medi_quantite, type_med_id) VALUES
+('Paracétamol', 3.50, '2021-02-15', 200, 1);
 
 
+INSERT INTO MUTUELLE (mut_nom, mut_tel, mut_email, mut_departement, mut_taux_prise_en_charge) VALUES
+('Mutuelle Santé', 1234567890, 'contact@mutuellesante.com', '75', 80),
+('Mutuelle Plus', 9876543210, 'contact@mutuelleplus.com', '69', 70),
+('AssurVie', 1122334455, 'contact@assurvie.com', '13', 85);
 
 
+INSERT INTO Delivrer (ord_id, medi_id, quantite_prescrite, duree_validite) VALUES
+(1, 1, 2, 30);
+
+SET FOREIGN_KEY_CHECKS = 1;

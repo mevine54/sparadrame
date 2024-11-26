@@ -14,7 +14,7 @@ public class OrdonnanceView {
         System.out.println("Patient : " + ordonnance.getPatient().getNom());
         System.out.println("Liste des médicaments : ");
         for (Medicament medicament : ordonnance.getMedicaments()) {
-            System.out.println(" - " + medicament.getNom() + " (Quantité: " + medicament.getQuantite() + ", Catégorie: " + medicament.getCategorie() + ")");
+            System.out.println(" - " + medicament.getMediNom() + " (Quantité: " + medicament.getMediQuantite() + ", Catégorie: " + medicament.getTypeMedicament() + ")");
         }
         if (ordonnance.getSpecialiste() != null) {
             System.out.println("Spécialiste : " + ordonnance.getSpecialiste().getNom() + " (" + ordonnance.getSpecialiste().getTypeSpecialiste() + ")");

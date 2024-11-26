@@ -151,7 +151,7 @@ public class ClientForm extends JFrame {
         adresse = adresseDAO.create(adresse);
 
         // Assurez-vous que l'adresse a été correctement enregistrée
-        if (adresse.getAdrId() == null) {
+        if (adresse.getAdrId() == 0) {
             JOptionPane.showMessageDialog(this, "Erreur lors de l'enregistrement de l'adresse.", "Erreur", JOptionPane.ERROR_MESSAGE);
             return;
         }

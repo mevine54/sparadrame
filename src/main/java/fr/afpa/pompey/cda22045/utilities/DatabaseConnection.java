@@ -1,4 +1,4 @@
-package fr.afpa.pompey.cda22045;
+package fr.afpa.pompey.cda22045.utilities;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,14 +7,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class Singleton {
+public class DatabaseConnection {
 
-    // public static final Logger LOGGER = Logger.getLogger(Singleton.class.getName);
+    // public static final Logger LOGGER = Logger.getLogger(DatabaseConnection.class.getName);
     private static final Properties props = new Properties();
     private  static Connection connection;
     private static final String PATHCONF = "conf.properties";
 
-    private Singleton() {
+    private DatabaseConnection() {
         // chargement du fichier de propriétés
         try (InputStream is = getClass().getClassLoader().getResourceAsStream(PATHCONF)) {
 
@@ -51,7 +51,7 @@ public class Singleton {
 
     public static Connection getInstanceDB() {
         if (connection == null) {
-            new Singleton();
+            new DatabaseConnection();
             //LOGGER.info("RelationWithDB infos : Connection established");
             System.out.println("RelationWithDB infos : Connection established");
         }
@@ -65,7 +65,7 @@ public class Singleton {
     public static void closeInstanceDB() {
         try {
             if (connection != null) {
-                connection.close();
+//                connection.close();
 //                connection = null; // Permettre une réinitialisation
                 System.out.println("RelationWithDB infos : Connection terminated");
             }

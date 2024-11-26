@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.afpa.pompey.cda22045.Singleton.getConnection;
+import static fr.afpa.pompey.cda22045.utilities.DatabaseConnection.getConnection;
 
 public class OrdonnanceDAO extends DAO<Ordonnance> {
     private MedecinDAO medecinDAO = new MedecinDAO();

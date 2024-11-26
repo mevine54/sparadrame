@@ -1,7 +1,7 @@
 package fr.afpa.pompey.cda22045.enums;
 
 // Enum pour la catégorie de médicaments
-public enum TypeMedicamentEnum {
+public enum TypeMedicament {
     DOULEUR,
     ANTIINFLAMMATOIRE,
     ANTIBIOTIQUE,
@@ -10,7 +10,7 @@ public enum TypeMedicamentEnum {
 
 
     public static boolean isValid(String value) {
-        for (TypeMedicamentEnum typeMedicament : TypeMedicamentEnum.values()) {
+        for (TypeMedicament typeMedicament : TypeMedicament.values()) {
             if (typeMedicament.name().equalsIgnoreCase(value)) {
                 return true;
             }

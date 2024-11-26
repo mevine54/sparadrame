@@ -1,6 +1,5 @@
 package fr.afpa.pompey.cda22045.dao;
 
-import fr.afpa.pompey.cda22045.models.Client;
 import fr.afpa.pompey.cda22045.models.Medicament;
 
 import java.sql.Connection;
@@ -9,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import static fr.afpa.pompey.cda22045.Singleton.getConnection;
+import static fr.afpa.pompey.cda22045.utilities.DatabaseConnection.getConnection;
 
 public class MedicamentDAO extends DAO<Medicament> {
 

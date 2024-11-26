@@ -2,14 +2,13 @@ package fr.afpa.pompey.cda22045.dao;
 
 import fr.afpa.pompey.cda22045.models.Adresse;
 import fr.afpa.pompey.cda22045.models.Specialiste;
-import fr.afpa.pompey.cda22045.enums.Specialite;
 import fr.afpa.pompey.cda22045.models.TypeSpecialiste;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.afpa.pompey.cda22045.Singleton.getConnection;
+import static fr.afpa.pompey.cda22045.utilities.DatabaseConnection.getConnection;
 
 public class SpecialisteDAO extends DAO<Specialiste> {
     private AdresseDAO adresseDAO = new AdresseDAO();

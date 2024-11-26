@@ -1,19 +1,19 @@
 package fr.afpa.pompey.cda22045.models;
 
-import fr.afpa.pompey.cda22045.enums.TypeMedicamentEnum;
+import fr.afpa.pompey.cda22045.enums.TypeMedicament;
 
 import java.time.LocalDate;
 
 public class Medicament {
     private Integer mediId;
     private String mediNom;
-    private TypeMedicamentEnum typeMedicament;
+    private TypeMedicament typeMedicament;
     private double mediPrix;
     private LocalDate mediDateMiseEnService;
     private int mediQuantite;
 
     // Constructeur
-    public Medicament(Integer mediId, String mediNom, TypeMedicamentEnum typeMedicament, double mediPrix, LocalDate mediDateMiseEnService, int mediQuantite) {
+    public Medicament(Integer mediId, String mediNom, TypeMedicament typeMedicament, double mediPrix, LocalDate mediDateMiseEnService, int mediQuantite) {
         setMediId(mediId);
         setMediNom(mediNom);
         setTypeMedicament(typeMedicament);
@@ -39,11 +39,11 @@ public class Medicament {
         this.mediNom = mediNom;
     }
 
-    public TypeMedicamentEnum getTypeMedicament() {
+    public TypeMedicament getTypeMedicament() {
         return typeMedicament;
     }
 
-    public void setTypeMedicament(TypeMedicamentEnum typeMedicament) {
+    public void setTypeMedicament(TypeMedicament typeMedicament) {
         this.typeMedicament = typeMedicament;
     }
 

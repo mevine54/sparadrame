@@ -3,7 +3,6 @@ package fr.afpa.pompey.cda22045.dao;
 import fr.afpa.pompey.cda22045.models.Adresse;
 import fr.afpa.pompey.cda22045.models.Medecin;
 
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.afpa.pompey.cda22045.Singleton.getConnection;
+import static fr.afpa.pompey.cda22045.utilities.DatabaseConnection.getConnection;
 public class MedecinDAO extends DAO<Medecin> {
     private AdresseDAO adresseDAO = new AdresseDAO();
 
