@@ -1,5 +1,6 @@
 package fr.afpa.pompey.cda22045.dao;
 
+import fr.afpa.pompey.cda22045.utilities.SessionManager;
 import fr.afpa.pompey.cda22045.models.Achat;
 import fr.afpa.pompey.cda22045.utilities.DatabaseConnection;
 
@@ -12,11 +13,17 @@ public class AchatDAO extends DAO<Achat> {
     @Override
     public Achat create(Achat obj) {
         String query = "INSERT INTO achat (ach_type, ach_date, uti_id) VALUES (?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getInstanceDB(); // Reuse the shared connection
+        try (Connection conn = DatabaseConnection.getInstanceDB();
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+            Integer currentUserId = SessionManager.getCurrentUserId();
+            if (currentUserId == null) {
+                throw new IllegalStateException("Aucun utilisateur connecté");
+            }
+
             stmt.setString(1, obj.getType());
             stmt.setDate(2, new java.sql.Date(obj.getDateAchat().getTime()));
-            stmt.setInt(3, obj.getUtilisateurId());
+            stmt.setInt(3, currentUserId); // Utilisateur connecté
             stmt.executeUpdate();
 
             ResultSet rs = stmt.getGeneratedKeys();
