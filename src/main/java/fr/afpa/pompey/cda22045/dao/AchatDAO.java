@@ -12,7 +12,7 @@ public class AchatDAO extends DAO<Achat> {
     @Override
     public Achat create(Achat obj) {
         String query = "INSERT INTO achat (ach_type, ach_date, uti_id) VALUES (?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstanceDB(); // Reuse the shared connection
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, obj.getType());
             stmt.setDate(2, new java.sql.Date(obj.getDateAchat().getTime()));
@@ -33,7 +33,7 @@ public class AchatDAO extends DAO<Achat> {
     @Override
     public boolean delete(long id) {
         String query = "DELETE FROM achat WHERE ach_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstanceDB(); // Reuse the shared connection
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setLong(1, id);
             return stmt.executeUpdate() > 0;
@@ -46,7 +46,7 @@ public class AchatDAO extends DAO<Achat> {
     @Override
     public boolean update(Achat obj) {
         String query = "UPDATE achat SET ach_type = ?, ach_date = ?, uti_id = ? WHERE ach_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = DatabaseConnection.getInstanceDB(); // Reuse the shared connection
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, obj.getType());
             stmt.setDate(2, new java.sql.Date(obj.getDateAchat().getTime()));
@@ -61,18 +61,19 @@ public class AchatDAO extends DAO<Achat> {
 
     @Override
     public Achat getById(int id) {
-        String query = "SELECT * FROM achat WHERE ach_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        String query = "SELECT ach_id, ach_type, ach_date, uti_id FROM achat WHERE ach_id = ?";
+        try (Connection conn = DatabaseConnection.getInstanceDB(); // Reuse the shared connection
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new Achat(
-                        rs.getInt("ach_id"),
-                        rs.getString("ach_type"),
-                        rs.getDate("ach_date"),
-                        rs.getInt("uti_id")
-                );
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Achat(
+                            rs.getInt("ach_id"),
+                            rs.getString("ach_type"),
+                            rs.getDate("ach_date"),
+                            rs.getInt("uti_id")
+                    );
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,11 +83,11 @@ public class AchatDAO extends DAO<Achat> {
 
     @Override
     public List<Achat> getAll() {
+        String query = "SELECT ach_id, ach_type, ach_date, uti_id FROM achat";
         List<Achat> achats = new ArrayList<>();
-        String query = "SELECT * FROM achat";
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+        try (Connection conn = DatabaseConnection.getInstanceDB(); // Reuse the shared connection
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 achats.add(new Achat(
                         rs.getInt("ach_id"),

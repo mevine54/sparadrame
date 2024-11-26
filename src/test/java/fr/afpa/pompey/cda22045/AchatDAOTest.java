@@ -1,15 +1,17 @@
-
-
 package fr.afpa.pompey.cda22045;
 
 import fr.afpa.pompey.cda22045.models.Achat;
 import fr.afpa.pompey.cda22045.dao.AchatDAO;
+import fr.afpa.pompey.cda22045.utilities.DatabaseConnection;
 
 import java.util.Date;
 
 public class AchatDAOTest {
 
     public static void main(String[] args) {
+        // Ajoute un hook pour fermer la connexion après les tests
+        Runtime.getRuntime().addShutdownHook(new Thread(DatabaseConnection::closeInstanceDB));
+
         // Créer une instance de AchatDAO
         AchatDAO achatDAO = new AchatDAO();
 
@@ -45,4 +47,3 @@ public class AchatDAOTest {
         }
     }
 }
-

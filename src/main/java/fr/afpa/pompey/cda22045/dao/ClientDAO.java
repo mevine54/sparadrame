@@ -4,6 +4,7 @@ import fr.afpa.pompey.cda22045.models.Adresse;
 import fr.afpa.pompey.cda22045.models.Client;
 import fr.afpa.pompey.cda22045.models.Medecin;
 import fr.afpa.pompey.cda22045.models.Mutuelle;
+import fr.afpa.pompey.cda22045.utilities.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,65 +24,63 @@ public class ClientDAO extends DAO<Client> {
 
     @Override
     public Client create(Client obj) {
-
-        // code SQL - JAVA
-        String sql = "INSERT INTO client (uti_nom, uti_prenom, adr_id, uti_tel, uti_email, cli_num_secu_social, " +
-                "cli_date_naissance, mut_id, med_id ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlUtilisateur = "INSERT INTO utilisateur (uti_nom, uti_prenom, uti_tel, uti_email) VALUES (?, ?, ?, ?)";
+        String sqlClient = "INSERT INTO client (cli_num_secu_social, cli_date_naissance, uti_id) VALUES (?, ?, ?)";
         Connection connection = null;
-        PreparedStatement statement = null;
+        PreparedStatement statementUtilisateur = null;
+        PreparedStatement statementClient = null;
 
         try {
-            connection = getConnection();
-            connection.setAutoCommit(false); // désactive l'auto-commit
+            connection = DatabaseConnection.getInstanceDB();
+            connection.setAutoCommit(false);
 
-            statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            // Insertion dans UTILISATEUR
+            statementUtilisateur = connection.prepareStatement(sqlUtilisateur, PreparedStatement.RETURN_GENERATED_KEYS);
+            statementUtilisateur.setString(1, obj.getNom());
+            statementUtilisateur.setString(2, obj.getPrenom());
+            statementUtilisateur.setString(3, obj.getTelephone());
+            statementUtilisateur.setString(4, obj.getEmail());
+            statementUtilisateur.executeUpdate();
 
-                statement.setString(1, obj.getNom());
-                statement.setString(2, obj.getPrenom());
-                statement.setInt(3, obj.getAdresse().getAdrId());
-                statement.setString(4, obj.getTelephone());
-                statement.setString(5, obj.getEmail());
-                statement.setString(6, obj.getNumeroSecuriteSocial());
-                statement.setDate(7, java.sql.Date.valueOf(obj.getDateNaissance()));
-                statement.setInt(8, obj.getMutuelle().getMutId());
-                statement.setInt(9, obj.getMedecinTraitant().getUserId());
-
-                int affectedRows = statement.executeUpdate();
-                if (affectedRows > 0) {
-                    try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            obj.setCliId(generatedKeys.getInt(1));
-                        }
-                    }
-                }
-                connection.commit(); // valide la transaction
-            } catch (SQLException e){
-                if (connection != null) {
-                    try {
-                        connection.rollback(); // annule la transacton en cas d'erreur
-                    } catch (SQLException rollbackException) {
-                        rollbackException.printStackTrace();
-                    }
-                }
-
-                e.printStackTrace();
-            } finally {
-                if (statement != null) {
-                    try {
-                        statement.close();
-                    } catch (SQLException e) {
-                    e.printStackTrace();
-                    }
-                }
-//                if (connection != null) {
-//                    try {
-//                     connection.close();
-//                    } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
+            // Récupérer l'uti_id généré
+            ResultSet generatedKeys = statementUtilisateur.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                obj.setUserId(generatedKeys.getInt(1));
             }
 
-        return obj;
+            // Insertion dans CLIENT
+            statementClient = connection.prepareStatement(sqlClient, PreparedStatement.RETURN_GENERATED_KEYS);
+            statementClient.setString(1, obj.getNumeroSecuriteSocial());
+            statementClient.setDate(2, java.sql.Date.valueOf(obj.getDateNaissance()));
+            statementClient.setInt(3, obj.getUserId());
+            statementClient.executeUpdate();
+
+            // Récupérer le cli_id généré
+            ResultSet generatedKeysClient = statementClient.getGeneratedKeys();
+            if (generatedKeysClient.next()) {
+                obj.setCliId(generatedKeysClient.getInt(1));
+            }
+
+            connection.commit();
+            return obj;
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statementUtilisateur != null) statementUtilisateur.close();
+                if (statementClient != null) statementClient.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
 
@@ -179,106 +178,79 @@ public class ClientDAO extends DAO<Client> {
 
     @Override
     public Client getById(int id) {
-        String sql = "SELECT * FROM client WHERE cli_id = ?";
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Client client = null;
+        String sql = "SELECT " +
+                "c.cli_id, u.uti_nom, u.uti_prenom, u.uti_tel, u.uti_email, " +
+                "c.cli_num_secu_social, c.cli_date_naissance, " +
+                "a.adr_id, a.adr_rue, a.adr_code_postal, a.adr_ville, " +
+                "mu.mut_id, mu.mut_nom, mu.mut_tel, mu.mut_email, mu.mut_departement, mu.mut_taux_prise_en_charge " +
+                "FROM client c " +
+                "JOIN utilisateur u ON c.uti_id = u.uti_id " +
+                "JOIN posseder p ON u.uti_id = p.uti_id " +
+                "JOIN adresse a ON p.adr_id = a.adr_id " +
+                "LEFT JOIN adherer ad ON c.cli_id = ad.cli_id " +
+                "LEFT JOIN mutuelle mu ON ad.mut_id = mu.mut_id " +
+                "WHERE c.cli_id = ?";
 
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement(sql);
+        try (Connection connection = DatabaseConnection.getInstanceDB();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    Integer cliId = resultSet.getInt("cli_id");
+                    String nom = resultSet.getString("uti_nom");
+                    String prenom = resultSet.getString("uti_prenom");
+                    String telephone = resultSet.getString("uti_tel");
+                    String email = resultSet.getString("uti_email");
+                    String numeroSecuriteSocial = resultSet.getString("cli_num_secu_social");
+                    LocalDate dateNaissance = resultSet.getDate("cli_date_naissance").toLocalDate();
 
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
+                    // Adresse
+                    Adresse adresse = new Adresse(
+                            resultSet.getInt("adr_id"),
+                            resultSet.getString("adr_rue"),
+                            resultSet.getString("adr_code_postal"),
+                            resultSet.getString("adr_ville")
+                    );
 
-//                client.setCliId(resultSet.getInt("cli_id"));
-                Integer cliId = resultSet.getInt("cli_id");
-//                client.setNom(resultSet.getString("nom"));
-                String nom = resultSet.getString("uti_nom");
-//                client.setPrenom(resultSet.getString("prenom"));
-                String prenom = resultSet.getString("uti_prenom");
-//                client.setTelephone(resultSet.getString("telephone"));
-                String telephone = resultSet.getString("uti_tel");
-//                client.setEmail(resultSet.getString("email"));
-                String email = resultSet.getString("uti_email");
-//                client.setNumeroSecuriteSocial(resultSet.getString("numeroSecuriteSocial"));
-                String numeroSecuriteSocial = resultSet.getString("cli_num_secu_social");
-//                client.setDateNaissance(resultSet.getString("dateNaissance"));
-                LocalDate dateNaissance = resultSet.getDate("cli_date_naissance").toLocalDate();
-//                client.setAdresse(new Adresse(resultSet.getInt("adresse_id")));
-                Integer adrId = resultSet.getInt("adr_id");
-//                client.setMutuelle(new Mutuelle(resultSet.getInt("mut_id")));
-                Integer mutId = resultSet.getInt("mut_id");
-//                client.setMedecinTraitant(new MedecinTraitant(resultSet.getInt("med_id")));
-                Integer medId = resultSet.getInt("med_id");
+                    // Mutuelle
+                    Mutuelle mutuelle = new Mutuelle(
+                            resultSet.getInt("mut_id"),
+                            resultSet.getString("mut_nom"),
+                            null, // Adresse de la mutuelle si elle existe dans votre base
+                            resultSet.getString("mut_tel"),
+                            resultSet.getString("mut_email"),
+                            resultSet.getString("mut_departement"),
+                            resultSet.getDouble("mut_taux_prise_en_charge")
+                    );
 
-                Adresse adresse = adresseDAO.getById(adrId);
-                Mutuelle mutuelle = mutuelleDAO.getById(mutId);
-                Medecin medecin = medecinTraitantDAO.getById(medId);
-
-                client = new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSocial, dateNaissance, mutuelle, medecin);
+                    return new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSocial, dateNaissance, mutuelle, null);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-//            if (connection != null) {
-//                try {
-//                    connection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
         }
-        return client;
+        return null;
     }
 
     @Override
     public List<Client> getAll() {
-        // code SQL - JAVA
         String sql = "SELECT " +
-                "c.cli_id, " +
-                "c.uti_nom AS client_nom, " +
-                "c.uti_prenom AS client_prenom, " +
-                "c.uti_tel AS client_tel, " +
-                "c.uti_email AS client_email, " +
-                "c.cli_num_secu_social, " +
-                "c.cli_date_naissance, " +
-                "a.adr_id AS adresse_id, " +
-                "mu.mut_id AS mutuelle_id, " +
-                "m.med_id AS medecin_id " +
-                "FROM " +
-                "CLIENT c " +
-                "JOIN MEDECIN m ON c.med_id = m.med_id " +
-                "JOIN ORDONNANCE o ON m.uti_id = o.uti_id " +
-                "JOIN MUTUELLE mu ON c.mut_id = mu.mut_id " +
-                "JOIN SPECIALISTE s ON m.med_id = s.med_id " +
-                "JOIN ADRESSE a ON m.adr_id = a.adr_id";
+                "c.cli_id, u.uti_nom, u.uti_prenom, u.uti_tel, u.uti_email, " +
+                "c.cli_num_secu_social, c.cli_date_naissance, " +
+                "a.adr_id, a.adr_rue, a.adr_code_postal, a.adr_ville, " +
+                "mu.mut_id, mu.mut_nom, mu.mut_tel, mu.mut_email, mu.mut_departement, mu.mut_taux_prise_en_charge " +
+                "FROM client c " +
+                "JOIN utilisateur u ON c.uti_id = u.uti_id " +
+                "JOIN posseder p ON u.uti_id = p.uti_id " +
+                "JOIN adresse a ON p.adr_id = a.adr_id " +
+                "LEFT JOIN adherer ad ON c.cli_id = ad.cli_id " +
+                "LEFT JOIN mutuelle mu ON ad.mut_id = mu.mut_id";
 
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
         List<Client> clients = new ArrayList<>();
 
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement(sql);
-            resultSet = statement.executeQuery();
+        try (Connection connection = DatabaseConnection.getInstanceDB();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 Integer cliId = resultSet.getInt("cli_id");
@@ -286,43 +258,33 @@ public class ClientDAO extends DAO<Client> {
                 String prenom = resultSet.getString("uti_prenom");
                 String telephone = resultSet.getString("uti_tel");
                 String email = resultSet.getString("uti_email");
-                String numeroSecuriteSociale = resultSet.getString("cli_num_secu_social");
+                String numeroSecuriteSocial = resultSet.getString("cli_num_secu_social");
                 LocalDate dateNaissance = resultSet.getDate("cli_date_naissance").toLocalDate();
-                Integer adrId = resultSet.getInt("adr_id");
-                Integer mutId = resultSet.getInt("mut_id");
-                Integer medId = resultSet.getInt("med_id");
 
-                Adresse adresse = adresseDAO.getById(adrId);
-                Mutuelle mutuelle = mutuelleDAO.getById(mutId);
-                Medecin medecin = medecinTraitantDAO.getById(medId);
+                // Adresse
+                Adresse adresse = new Adresse(
+                        resultSet.getInt("adr_id"),
+                        resultSet.getString("adr_rue"),
+                        resultSet.getString("adr_code_postal"),
+                        resultSet.getString("adr_ville")
+                );
 
-                Client client = new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSociale, dateNaissance, mutuelle, medecin);
-                clients.add(client);
+                // Mutuelle
+                Mutuelle mutuelle = new Mutuelle(
+                        resultSet.getInt("mut_id"),
+                        resultSet.getString("mut_nom"),
+                        null, // Adresse (vous devez ajouter la logique pour récupérer l'adresse si nécessaire)
+                        String.valueOf(resultSet.getLong("mut_tel")), // Convertir le téléphone en String
+                        resultSet.getString("mut_email"),
+                        resultSet.getString("mut_departement"),
+                        resultSet.getDouble("mut_taux_prise_en_charge") // Correction pour correspondre à un double
+                );
+
+                // Ajouter un nouveau client
+                clients.add(new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSocial, dateNaissance, mutuelle, null));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-//            if (connection != null) {
-//                try {
-//                    connection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
         }
         return clients;
     }

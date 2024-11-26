@@ -20,8 +20,8 @@ public class Mutuelle {
         setTauxPriseEnCharge(tauxPriseEnCharge);
     }
 
-    // Getters et setters
-    public int getMutId() {
+    // Getters et Setters
+    public Integer getMutId() {
         return mutId;
     }
 
@@ -79,6 +79,14 @@ public class Mutuelle {
 
     @Override
     public String toString() {
-        return nom + ", Adresse: " + adresse + ", Tél: " + telephone + ", Email: " + email + ", Département: " + departement + ", Taux de prise en charge: " + tauxPriseEnCharge + "%";
+        return "Mutuelle{" +
+                "mutId=" + mutId +
+                ", nom='" + nom + '\'' +
+                ", adresse=" + adresse +
+                ", telephone='" + telephone + '\'' +
+                ", email='" + email + '\'' +
+                ", departement='" + departement + '\'' +
+                ", tauxPriseEnCharge=" + tauxPriseEnCharge +
+                '}';
     }
 }

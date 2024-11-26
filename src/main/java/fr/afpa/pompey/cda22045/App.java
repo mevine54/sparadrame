@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello SQL!");
+        System.out.println("Hello Sparadrap Mévine !");
 
         // Créer une instance de la classe App
         App app = new App();

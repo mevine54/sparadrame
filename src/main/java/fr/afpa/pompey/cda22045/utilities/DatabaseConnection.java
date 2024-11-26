@@ -49,31 +49,38 @@ public class DatabaseConnection {
 
     }
 
+//    public static Connection getInstanceDB() {
+//        if (connection == null) {
+//            new DatabaseConnection();
+//            //LOGGER.info("RelationWithDB infos : Connection established");
+//            System.out.println("RelationWithDB infos : Connection established");
+//        }
+//        else {
+//            //LOGGER.info("RelationWithDB infos : Connection already existing");
+//            System.out.println("RelationWithDB infos : Connection already existing");
+//        }
+//        return getConnection();
+//    }
+
     public static Connection getInstanceDB() {
-        if (connection == null) {
-            new DatabaseConnection();
-            //LOGGER.info("RelationWithDB infos : Connection established");
-            System.out.println("RelationWithDB infos : Connection established");
+        try {
+            if (connection == null || connection.isClosed()) {
+                new DatabaseConnection(); // Recharge la connexion
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        else {
-            //LOGGER.info("RelationWithDB infos : Connection already existing");
-            System.out.println("RelationWithDB infos : Connection already existing");
-        }
-        return getConnection();
+        return connection;
     }
 
     public static void closeInstanceDB() {
-        try {
-            if (connection != null) {
-//                connection.close();
-//                connection = null; // Permettre une réinitialisation
-                System.out.println("RelationWithDB infos : Connection terminated");
+        if (connection != null) {
+            try {
+                connection.close();
+                System.out.println("Connection closed");
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException sqle) {
-            // LOGGER.server("RelationWithDB erreur : " + sqle.getMessage() +
-            // " [SQL error code : " + sqle.getSQLState() + " ]");
-            throw  new RuntimeException(sqle);
-
         }
     }
 

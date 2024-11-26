@@ -3,7 +3,7 @@ package fr.afpa.pompey.cda22045.models;
 import java.time.LocalDate;
 
 public class Client extends Utilisateur {
-    private static final Integer userId = 0;
+    private Integer userId = 0;
     private Integer cliId;
     private String numeroSecuriteSocial;
     private LocalDate dateNaissance;
@@ -11,7 +11,7 @@ public class Client extends Utilisateur {
     private Medecin medecinTraitant;
 
     // Constructeur
-    public Client(Integer cliId, String nom, String prenom, Adresse adresse, String telephone, String email,
+    public Client(Integer userId, String nom, String prenom, Adresse adresse, String telephone, String email,
                   String numeroSecuriteSocial, LocalDate dateNaissance, Mutuelle mutuelle, Medecin medecinTraitant) {
         super(userId, nom, prenom, adresse, telephone, email);
         setNumeroSecuriteSocial(numeroSecuriteSocial);

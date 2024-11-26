@@ -191,56 +191,36 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 
     @Override
     public List<Utilisateur> getAll() {
-        String sql = "SELECT " +
-                "u.uti_id, " +
-                "u.uti_nom, " +
-                "u.uti_prenom, " +
-                "adr.adr_id, " +
-                "adr.uti_tel, " +
-                "adr.uti_email " +
+        String sql = "SELECT u.uti_id, u.uti_nom, u.uti_prenom, u.uti_tel, u.uti_email, " +
+                "a.adr_id, a.adr_rue, a.adr_code_postal, a.adr_ville " +
                 "FROM utilisateur u " +
-                "JOIN adresse a ON u.adr_id = a.adr_id";
+                "LEFT JOIN posseder p ON u.uti_id = p.uti_id " +
+                "LEFT JOIN adresse a ON p.adr_id = a.adr_id";
 
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
         List<Utilisateur> utilisateurs = new ArrayList<>();
 
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement(sql);
-            resultSet = statement.executeQuery();
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 Integer userId = resultSet.getInt("uti_id");
                 String nom = resultSet.getString("uti_nom");
                 String prenom = resultSet.getString("uti_prenom");
-                Integer adrId = resultSet.getInt("adr_id");
                 String telephone = resultSet.getString("uti_tel");
                 String email = resultSet.getString("uti_email");
 
-                Adresse adresse = adresseDAO.getById(adrId);
+                Adresse adresse = new Adresse(
+                        resultSet.getInt("adr_id"),
+                        resultSet.getString("adr_rue"),
+                        resultSet.getString("adr_code_postal"),
+                        resultSet.getString("adr_ville")
+                );
 
-                Utilisateur utilisateur = new Utilisateur(userId, nom, prenom, adresse, telephone, email);
-                utilisateurs.add(utilisateur);
+                utilisateurs.add(new Utilisateur(userId, nom, prenom, adresse, telephone, email));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return utilisateurs;
     }
