@@ -32,3 +32,13 @@ SELECT u.uti_nom, u.uti_prenom, a.adr_rue, a.adr_code_postal, a.adr_ville, p.typ
 FROM UTILISATEUR u
 JOIN Posseder p ON u.uti_id = p.uti_id
 JOIN ADRESSE a ON p.adr_id = a.adr_id;
+
+SELECT * FROM ORDONNANCE;
+INSERT INTO MEDECIN (med_num_agreement, uti_id) VALUES
+('MED654321', 5); -- Luc Bernard
+INSERT INTO SPECIALISTE (spe_nom, spe_specialite, med_id) VALUES
+('Dr. Bernard', 'Dermatologue', 2);
+
+
+
+

@@ -12,18 +12,20 @@ public class Specialiste extends Medecin {
         setTypeSpecialiste(typeSpecialiste);
     }
 
-    // Getter pour  typeSpécialiste
-
     public TypeSpecialiste getTypeSpecialiste() {
         return typeSpecialiste;
     }
 
     public void setTypeSpecialiste(TypeSpecialiste typeSpecialiste) {
+        if (typeSpecialiste == null) {
+            throw new IllegalArgumentException("Le type de spécialiste ne peut pas être null.");
+        }
         this.typeSpecialiste = typeSpecialiste;
     }
 
     @Override
     public String toString() {
-        return super.toString() + ", Type de Spécialiste: " + (typeSpecialiste != null ? typeSpecialiste.getTypeNom() : "Aucun");
+        return super.toString() + ", Type de Spécialiste: " +
+                (typeSpecialiste != null ? typeSpecialiste.getTypeNom() : "Aucun");
     }
 }

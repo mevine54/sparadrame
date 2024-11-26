@@ -13,7 +13,8 @@ public class Medicament {
     private int mediQuantite;
 
     // Constructeur
-    public Medicament(Integer mediId, String mediNom, TypeMedicament typeMedicament, double mediPrix, LocalDate mediDateMiseEnService, int mediQuantite) {
+    public Medicament(Integer mediId, String mediNom, TypeMedicament typeMedicament, double mediPrix,
+                      LocalDate mediDateMiseEnService, int mediQuantite) {
         setMediId(mediId);
         setMediNom(mediNom);
         setTypeMedicament(typeMedicament);
@@ -22,12 +23,15 @@ public class Medicament {
         setMediQuantite(mediQuantite);
     }
 
-    // Getters et setters
+    // Getters et setters avec validations
     public Integer getMediId() {
         return mediId;
     }
 
-    public void setMediId(Integer id) {
+    public void setMediId(Integer mediId) {
+        if (mediId != null && mediId < 0) {
+            throw new IllegalArgumentException("L'id médicament ne peut pas être négatif.");
+        }
         this.mediId = mediId;
     }
 
@@ -36,6 +40,9 @@ public class Medicament {
     }
 
     public void setMediNom(String mediNom) {
+        if (mediNom == null || mediNom.isBlank()) {
+            throw new IllegalArgumentException("Le nom du médicament ne peut pas être vide.");
+        }
         this.mediNom = mediNom;
     }
 
@@ -44,6 +51,9 @@ public class Medicament {
     }
 
     public void setTypeMedicament(TypeMedicament typeMedicament) {
+        if (typeMedicament == null) {
+            throw new IllegalArgumentException("Le type du médicament ne peut pas être null.");
+        }
         this.typeMedicament = typeMedicament;
     }
 
@@ -52,6 +62,9 @@ public class Medicament {
     }
 
     public void setMediPrix(double mediPrix) {
+        if (mediPrix < 0) {
+            throw new IllegalArgumentException("Le prix du médicament doit être positif.");
+        }
         this.mediPrix = mediPrix;
     }
 
@@ -60,6 +73,9 @@ public class Medicament {
     }
 
     public void setMediDateMiseEnService(LocalDate mediDateMiseEnService) {
+        if (mediDateMiseEnService != null && mediDateMiseEnService.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La date de mise en service ne peut pas être dans le futur.");
+        }
         this.mediDateMiseEnService = mediDateMiseEnService;
     }
 
@@ -68,6 +84,9 @@ public class Medicament {
     }
 
     public void setMediQuantite(int mediQuantite) {
+        if (mediQuantite < 0) {
+            throw new IllegalArgumentException("La quantité doit être positive.");
+        }
         this.mediQuantite = mediQuantite;
     }
 

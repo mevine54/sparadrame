@@ -12,7 +12,8 @@ public class Ordonnance {
     private Specialiste specialiste;
 
     // Constructeur
-    public Ordonnance(Integer ordId, LocalDate date, Medecin medecin, Client patient, List<Medicament> medicaments, Specialiste specialiste) {
+    public Ordonnance(Integer ordId, LocalDate date, Medecin medecin, Client patient,
+                      List<Medicament> medicaments, Specialiste specialiste) {
         setOrdId(ordId);
         setDate(date);
         setMedecin(medecin);
@@ -21,12 +22,15 @@ public class Ordonnance {
         setSpecialiste(specialiste);
     }
 
-    // Getters et setters
+    // Getters et setters avec validations
     public Integer getOrdId() {
         return ordId;
     }
 
     public void setOrdId(Integer ordId) {
+        if (ordId != null && ordId < 0) {
+            throw new IllegalArgumentException("L'id de l'ordonnance ne peut pas être négatif.");
+        }
         this.ordId = ordId;
     }
 
@@ -35,6 +39,9 @@ public class Ordonnance {
     }
 
     public void setDate(LocalDate date) {
+        if (date != null && date.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La date de l'ordonnance ne peut pas être dans le futur.");
+        }
         this.date = date;
     }
 
@@ -43,6 +50,9 @@ public class Ordonnance {
     }
 
     public void setMedecin(Medecin medecin) {
+        if (medecin == null) {
+            throw new IllegalArgumentException("Le médecin ne peut pas être null.");
+        }
         this.medecin = medecin;
     }
 
@@ -51,6 +61,9 @@ public class Ordonnance {
     }
 
     public void setPatient(Client patient) {
+        if (patient == null) {
+            throw new IllegalArgumentException("Le patient ne peut pas être null.");
+        }
         this.patient = patient;
     }
 
@@ -59,6 +72,9 @@ public class Ordonnance {
     }
 
     public void setMedicaments(List<Medicament> medicaments) {
+        if (medicaments == null || medicaments.isEmpty()) {
+            throw new IllegalArgumentException("La liste des médicaments ne peut pas être vide.");
+        }
         this.medicaments = medicaments;
     }
 
@@ -67,11 +83,15 @@ public class Ordonnance {
     }
 
     public void setSpecialiste(Specialiste specialiste) {
+        if (specialiste == null) {
+            throw new IllegalArgumentException("Le spécialiste ne peut pas être null.");
+        }
         this.specialiste = specialiste;
     }
 
     @Override
     public String toString() {
-        return "Ordonnance du " + date + " pour le patient: " + patient.getNom() + " par le Dr " + medecin.getNom();
+        return "Ordonnance du " + date + " pour le patient: " + patient.getNom() +
+                " par le Dr " + medecin.getNom();
     }
 }

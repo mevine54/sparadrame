@@ -1,257 +1,128 @@
 package fr.afpa.pompey.cda22045.dao;
 
 import fr.afpa.pompey.cda22045.models.Adresse;
+import fr.afpa.pompey.cda22045.utilities.DatabaseConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static fr.afpa.pompey.cda22045.utilities.DatabaseConnection.getConnection;
 
 public class AdresseDAO extends DAO<Adresse> {
 
     @Override
     public Adresse create(Adresse obj) {
+        if (obj == null) {
+            throw new IllegalArgumentException("L'adresse ne peut pas être null.");
+        }
+
         String sql = "INSERT INTO adresse (adr_rue, adr_code_postal, adr_ville) VALUES (?, ?, ?)";
-        Connection connection = null;
-        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConnection.getInstanceDB();
+             PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-        try {
-            connection = getConnection();
-            connection.setAutoCommit(false);
-
-            statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, obj.getRue());
             statement.setString(2, obj.getCodePostal());
             statement.setString(3, obj.getVille());
 
             int affectedRows = statement.executeUpdate();
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        obj.setAdrId(generatedKeys.getInt(1));
-                    }
+            if (affectedRows == 0) {
+                throw new SQLException("Échec de la création de l'adresse, aucune ligne affectée.");
+            }
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    obj.setAdrId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Échec de la création de l'adresse, aucun ID généré.");
                 }
             }
-            connection.commit();
+            return obj;
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException rollbackException) {
-                    rollbackException.printStackTrace();
-                }
-            }
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            return null;
         }
-        return obj;
     }
 
     @Override
     public boolean delete(long id) {
         String sql = "DELETE FROM adresse WHERE adr_id = ?";
-        Connection connection = null;
-        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConnection.getInstanceDB();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-        try {
-            connection = getConnection();
-            connection.setAutoCommit(false);
-
-            statement = connection.prepareStatement(sql);
             statement.setLong(1, id);
 
             int affectedRows = statement.executeUpdate();
-            connection.commit();
-
             return affectedRows > 0;
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException rollbackException) {
-                    rollbackException.printStackTrace();
-                }
-            }
             e.printStackTrace();
             return false;
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
     @Override
     public boolean update(Adresse obj) {
+        if (obj == null) {
+            throw new IllegalArgumentException("L'adresse ne peut pas être null.");
+        }
+
         String sql = "UPDATE adresse SET adr_rue = ?, adr_code_postal = ?, adr_ville = ? WHERE adr_id = ?";
-        Connection connection = null;
-        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConnection.getInstanceDB();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-        try {
-            connection = getConnection();
-            connection.setAutoCommit(false);
-
-            statement = connection.prepareStatement(sql);
             statement.setString(1, obj.getRue());
             statement.setString(2, obj.getCodePostal());
             statement.setString(3, obj.getVille());
             statement.setInt(4, obj.getAdrId());
 
             int affectedRows = statement.executeUpdate();
-            connection.commit();
-
             return affectedRows > 0;
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException rollbackException) {
-                    rollbackException.printStackTrace();
-                }
-            }
             e.printStackTrace();
             return false;
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
     @Override
     public Adresse getById(int id) {
         String sql = "SELECT * FROM adresse WHERE adr_id = ?";
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Adresse adresse = null;
+        try (Connection connection = DatabaseConnection.getInstanceDB();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
 
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                Integer adrId = resultSet.getInt("adr_id");
-                String rue = resultSet.getString("adr_rue");
-                String codePostal = resultSet.getString("adr_code_postal");
-                String ville = resultSet.getString("adr_ville");
-                adresse = new Adresse(adrId, rue, codePostal, ville);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new Adresse(
+                            resultSet.getInt("adr_id"),
+                            resultSet.getString("adr_rue"),
+                            resultSet.getString("adr_code_postal"),
+                            resultSet.getString("adr_ville")
+                    );
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        return adresse;
+        return null;
     }
 
     @Override
     public List<Adresse> getAll() {
         String sql = "SELECT * FROM adresse";
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
         List<Adresse> adresses = new ArrayList<>();
-
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement(sql);
-            resultSet = statement.executeQuery();
+        try (Connection connection = DatabaseConnection.getInstanceDB();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                Integer adrId = resultSet.getInt("adr_id");
-                String rue = resultSet.getString("adr_rue");
-                String codePostal = resultSet.getString("adr_code_postal");
-                String ville = resultSet.getString("adr_ville");
-                Adresse adresse = new Adresse(adrId, rue, codePostal, ville);
-                adresses.add(adresse);
+                adresses.add(new Adresse(
+                        resultSet.getInt("adr_id"),
+                        resultSet.getString("adr_rue"),
+                        resultSet.getString("adr_code_postal"),
+                        resultSet.getString("adr_ville")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return adresses;
     }

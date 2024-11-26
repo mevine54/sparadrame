@@ -20,12 +20,15 @@ public class Mutuelle {
         setTauxPriseEnCharge(tauxPriseEnCharge);
     }
 
-    // Getters et Setters
+    // Getters et setters avec validations
     public Integer getMutId() {
         return mutId;
     }
 
     public void setMutId(Integer mutId) {
+        if (mutId != null && mutId < 0) {
+            throw new IllegalArgumentException("L'id mutuelle ne peut pas être négatif.");
+        }
         this.mutId = mutId;
     }
 
@@ -34,6 +37,9 @@ public class Mutuelle {
     }
 
     public void setNom(String nom) {
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom de la mutuelle ne peut pas être vide.");
+        }
         this.nom = nom;
     }
 
@@ -42,7 +48,10 @@ public class Mutuelle {
     }
 
     public void setAdresse(Adresse adresse) {
-        this.adresse = adresse;
+        if (adresse == null) {
+            System.out.println("Attention : l'adresse de la mutuelle est null.");
+        }
+        this.adresse = adresse; // Autorise null si nécessaire
     }
 
     public String getTelephone() {
@@ -50,6 +59,9 @@ public class Mutuelle {
     }
 
     public void setTelephone(String telephone) {
+        if (telephone == null || telephone.isBlank()) {
+            throw new IllegalArgumentException("Le téléphone ne peut pas être vide.");
+        }
         this.telephone = telephone;
     }
 
@@ -58,6 +70,9 @@ public class Mutuelle {
     }
 
     public void setEmail(String email) {
+        if (email == null || !email.matches("^[\\w.%+-]+@[\\w.-]+\\.\\w{2,}$")) {
+            throw new IllegalArgumentException("L'email est invalide.");
+        }
         this.email = email;
     }
 
@@ -66,6 +81,9 @@ public class Mutuelle {
     }
 
     public void setDepartement(String departement) {
+        if (departement == null || departement.isBlank()) {
+            throw new IllegalArgumentException("Le département ne peut pas être vide.");
+        }
         this.departement = departement;
     }
 
@@ -74,6 +92,9 @@ public class Mutuelle {
     }
 
     public void setTauxPriseEnCharge(double tauxPriseEnCharge) {
+        if (tauxPriseEnCharge < 0 || tauxPriseEnCharge > 100) {
+            throw new IllegalArgumentException("Le taux de prise en charge doit être compris entre 0 et 100.");
+        }
         this.tauxPriseEnCharge = tauxPriseEnCharge;
     }
 

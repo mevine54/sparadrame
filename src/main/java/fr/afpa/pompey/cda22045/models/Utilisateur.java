@@ -1,7 +1,5 @@
 package fr.afpa.pompey.cda22045.models;
 
-import java.time.LocalDate;
-
 public class Utilisateur {
     private Integer userId;
     private String nom;
@@ -10,8 +8,10 @@ public class Utilisateur {
     private String telephone;
     private String email;
 
+    // Constructeur par défaut
+    public Utilisateur() {}
 
-    // Constructeur
+    // Constructeur avec paramètres
     public Utilisateur(Integer userId, String nom, String prenom, Adresse adresse, String telephone, String email) {
         setUserId(userId);
         setNom(nom);
@@ -27,6 +27,9 @@ public class Utilisateur {
     }
 
     public void setUserId(Integer userId) {
+        if (userId != null && userId < 0) {
+            throw new IllegalArgumentException("L'id utilisateur ne peut pas être négatif.");
+        }
         this.userId = userId;
     }
 
@@ -35,6 +38,9 @@ public class Utilisateur {
     }
 
     public void setNom(String nom) {
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom ne peut pas être vide.");
+        }
         this.nom = nom;
     }
 
@@ -43,6 +49,9 @@ public class Utilisateur {
     }
 
     public void setPrenom(String prenom) {
+        if (prenom == null || prenom.isBlank()) {
+            throw new IllegalArgumentException("Le prénom ne peut pas être vide.");
+        }
         this.prenom = prenom;
     }
 
@@ -51,6 +60,9 @@ public class Utilisateur {
     }
 
     public void setAdresse(Adresse adresse) {
+        if (adresse == null) {
+            throw new IllegalArgumentException("L'adresse ne peut pas être null.");
+        }
         this.adresse = adresse;
     }
 
@@ -59,6 +71,9 @@ public class Utilisateur {
     }
 
     public void setTelephone(String telephone) {
+        if (telephone == null || telephone.isBlank()) {
+            throw new IllegalArgumentException("Le téléphone ne peut pas être vide.");
+        }
         this.telephone = telephone;
     }
 
@@ -67,10 +82,11 @@ public class Utilisateur {
     }
 
     public void setEmail(String email) {
+        if (email == null || !email.matches("^[\\w.%+-]+@[\\w.-]+\\.\\w{2,}$")) {
+            throw new IllegalArgumentException("L'adresse email est invalide.");
+        }
         this.email = email;
     }
-
-
 
     @Override
     public String toString() {

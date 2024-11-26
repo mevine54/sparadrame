@@ -9,11 +9,8 @@ public class Adherer {
     private LocalDate dateAdhesion;
     private String niveauCouverture;
 
-    // Constructeur par défaut
-    public Adherer() {
-    }
+    public Adherer() {}
 
-    // Constructeur avec paramètres
     public Adherer(Integer adhId, Integer clientId, Integer mutuelleId, LocalDate dateAdhesion, String niveauCouverture) {
         setAdhId(adhId);
         setClientId(clientId);
@@ -22,12 +19,14 @@ public class Adherer {
         setNiveauCouverture(niveauCouverture);
     }
 
-    // Getters et setters
     public Integer getAdhId() {
         return adhId;
     }
 
     public void setAdhId(Integer adhId) {
+        if (adhId != null && adhId < 0) {
+            throw new IllegalArgumentException("L'id ne peut pas être négatif.");
+        }
         this.adhId = adhId;
     }
 
@@ -36,6 +35,9 @@ public class Adherer {
     }
 
     public void setClientId(Integer clientId) {
+        if (clientId == null || clientId < 0) {
+            throw new IllegalArgumentException("L'id client ne peut pas être nul ou négatif.");
+        }
         this.clientId = clientId;
     }
 
@@ -44,6 +46,9 @@ public class Adherer {
     }
 
     public void setMutuelleId(Integer mutuelleId) {
+        if (mutuelleId == null || mutuelleId < 0) {
+            throw new IllegalArgumentException("L'id mutuelle ne peut pas être nul ou négatif.");
+        }
         this.mutuelleId = mutuelleId;
     }
 
@@ -52,6 +57,9 @@ public class Adherer {
     }
 
     public void setDateAdhesion(LocalDate dateAdhesion) {
+        if (dateAdhesion != null && dateAdhesion.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La date d'adhésion ne peut pas être dans le futur.");
+        }
         this.dateAdhesion = dateAdhesion;
     }
 
@@ -60,6 +68,9 @@ public class Adherer {
     }
 
     public void setNiveauCouverture(String niveauCouverture) {
+        if (niveauCouverture == null || niveauCouverture.isBlank()) {
+            throw new IllegalArgumentException("Le niveau de couverture ne peut pas être vide.");
+        }
         this.niveauCouverture = niveauCouverture;
     }
 
@@ -74,3 +85,6 @@ public class Adherer {
                 '}';
     }
 }
+
+
+

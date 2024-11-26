@@ -4,7 +4,7 @@ import fr.afpa.pompey.cda22045.models.Achat;
 import fr.afpa.pompey.cda22045.dao.AchatDAO;
 import fr.afpa.pompey.cda22045.utilities.DatabaseConnection;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class AchatDAOTest {
 
@@ -16,7 +16,7 @@ public class AchatDAOTest {
         AchatDAO achatDAO = new AchatDAO();
 
         // Test 1 : Créer un nouvel achat
-        Achat newAchat = new Achat(0, "Direct", new Date(), 1); // utilisateur_id = 1
+        Achat newAchat = new Achat(0, "Direct", LocalDate.now(), 1); // utilisateur_id = 1
         Achat createdAchat = achatDAO.create(newAchat);
         if (createdAchat != null) {
             System.out.println("Created Achat: " + createdAchat);

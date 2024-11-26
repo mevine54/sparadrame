@@ -7,7 +7,8 @@ public class Adresse {
     private String codePostal;
     private String ville;
 
-    // Constructeur de la classe Adresse
+    public Adresse() {}
+
     public Adresse(Integer adrId, String rue, String codePostal, String ville) {
         setAdrId(adrId);
         setRue(rue);
@@ -15,12 +16,14 @@ public class Adresse {
         setVille(ville);
     }
 
-    // Getters et setters
-    public int getAdrId() {
+    public Integer getAdrId() {
         return adrId;
     }
 
     public void setAdrId(Integer adrId) {
+        if (adrId != null && adrId < 0) {
+            throw new IllegalArgumentException("L'id de l'adresse ne peut pas être négatif.");
+        }
         this.adrId = adrId;
     }
 
@@ -29,6 +32,9 @@ public class Adresse {
     }
 
     public void setRue(String rue) {
+        if (rue == null || rue.isBlank()) {
+            throw new IllegalArgumentException("La rue ne peut pas être vide.");
+        }
         this.rue = rue;
     }
 
@@ -37,6 +43,9 @@ public class Adresse {
     }
 
     public void setCodePostal(String codePostal) {
+        if (codePostal == null || !codePostal.matches("\\d{5}")) {
+            throw new IllegalArgumentException("Le code postal doit contenir exactement 5 chiffres.");
+        }
         this.codePostal = codePostal;
     }
 
@@ -45,11 +54,19 @@ public class Adresse {
     }
 
     public void setVille(String ville) {
+        if (ville == null || ville.isBlank()) {
+            throw new IllegalArgumentException("La ville ne peut pas être vide.");
+        }
         this.ville = ville;
     }
 
     @Override
     public String toString() {
-        return rue + ", " + codePostal + " " + ville;
+        return "Adresse{" +
+                "adrId=" + adrId +
+                ", rue='" + rue + '\'' +
+                ", codePostal='" + codePostal + '\'' +
+                ", ville='" + ville + '\'' +
+                '}';
     }
 }

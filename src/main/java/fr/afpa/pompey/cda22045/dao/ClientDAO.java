@@ -241,8 +241,8 @@ public class ClientDAO extends DAO<Client> {
                 "mu.mut_id, mu.mut_nom, mu.mut_tel, mu.mut_email, mu.mut_departement, mu.mut_taux_prise_en_charge " +
                 "FROM client c " +
                 "JOIN utilisateur u ON c.uti_id = u.uti_id " +
-                "JOIN posseder p ON u.uti_id = p.uti_id " +
-                "JOIN adresse a ON p.adr_id = a.adr_id " +
+                "LEFT JOIN posseder p ON u.uti_id = p.uti_id " +
+                "LEFT JOIN adresse a ON p.adr_id = a.adr_id " +
                 "LEFT JOIN adherer ad ON c.cli_id = ad.cli_id " +
                 "LEFT JOIN mutuelle mu ON ad.mut_id = mu.mut_id";
 
@@ -269,16 +269,19 @@ public class ClientDAO extends DAO<Client> {
                         resultSet.getString("adr_ville")
                 );
 
-                // Mutuelle
-                Mutuelle mutuelle = new Mutuelle(
-                        resultSet.getInt("mut_id"),
-                        resultSet.getString("mut_nom"),
-                        null, // Adresse (vous devez ajouter la logique pour récupérer l'adresse si nécessaire)
-                        String.valueOf(resultSet.getLong("mut_tel")), // Convertir le téléphone en String
-                        resultSet.getString("mut_email"),
-                        resultSet.getString("mut_departement"),
-                        resultSet.getDouble("mut_taux_prise_en_charge") // Correction pour correspondre à un double
-                );
+                // Mutuelle (gestion du cas où l'adresse est null)
+                Mutuelle mutuelle = null;
+                if (resultSet.getInt("mut_id") != 0) { // Vérifie si une mutuelle existe
+                    mutuelle = new Mutuelle(
+                            resultSet.getInt("mut_id"),
+                            resultSet.getString("mut_nom"),
+                            null, // Adresse de la mutuelle non prise en charge dans cette requête
+                            resultSet.getString("mut_tel"),
+                            resultSet.getString("mut_email"),
+                            resultSet.getString("mut_departement"),
+                            resultSet.getDouble("mut_taux_prise_en_charge")
+                    );
+                }
 
                 // Ajouter un nouveau client
                 clients.add(new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSocial, dateNaissance, mutuelle, null));

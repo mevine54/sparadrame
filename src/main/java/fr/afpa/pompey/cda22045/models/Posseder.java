@@ -6,11 +6,7 @@ public class Posseder {
     private Integer adresseId;
     private String typePossession;
 
-    // Constructeur par défaut
-    public Posseder() {
-    }
-
-    // Constructeur avec paramètres
+    // Constructeur
     public Posseder(Integer possId, Integer utilisateurId, Integer adresseId, String typePossession) {
         setPossId(possId);
         setUtilisateurId(utilisateurId);
@@ -18,12 +14,15 @@ public class Posseder {
         setTypePossession(typePossession);
     }
 
-    // Getters et setters
+    // Getters et setters avec validations
     public Integer getPossId() {
         return possId;
     }
 
     public void setPossId(Integer possId) {
+        if (possId != null && possId < 0) {
+            throw new IllegalArgumentException("L'id de possession ne peut pas être négatif.");
+        }
         this.possId = possId;
     }
 
@@ -32,6 +31,9 @@ public class Posseder {
     }
 
     public void setUtilisateurId(Integer utilisateurId) {
+        if (utilisateurId == null || utilisateurId < 0) {
+            throw new IllegalArgumentException("L'id utilisateur ne peut pas être négatif.");
+        }
         this.utilisateurId = utilisateurId;
     }
 
@@ -40,6 +42,9 @@ public class Posseder {
     }
 
     public void setAdresseId(Integer adresseId) {
+        if (adresseId == null || adresseId < 0) {
+            throw new IllegalArgumentException("L'id adresse ne peut pas être négatif.");
+        }
         this.adresseId = adresseId;
     }
 
@@ -48,6 +53,12 @@ public class Posseder {
     }
 
     public void setTypePossession(String typePossession) {
+        if (typePossession == null ||
+                (!typePossession.equals("Résidentiel") &&
+                        !typePossession.equals("Professionnel") &&
+                        !typePossession.equals("Autre"))) {
+            throw new IllegalArgumentException("Le type de possession est invalide.");
+        }
         this.typePossession = typePossession;
     }
 
