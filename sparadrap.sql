@@ -13,6 +13,8 @@ CREATE TABLE UTILISATEUR (
     uti_email VARCHAR(50)
 );
 
+select * from utilisateur;
+
 -- Table : ADRESSE
 CREATE TABLE ADRESSE (
     adr_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -57,6 +59,9 @@ CREATE TABLE MUTUELLE (
     mut_taux_prise_en_charge TINYINT
 );
 
+select * from achat;
+
+
 -- Table : TYPEMEDICAMENT
 CREATE TABLE TYPEMEDICAMENT (
     type_med_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,6 +93,25 @@ CREATE TABLE ACHAT (
     ach_id INT AUTO_INCREMENT PRIMARY KEY,
     ach_type ENUM('Direct', 'Ordonnance')
 );
+
+ALTER TABLE ACHAT
+ADD ach_date DATE AFTER ach_type,
+ADD uti_id INT AFTER ach_date,
+ADD CONSTRAINT fk_achat_utilisateur FOREIGN KEY (uti_id) REFERENCES utilisateur(uti_id);
+
+ALTER TABLE achat ADD UNIQUE KEY (ach_type, ach_date, uti_id);
+
+
+select  * from achat;
+INSERT INTO achat (ach_type, ach_date, uti_id) VALUES ('Direct', '2024-11-26', 2);
+
+CREATE TABLE Session (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    uti_id INT UNIQUE, -- Associe un utilisateur à une session
+    session_start TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (uti_id) REFERENCES Utilisateur(uti_id)
+);
+
 
 -- Association : Posséder (Utilisateur - Adresse)
 CREATE TABLE Posseder (
