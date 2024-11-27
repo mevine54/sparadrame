@@ -132,6 +132,9 @@ public class DashboardView extends JFrame {
 
     // Page d'achat restaurée avec tout le contenu
     private void afficherAchatPanel() {
+        // Réinitialiser les listes de médicaments ajoutés et d'achats valides
+        resetAchatState();
+
         panelCentral.removeAll();
 
         // Panneau pour l'achat
@@ -169,7 +172,7 @@ public class DashboardView extends JFrame {
         JTextField prixTotalField = new JTextField("5.00", 10);
         prixTotalField.setEditable(false);
 
-        // Ajouter un écouteur pour mettre à jour le prix total en fonction de la quantité
+        // Ajout d'un écouteur pour mettre à jour le prix total en fonction de la quantité
         quantiteField.addActionListener(e -> {
             if (isValidQuantity(quantiteField.getText())) {
                 double prixUnitaire = Double.parseDouble(prixUnitaireField.getText());
@@ -194,7 +197,7 @@ public class DashboardView extends JFrame {
             if (isValidQuantity(quantite)) {
                 double prixUnitaire = Double.parseDouble(prixUnitaireField.getText());
                 double prixTotal = prixUnitaire * Integer.parseInt(quantite);
-                String medicamentDetail = selectedMedicament + " (x" + quantite + ") - Prix: " + prixTotal + " €";
+                String medicamentDetail = selectedMedicament.getTmTypeNom() + " (x" + quantite + ") - Prix: " + prixTotal + " €";
                 listeMedicamentsAjoutes.add(medicamentDetail);
 
                 // Mise à jour de la textArea
@@ -320,6 +323,12 @@ public class DashboardView extends JFrame {
         panelCentral.add(panelAchat);
         panelCentral.revalidate();
         panelCentral.repaint();
+    }
+
+    // Méthode pour réinitialiser les listes de médicaments ajoutés et d'achats valides
+    private void resetAchatState() {
+        listeMedicamentsAjoutes.clear();
+        achatsValides.clear();
     }
 
     // Page d'historique des achats avec possibilité de modifier
@@ -476,15 +485,218 @@ public class DashboardView extends JFrame {
     private void afficherMedecinPanel() {
         panelCentral.removeAll();
 
-        // Contenu temporaire, à ajuster selon les besoins
-        JPanel panelMedecin = new JPanel();
-        JLabel label = new JLabel("Détails des médecins / spécialistes");
-        panelMedecin.add(label);
+        // Panneau pour afficher les détails d'un médecin / spécialiste
+        JPanel panelMedecin = new JPanel(new GridBagLayout());
+        panelMedecin.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panelMedecin.setBackground(new Color(230, 255, 230)); // Appliquer la même couleur que la page achat
 
-        // Bouton retour pour revenir à la page d'accueil
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Espacement entre les composants
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        // Label pour le titre
+        JLabel labelMedecin = new JLabel("Détails des médecins / spécialistes");
+        labelMedecin.setFont(new Font("Arial", Font.BOLD, 18));
+        panelMedecin.add(labelMedecin, gbc);
+
+        gbc.gridy++;
+        // Liste déroulante pour sélectionner un médecin
+        JLabel labelSelectMedecin = new JLabel("Sélectionner un médecin:");
+        panelMedecin.add(labelSelectMedecin, gbc);
+
+        gbc.gridy++;
+        JComboBox<String> medecinCombo = new JComboBox<>(getListeMedecins());
+        panelMedecin.add(medecinCombo, gbc);
+
+        gbc.gridy++;
+        // Détails du médecin (affichage)
+        JTextArea detailsMedecinArea = new JTextArea(5, 30);
+        detailsMedecinArea.setEditable(false);
+        panelMedecin.add(new JScrollPane(detailsMedecinArea), gbc);
+
+        // Afficher les informations du médecin sélectionné
+        medecinCombo.addActionListener(e -> {
+            String medecinSelectionne = (String) medecinCombo.getSelectedItem();
+            if (medecinSelectionne != null) {
+                detailsMedecinArea.setText("Détails du médecin: " + medecinSelectionne + "\nAdresse: Exemple Adresse\nTéléphone: 0123456789\nEmail: exemple@gmail.com");
+            } else {
+                detailsMedecinArea.setText("");
+            }
+        });
+
+        // Taille uniforme pour les boutons
+        Dimension buttonSize = new Dimension(150, 30);
+
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        // Bouton pour créer un nouveau médecin
+        JButton btnCreer = new JButton("Créer");
+        btnCreer.setPreferredSize(buttonSize);
+        btnCreer.setMaximumSize(buttonSize);
+        btnCreer.addActionListener(e -> {
+            JPanel nouveauMedecinPanel = new JPanel(new GridLayout(6, 2));
+            nouveauMedecinPanel.add(new JLabel("Nom:"));
+            JTextField nomField = new JTextField();
+            nouveauMedecinPanel.add(nomField);
+            nouveauMedecinPanel.add(new JLabel("Prénom:"));
+            JTextField prenomField = new JTextField();
+            nouveauMedecinPanel.add(prenomField);
+            nouveauMedecinPanel.add(new JLabel("Spécialité:"));
+            JTextField specialiteField = new JTextField();
+            nouveauMedecinPanel.add(specialiteField);
+            nouveauMedecinPanel.add(new JLabel("Adresse:"));
+            JTextField adresseField = new JTextField();
+            nouveauMedecinPanel.add(adresseField);
+            nouveauMedecinPanel.add(new JLabel("Téléphone:"));
+            JTextField telField = new JTextField();
+            nouveauMedecinPanel.add(telField);
+            nouveauMedecinPanel.add(new JLabel("Email:"));
+            JTextField emailField = new JTextField();
+            nouveauMedecinPanel.add(emailField);
+
+            int result = JOptionPane.showConfirmDialog(this, nouveauMedecinPanel, "Créer un nouveau médecin", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    String nom = nomField.getText();
+                    String prenom = prenomField.getText();
+                    String specialite = specialiteField.getText();
+                    String adresse = adresseField.getText();
+                    String telephone = telField.getText();
+                    String email = emailField.getText();
+
+                    if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
+                        String nouveauMedecin = nom + " " + prenom + " (" + specialite + ")";
+                        medecinCombo.addItem(nouveauMedecin);
+                        JOptionPane.showMessageDialog(this, "Nouveau médecin créé !");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le médecin.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        panelMedecin.add(btnCreer, gbc);
+
+        gbc.gridx++;
+        // Bouton pour modifier un médecin
+        JButton btnModifier = new JButton("Modifier");
+        btnModifier.setPreferredSize(buttonSize);
+        btnModifier.setMaximumSize(buttonSize);
+        btnModifier.addActionListener(e -> {
+            String medecinSelectionne = (String) medecinCombo.getSelectedItem();
+            if (medecinSelectionne == null) {
+                JOptionPane.showMessageDialog(this, "Veuillez sélectionner un médecin à modifier.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            JPanel modificationMedecinPanel = new JPanel(new GridLayout(6, 2));
+            modificationMedecinPanel.add(new JLabel("Nom:"));
+            JTextField nomField = new JTextField(medecinSelectionne.split(" ")[0]); // Nom actuel
+            modificationMedecinPanel.add(nomField);
+            modificationMedecinPanel.add(new JLabel("Prénom:"));
+            JTextField prenomField = new JTextField(medecinSelectionne.split(" ")[1]); // Prénom actuel
+            modificationMedecinPanel.add(prenomField);
+            modificationMedecinPanel.add(new JLabel("Spécialité:"));
+            JTextField specialiteField = new JTextField("Exemple Spécialité");
+            modificationMedecinPanel.add(specialiteField);
+            modificationMedecinPanel.add(new JLabel("Adresse:"));
+            JTextField adresseField = new JTextField("Exemple Adresse");
+            modificationMedecinPanel.add(adresseField);
+            modificationMedecinPanel.add(new JLabel("Téléphone:"));
+            JTextField telField = new JTextField("0123456789");
+            modificationMedecinPanel.add(telField);
+            modificationMedecinPanel.add(new JLabel("Email:"));
+            JTextField emailField = new JTextField("exemple@gmail.com");
+            modificationMedecinPanel.add(emailField);
+
+            int result = JOptionPane.showConfirmDialog(this, modificationMedecinPanel, "Modifier le médecin", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    String nom = nomField.getText();
+                    String prenom = prenomField.getText();
+                    String specialite = specialiteField.getText();
+                    String adresse = adresseField.getText();
+                    String telephone = telField.getText();
+                    String email = emailField.getText();
+
+                    if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
+                        String nouveauMedecin = nom + " " + prenom + " (" + specialite + ")";
+                        medecinCombo.removeItem(medecinSelectionne);
+                        medecinCombo.addItem(nouveauMedecin);
+                        detailsMedecinArea.setText("Détails du médecin: " + nouveauMedecin + "\nAdresse: " + adresse + "\nTéléphone: " + telephone + "\nEmail: " + email);
+                        JOptionPane.showMessageDialog(this, "Médecin modifié !");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le médecin.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        panelMedecin.add(btnModifier, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        // Bouton pour supprimer un médecin
+        JButton btnSupprimer = new JButton("Supprimer");
+        btnSupprimer.setPreferredSize(buttonSize);
+        btnSupprimer.setMaximumSize(buttonSize);
+        btnSupprimer.addActionListener(e -> {
+            String medecinSelectionne = (String) medecinCombo.getSelectedItem();
+            if (medecinSelectionne == null) {
+                JOptionPane.showMessageDialog(this, "Veuillez sélectionner un médecin à supprimer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int confirmation = JOptionPane.showConfirmDialog(this, "Êtes-vous sûr de vouloir supprimer ce médecin ?", "Supprimer le médecin", JOptionPane.YES_NO_OPTION);
+            if (confirmation == JOptionPane.YES_OPTION) {
+                medecinCombo.removeItem(medecinSelectionne);
+                detailsMedecinArea.setText("");
+                JOptionPane.showMessageDialog(this, "Médecin supprimé !");
+            }
+        });
+        panelMedecin.add(btnSupprimer, gbc);
+
+        gbc.gridx++;
+        // Bouton pour rechercher un médecin
+        JButton btnRechercher = new JButton("Rechercher");
+        btnRechercher.setPreferredSize(buttonSize);
+        btnRechercher.setMaximumSize(buttonSize);
+        btnRechercher.addActionListener(e -> {
+            String searchQuery = JOptionPane.showInputDialog(this, "Entrez le nom ou prénom du médecin à rechercher:");
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                for (int i = 0; i < medecinCombo.getItemCount(); i++) {
+                    if (medecinCombo.getItemAt(i).toLowerCase().contains(searchQuery.toLowerCase())) {
+                        medecinCombo.setSelectedIndex(i);
+                        return;
+                    }
+                }
+                JOptionPane.showMessageDialog(this, "Aucun médecin correspondant trouvé.", "Résultat", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        panelMedecin.add(btnRechercher, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        // Bouton retour
         JButton btnRetour = new JButton("Retour");
+        btnRetour.setPreferredSize(buttonSize);
+        btnRetour.setMaximumSize(buttonSize);
         btnRetour.addActionListener(e -> revenirAccueil());
-        panelMedecin.add(btnRetour);
+        panelMedecin.add(btnRetour, gbc);
+
+        gbc.gridx++;
+        // Bouton quitter
+        JButton btnQuitter = new JButton("Quitter");
+        btnQuitter.setPreferredSize(buttonSize);
+        btnQuitter.setMaximumSize(buttonSize);
+        btnQuitter.addActionListener(e -> System.exit(0));
+        panelMedecin.add(btnQuitter, gbc);
 
         // Remplacer le contenu du panneau central
         panelCentral.add(panelMedecin);
@@ -517,12 +729,21 @@ public class DashboardView extends JFrame {
         // Afficher les informations du client sélectionné
         clientCombo.addActionListener(e -> {
             String clientSelectionne = (String) clientCombo.getSelectedItem();
-            detailsClientArea.setText("Détails du client: " + clientSelectionne + "\nAdresse: Exemple Adresse\nTéléphone: 0123456789\nEmail: exemple@gmail.com");
+            if (clientSelectionne != null) {
+                detailsClientArea.setText("Détails du client: " + clientSelectionne + "\nAdresse: Exemple Adresse\nTéléphone: 0123456789\nEmail: exemple@gmail.com");
+            } else {
+                detailsClientArea.setText("");
+            }
         });
 
+        // Taille uniforme pour les boutons
+        Dimension buttonSize = new Dimension(150, 30);
+
         // Bouton pour créer un nouveau client
-        JButton btnNouveauClient = new JButton("Créer un nouveau client");
-        btnNouveauClient.addActionListener(e -> {
+        JButton btnCreer = new JButton("Créer");
+        btnCreer.setPreferredSize(buttonSize);
+        btnCreer.setMaximumSize(buttonSize);
+        btnCreer.addActionListener(e -> {
             JPanel nouveauClientPanel = new JPanel(new GridLayout(6, 2));
             nouveauClientPanel.add(new JLabel("Nom:"));
             JTextField nomField = new JTextField();
@@ -542,28 +763,38 @@ public class DashboardView extends JFrame {
 
             int result = JOptionPane.showConfirmDialog(this, nouveauClientPanel, "Créer un nouveau client", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                String nom = nomField.getText();
-                String prenom = prenomField.getText();
-                String adresse = adresseField.getText();
-                String telephone = telField.getText();
-                String email = emailField.getText();
+                try {
+                    String nom = nomField.getText();
+                    String prenom = prenomField.getText();
+                    String adresse = adresseField.getText();
+                    String telephone = telField.getText();
+                    String email = emailField.getText();
 
-                if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
-                    // Ajouter le nouveau client à la liste globale des clients
-                    String nouveauClient = nom + " " + prenom;
-                    ajouterNouveauClient(nouveauClient);
-                    clientCombo.addItem(nouveauClient);
-                    JOptionPane.showMessageDialog(this, "Nouveau client créé !");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
+                        String nouveauClient = nom + " " + prenom;
+                        ajouterNouveauClient(nouveauClient);
+                        clientCombo.addItem(nouveauClient);
+                        JOptionPane.showMessageDialog(this, "Nouveau client créé !");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
         // Bouton pour modifier un client
-        JButton btnModifierClient = new JButton("Modifier le client sélectionné");
-        btnModifierClient.addActionListener(e -> {
+        JButton btnModifier = new JButton("Modifier");
+        btnModifier.setPreferredSize(buttonSize);
+        btnModifier.setMaximumSize(buttonSize);
+        btnModifier.addActionListener(e -> {
             String clientSelectionne = (String) clientCombo.getSelectedItem();
+            if (clientSelectionne == null) {
+                JOptionPane.showMessageDialog(this, "Veuillez sélectionner un client à modifier.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             JPanel modificationClientPanel = new JPanel(new GridLayout(6, 2));
             modificationClientPanel.add(new JLabel("Nom:"));
             JTextField nomField = new JTextField(clientSelectionne.split(" ")[0]); // Nom actuel
@@ -572,40 +803,50 @@ public class DashboardView extends JFrame {
             JTextField prenomField = new JTextField(clientSelectionne.split(" ")[1]); // Prénom actuel
             modificationClientPanel.add(prenomField);
             modificationClientPanel.add(new JLabel("Adresse:"));
-            JTextField adresseField = new JTextField("Exemple Adresse"); // Adresse actuelle
+            JTextField adresseField = new JTextField("Exemple Adresse");
             modificationClientPanel.add(adresseField);
             modificationClientPanel.add(new JLabel("Téléphone:"));
-            JTextField telField = new JTextField("0123456789"); // Téléphone actuel
+            JTextField telField = new JTextField("0123456789");
             modificationClientPanel.add(telField);
             modificationClientPanel.add(new JLabel("Email:"));
-            JTextField emailField = new JTextField("exemple@gmail.com"); // Email actuel
+            JTextField emailField = new JTextField("exemple@gmail.com");
             modificationClientPanel.add(emailField);
 
             int result = JOptionPane.showConfirmDialog(this, modificationClientPanel, "Modifier le client", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                String nom = nomField.getText();
-                String prenom = prenomField.getText();
-                String adresse = adresseField.getText();
-                String telephone = telField.getText();
-                String email = emailField.getText();
+                try {
+                    String nom = nomField.getText();
+                    String prenom = prenomField.getText();
+                    String adresse = adresseField.getText();
+                    String telephone = telField.getText();
+                    String email = emailField.getText();
 
-                if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
-                    // Mettre à jour la liste des clients et afficher les nouvelles informations
-                    String nouveauClient = nom + " " + prenom;
-                    clientCombo.removeItem(clientSelectionne);
-                    clientCombo.addItem(nouveauClient);
-                    detailsClientArea.setText("Détails du client: " + nouveauClient + "\nAdresse: " + adresse + "\nTéléphone: " + telephone + "\nEmail: " + email);
-                    JOptionPane.showMessageDialog(this, "Client modifié !");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
+                        String nouveauClient = nom + " " + prenom;
+                        clientCombo.removeItem(clientSelectionne);
+                        clientCombo.addItem(nouveauClient);
+                        detailsClientArea.setText("Détails du client: " + nouveauClient + "\nAdresse: " + adresse + "\nTéléphone: " + telephone + "\nEmail: " + email);
+                        JOptionPane.showMessageDialog(this, "Client modifié !");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
         // Bouton pour supprimer un client
-        JButton btnSupprimerClient = new JButton("Supprimer le client sélectionné");
-        btnSupprimerClient.addActionListener(e -> {
+        JButton btnSupprimer = new JButton("Supprimer");
+        btnSupprimer.setPreferredSize(buttonSize);
+        btnSupprimer.setMaximumSize(buttonSize);
+        btnSupprimer.addActionListener(e -> {
             String clientSelectionne = (String) clientCombo.getSelectedItem();
+            if (clientSelectionne == null) {
+                JOptionPane.showMessageDialog(this, "Veuillez sélectionner un client à supprimer.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             int confirmation = JOptionPane.showConfirmDialog(this, "Êtes-vous sûr de vouloir supprimer ce client ?", "Supprimer le client", JOptionPane.YES_NO_OPTION);
             if (confirmation == JOptionPane.YES_OPTION) {
                 clientCombo.removeItem(clientSelectionne);
@@ -615,11 +856,30 @@ public class DashboardView extends JFrame {
             }
         });
 
-        // Panneau pour aligner les boutons "Modifier", "Supprimer", "Créer"
-        JPanel boutonsPanel = new JPanel(new GridLayout(1, 3, 10, 0));  // Un GridLayout avec 1 ligne et 3 colonnes
-        boutonsPanel.add(btnModifierClient);
-        boutonsPanel.add(btnSupprimerClient);
-        boutonsPanel.add(btnNouveauClient);
+        // Bouton pour rechercher un client
+        JButton btnRechercher = new JButton("Rechercher");
+        btnRechercher.setPreferredSize(buttonSize);
+        btnRechercher.setMaximumSize(buttonSize);
+
+        btnRechercher.addActionListener(e -> {
+            String searchQuery = JOptionPane.showInputDialog(this, "Entrez le nom ou prénom du client à rechercher:");
+            if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                for (int i = 0; i < clientCombo.getItemCount(); i++) {
+                    if (clientCombo.getItemAt(i).toLowerCase().contains(searchQuery.toLowerCase())) {
+                        clientCombo.setSelectedIndex(i);
+                        return;
+                    }
+                }
+                JOptionPane.showMessageDialog(this, "Aucun client correspondant trouvé.", "Résultat", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        // Panel pour les boutons
+        JPanel boutonsPanel = new JPanel(new GridLayout(1, 4, 10, 0));
+        boutonsPanel.add(btnModifier);
+        boutonsPanel.add(btnSupprimer);
+        boutonsPanel.add(btnCreer);
+        boutonsPanel.add(btnRechercher);
 
         // Boutons retour et quitter
         JButton btnRetour = new JButton("Retour");
@@ -636,7 +896,7 @@ public class DashboardView extends JFrame {
         panelClient.add(Box.createRigidArea(new Dimension(0, 10)));
         panelClient.add(new JScrollPane(detailsClientArea));
         panelClient.add(Box.createRigidArea(new Dimension(0, 10)));
-        panelClient.add(boutonsPanel);  // Ajouter le panneau des boutons alignés
+        panelClient.add(boutonsPanel);
         panelClient.add(Box.createRigidArea(new Dimension(0, 10)));
         panelClient.add(btnRetour);
         panelClient.add(btnQuitter);
@@ -669,3 +929,4 @@ public class DashboardView extends JFrame {
         SwingUtilities.invokeLater(DashboardView::new);
     }
 }
+
