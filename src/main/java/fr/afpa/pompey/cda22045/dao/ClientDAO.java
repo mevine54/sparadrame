@@ -34,6 +34,14 @@ public class ClientDAO extends DAO<Client> {
             connection = DatabaseConnection.getInstanceDB();
             connection.setAutoCommit(false);
 
+            // Vérification des valeurs avant l'insertion
+            System.out.println("Nom: " + obj.getNom());
+            System.out.println("Prenom: " + obj.getPrenom());
+            System.out.println("Telephone: " + obj.getTelephone());
+            System.out.println("Email: " + obj.getEmail());
+            System.out.println("NumeroSecuriteSocial: " + obj.getNumeroSecuriteSocial());
+            System.out.println("DateNaissance: " + obj.getDateNaissance());
+
             // Insertion dans UTILISATEUR
             statementUtilisateur = connection.prepareStatement(sqlUtilisateur, PreparedStatement.RETURN_GENERATED_KEYS);
             statementUtilisateur.setString(1, obj.getNom());
@@ -83,7 +91,6 @@ public class ClientDAO extends DAO<Client> {
         return null;
     }
 
-
     @Override
     public boolean delete(long id) {
         String sql = "DELETE FROM client WHERE cli_id = ?";
@@ -124,7 +131,8 @@ public class ClientDAO extends DAO<Client> {
 
     @Override
     public boolean update(Client obj) {
-        String sql = "UPDATE client SET uti_nom = ?, uti_prenom = ?, adr_id = ?, uti_telephone = ?, uti_email = ?, cli_num_secu_social = ?, cli_date_naissance = ?, mut_id = ?, med_id = ? WHERE cli_id = ?";
+        String sql = "UPDATE client SET uti_nom = ?, uti_prenom = ?, adr_id = ?, uti_telephone = ?, uti_email = ?, " +
+                "cli_num_secu_social = ?, cli_date_naissance = ?, mut_id = ?, med_id = ? WHERE cli_id = ?";
         Connection connection = null;
         PreparedStatement statement = null;
 
@@ -166,13 +174,6 @@ public class ClientDAO extends DAO<Client> {
                     e.printStackTrace();
                 }
             }
-//            if (connection != null) {
-//                try {
-//                    connection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
         }
     }
 
@@ -223,7 +224,8 @@ public class ClientDAO extends DAO<Client> {
                             resultSet.getDouble("mut_taux_prise_en_charge")
                     );
 
-                    return new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSocial, dateNaissance, mutuelle, null);
+                    return new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSocial,
+                            dateNaissance, mutuelle, null);
                 }
             }
         } catch (SQLException e) {
@@ -284,7 +286,8 @@ public class ClientDAO extends DAO<Client> {
                 }
 
                 // Ajouter un nouveau client
-                clients.add(new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSocial, dateNaissance, mutuelle, null));
+                clients.add(new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSocial,
+                        dateNaissance, mutuelle, null));
             }
         } catch (SQLException e) {
             e.printStackTrace();

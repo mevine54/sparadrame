@@ -26,7 +26,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 
             statement.setString(1, obj.getNom());
             statement.setString(2, obj.getPrenom());
-            statement.setInt(3, obj.getAdresse().getAdrId());
+//            statement.setInt(3, obj.getAdresse().getAdrId());
             statement.setString(4, obj.getTelephone());
             statement.setString(5, obj.getEmail());
 
@@ -111,7 +111,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
             statement = connection.prepareStatement(sql);
             statement.setString(1, obj.getNom());
             statement.setString(2, obj.getPrenom());
-            statement.setInt(3, obj.getAdresse().getAdrId());
+//            statement.setInt(3, obj.getAdresse().getAdrId());
             statement.setString(4, obj.getTelephone());
             statement.setString(5, obj.getEmail());
             statement.setInt(6, obj.getUserId());

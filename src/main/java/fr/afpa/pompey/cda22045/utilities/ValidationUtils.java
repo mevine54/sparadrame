@@ -34,6 +34,14 @@ public class ValidationUtils {
         return Pattern.matches(ssnRegex, ssn);
     }
 
+    public static boolean isValidQuantity(String quantity) {
+        return quantity != null && !quantity.trim().isEmpty() && quantity.matches("^[0-9]+$");
+    }
+
+    public static boolean isValidPrice(String price) {
+        return price != null && !price.trim().isEmpty() && price.matches("^[0-9]+(\\.[0-9]{1,2})?$");
+    }
+
     // Validation d'un taux (entre 0 et 100)
     public static boolean isValidRate(double rate) {
         return rate >= 0 && rate <= 100;

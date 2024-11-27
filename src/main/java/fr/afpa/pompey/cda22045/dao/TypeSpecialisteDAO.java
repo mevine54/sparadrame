@@ -16,13 +16,13 @@ public class TypeSpecialisteDAO extends DAO<TypeSpecialiste> {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            statement.setString(1, obj.getTypeNom());
+            statement.setString(1, obj.getTsTypeNom());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        obj.setTypeId(generatedKeys.getInt(1)); // Récupération de l'ID généré
+                        obj.setTsTypeId(generatedKeys.getInt(1)); // Récupération de l'ID généré
                     }
                 }
             }
@@ -61,8 +61,8 @@ public class TypeSpecialisteDAO extends DAO<TypeSpecialiste> {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, obj.getTypeNom());
-            statement.setInt(2, obj.getTypeId());
+            statement.setString(1, obj.getTsTypeNom());
+            statement.setInt(2, obj.getTsTypeId());
 
             int affectedRows = statement.executeUpdate();
             updated = affectedRows > 0;

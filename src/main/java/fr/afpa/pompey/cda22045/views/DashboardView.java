@@ -6,11 +6,15 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static fr.afpa.pompey.cda22045.utilities.ValidationUtils.*;
+
 public class DashboardView extends JFrame {
 
     private JPanel panelCentral;
     private DefaultTableModel tableModel; // Modèle de table pour l'historique
     private ArrayList<Object[]> achatsHistorique = new ArrayList<>(); // Liste pour stocker les achats
+    private ArrayList<String> listeMedicamentsAjoutes = new ArrayList<>();
+    private ArrayList<Object[]> achatsValides = new ArrayList<>();
 
     // Liste globale des clients
     private ArrayList<String> listeClients = new ArrayList<>(Arrays.asList(
@@ -160,10 +164,14 @@ public class DashboardView extends JFrame {
 
         // Ajouter un écouteur pour mettre à jour le prix total en fonction de la quantité
         quantiteField.addActionListener(e -> {
-            double prixUnitaire = Double.parseDouble(prixUnitaireField.getText());
-            int quantite = Integer.parseInt(quantiteField.getText());
-            double prixTotal = prixUnitaire * quantite;
-            prixTotalField.setText(String.format("%.2f", prixTotal));
+            if (isValidQuantity(quantiteField.getText())) {
+                double prixUnitaire = Double.parseDouble(prixUnitaireField.getText());
+                int quantite = Integer.parseInt(quantiteField.getText());
+                double prixTotal = prixUnitaire * quantite;
+                prixTotalField.setText(String.format("%.2f", prixTotal));
+            } else {
+                JOptionPane.showMessageDialog(this, "Veuillez entrer une quantité valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         // Liste des médicaments ajoutés
@@ -173,27 +181,28 @@ public class DashboardView extends JFrame {
 
         // Bouton pour ajouter le médicament
         JButton btnAjouterMedicament = new JButton("Ajouter médicament");
-        ArrayList<String> listeMedicamentsAjoutes = new ArrayList<>();
-        ArrayList<Object[]> achatsValides = new ArrayList<>();
-
         btnAjouterMedicament.addActionListener(e -> {
             String selectedMedicament = (String) medicamentCombo.getSelectedItem();
             String quantite = quantiteField.getText();
-            double prixUnitaire = Double.parseDouble(prixUnitaireField.getText());
-            double prixTotal = prixUnitaire * Integer.parseInt(quantite);
-            String medicamentDetail = selectedMedicament + " (x" + quantite + ") - Prix: " + prixTotal + " €";
-            listeMedicamentsAjoutes.add(medicamentDetail);
+            if (isValidQuantity(quantite)) {
+                double prixUnitaire = Double.parseDouble(prixUnitaireField.getText());
+                double prixTotal = prixUnitaire * Integer.parseInt(quantite);
+                String medicamentDetail = selectedMedicament + " (x" + quantite + ") - Prix: " + prixTotal + " €";
+                listeMedicamentsAjoutes.add(medicamentDetail);
 
-            // Mise à jour de la textArea
-            medicamentsAjoutesArea.setText(String.join("\n", listeMedicamentsAjoutes));
+                // Mise à jour de la textArea
+                medicamentsAjoutesArea.setText(String.join("\n", listeMedicamentsAjoutes));
 
-            // Stocker les achats validés
-            Object[] achat = {selectedMedicament, quantite, prixTotal};
-            achatsValides.add(achat);
+                // Stocker les achats validés
+                Object[] achat = {selectedMedicament, quantite, prixTotal};
+                achatsValides.add(achat);
 
-            // Remettre le champ quantité à 1 et mettre à jour le prix total
-            quantiteField.setText("1");
-            prixTotalField.setText("5.00");
+                // Remettre le champ quantité à 1 et mettre à jour le prix total
+                quantiteField.setText("1");
+                prixTotalField.setText("5.00");
+            } else {
+                JOptionPane.showMessageDialog(this, "Veuillez entrer une quantité valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         // Ajout dynamique pour le choix du médecin et du client si "Achat via ordonnance"
@@ -234,6 +243,11 @@ public class DashboardView extends JFrame {
         // Ajout d'une condition pour ne pas afficher le médecin pour les achats directs dans la méthode `afficherAchatPanel()`
 
         btnValiderAchat.addActionListener(e -> {
+            if (achatsValides.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Veuillez ajouter des médicaments avant de valider l'achat.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             JOptionPane.showMessageDialog(this, "Votre achat a bien été pris en compte !");
 
             // Déterminer si l'achat est avec ou sans ordonnance
@@ -367,27 +381,31 @@ public class DashboardView extends JFrame {
                     String nouveauMedicament = medicamentField.getText();
                     String nouvelleQuantite = quantiteField.getText();
 
-                    // Mettre à jour les lignes qui correspondent à l'achat sélectionné (basé sur la date, le client et le médicament)
-                    for (int i = 0; i < tableAchats.getRowCount(); i++) {
-                        String currentDate = (String) tableAchats.getValueAt(i, 0);
-                        String currentClient = (String) tableAchats.getValueAt(i, 1);
-                        String currentMedicament = (String) tableAchats.getValueAt(i, 2);
+                    if (isValidQuantity(nouvelleQuantite)) {
+                        // Mettre à jour les lignes qui correspondent à l'achat sélectionné (basé sur la date, le client et le médicament)
+                        for (int i = 0; i < tableAchats.getRowCount(); i++) {
+                            String currentDate = (String) tableAchats.getValueAt(i, 0);
+                            String currentClient = (String) tableAchats.getValueAt(i, 1);
+                            String currentMedicament = (String) tableAchats.getValueAt(i, 2);
 
-                        if (currentDate.equals(date) && currentClient.equals(client) && currentMedicament.equals(medicament)) {
-                            // Mettre à jour uniquement cette ligne
-                            tableAchats.setValueAt(nouveauClient.equals("Aucun") ? "" : nouveauClient, i, 1);
-                            tableAchats.setValueAt(nouveauMedecin.equals("Aucun") ? "" : nouveauMedecin, i, 5);
-                            tableAchats.setValueAt(nouveauMedicament, i, 2);
-                            tableAchats.setValueAt(nouvelleQuantite, i, 3);
+                            if (currentDate.equals(date) && currentClient.equals(client) && currentMedicament.equals(medicament)) {
+                                // Mettre à jour uniquement cette ligne
+                                tableAchats.setValueAt(nouveauClient.equals("Aucun") ? "" : nouveauClient, i, 1);
+                                tableAchats.setValueAt(nouveauMedecin.equals("Aucun") ? "" : nouveauMedecin, i, 5);
+                                tableAchats.setValueAt(nouveauMedicament, i, 2);
+                                tableAchats.setValueAt(nouvelleQuantite, i, 3);
 
-                            // Recalculer le prix total basé sur la nouvelle quantité
-                            int nouvelleQuantiteInt = Integer.parseInt(nouvelleQuantite);
-                            double nouveauPrixTotal = prixUnitaire * nouvelleQuantiteInt;
-                            tableAchats.setValueAt(String.format("%.2f", nouveauPrixTotal), i, 4);
+                                // Recalculer le prix total basé sur la nouvelle quantité
+                                int nouvelleQuantiteInt = Integer.parseInt(nouvelleQuantite);
+                                double nouveauPrixTotal = prixUnitaire * nouvelleQuantiteInt;
+                                tableAchats.setValueAt(String.format("%.2f", nouveauPrixTotal), i, 4);
+                            }
                         }
-                    }
 
-                    JOptionPane.showMessageDialog(this, "L'achat a été modifié !");
+                        JOptionPane.showMessageDialog(this, "L'achat a été modifié !");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Veuillez entrer une quantité valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Veuillez sélectionner un achat à modifier.");
@@ -419,9 +437,15 @@ public class DashboardView extends JFrame {
 
     // Méthode pour revenir à la page d'accueil
     private void revenirAccueil() {
-        JPanel panel = new JPanel();
-        JLabel label = new JLabel("Bienvenue dans la Pharmacie Sparadrap");
-        panel.add(label);
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel label = new JLabel("Bienvenue dans la Pharmacie Sparadrap", SwingConstants.CENTER);
+        label.setFont(new Font("Arial", Font.BOLD, 18));
+        panel.add(label, BorderLayout.NORTH);
+
+        // Charger l'image
+        ImageIcon imageIcon = new ImageIcon("resources/images/logo.png");
+        JLabel imageLabel = new JLabel(imageIcon);
+        panel.add(imageLabel, BorderLayout.CENTER);
 
         // Remplacer le contenu du panneau central
         panelCentral.removeAll();
@@ -500,11 +524,21 @@ public class DashboardView extends JFrame {
 
             int result = JOptionPane.showConfirmDialog(this, nouveauClientPanel, "Créer un nouveau client", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                // Ajouter le nouveau client à la liste globale des clients
-                String nouveauClient = nomField.getText() + " " + prenomField.getText();
-                ajouterNouveauClient(nouveauClient);
-                clientCombo.addItem(nouveauClient);
-                JOptionPane.showMessageDialog(this, "Nouveau client créé !");
+                String nom = nomField.getText();
+                String prenom = prenomField.getText();
+                String adresse = adresseField.getText();
+                String telephone = telField.getText();
+                String email = emailField.getText();
+
+                if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
+                    // Ajouter le nouveau client à la liste globale des clients
+                    String nouveauClient = nom + " " + prenom;
+                    ajouterNouveauClient(nouveauClient);
+                    clientCombo.addItem(nouveauClient);
+                    JOptionPane.showMessageDialog(this, "Nouveau client créé !");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -531,12 +565,22 @@ public class DashboardView extends JFrame {
 
             int result = JOptionPane.showConfirmDialog(this, modificationClientPanel, "Modifier le client", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                // Mettre à jour la liste des clients et afficher les nouvelles informations
-                String nouveauClient = nomField.getText() + " " + prenomField.getText();
-                clientCombo.removeItem(clientSelectionne);
-                clientCombo.addItem(nouveauClient);
-                detailsClientArea.setText("Détails du client: " + nouveauClient + "\nAdresse: " + adresseField.getText() + "\nTéléphone: " + telField.getText() + "\nEmail: " + emailField.getText());
-                JOptionPane.showMessageDialog(this, "Client modifié !");
+                String nom = nomField.getText();
+                String prenom = prenomField.getText();
+                String adresse = adresseField.getText();
+                String telephone = telField.getText();
+                String email = emailField.getText();
+
+                if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
+                    // Mettre à jour la liste des clients et afficher les nouvelles informations
+                    String nouveauClient = nom + " " + prenom;
+                    clientCombo.removeItem(clientSelectionne);
+                    clientCombo.addItem(nouveauClient);
+                    detailsClientArea.setText("Détails du client: " + nouveauClient + "\nAdresse: " + adresse + "\nTéléphone: " + telephone + "\nEmail: " + email);
+                    JOptionPane.showMessageDialog(this, "Client modifié !");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -585,25 +629,14 @@ public class DashboardView extends JFrame {
         panelCentral.repaint();
     }
 
-
-
     // Liste simulée des médecins
     private String[] getListeMedecins() {
-        return new String[] {
+        return new String[]{
                 "Dr Jean Dupont (Généraliste)",
                 "Dr Claire Martin (Cardiologue)",
                 "Dr Pierre Bernard (Dermatologue)"
         };
     }
-
-    // Liste simulée des clients
-//    private String[] getListeClients() {
-//        return new String[] {
-//                "Pierre Martin",
-//                "Marie Dupuis",
-//                "Jean Leclerc"
-//        };
-//    }
 
     // Méthode utilitaire pour ajouter l'option "Aucun" à une liste
     private String[] addOptionAucun(String[] liste) {
@@ -613,10 +646,8 @@ public class DashboardView extends JFrame {
         return listeAvecAucun;
     }
 
-
     // Méthode principale
     public static void main(String[] args) {
         SwingUtilities.invokeLater(DashboardView::new);
     }
 }
-

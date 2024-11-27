@@ -32,10 +32,10 @@ public class Adresse {
     }
 
     public void setRue(String rue) {
-        if (rue == null || rue.isBlank()) {
-            throw new IllegalArgumentException("La rue ne peut pas être vide.");
-        }
-        this.rue = rue;
+//        if (rue == null || rue.isBlank()) {
+//            throw new IllegalArgumentException("La rue ne peut pas être vide.");
+//        }
+        this.rue = rue; // adresse peut être null
     }
 
     public String getCodePostal() {
@@ -43,10 +43,10 @@ public class Adresse {
     }
 
     public void setCodePostal(String codePostal) {
-        if (codePostal == null || !codePostal.matches("\\d{5}")) {
-            throw new IllegalArgumentException("Le code postal doit contenir exactement 5 chiffres.");
-        }
-        this.codePostal = codePostal;
+//        if (codePostal == null || !codePostal.matches("\\d{5}")) {
+//            throw new IllegalArgumentException("Le code postal doit contenir exactement 5 chiffres.");
+//        }
+        this.codePostal = codePostal;// adresse peut être null
     }
 
     public String getVille() {
@@ -54,10 +54,10 @@ public class Adresse {
     }
 
     public void setVille(String ville) {
-        if (ville == null || ville.isBlank()) {
-            throw new IllegalArgumentException("La ville ne peut pas être vide.");
-        }
-        this.ville = ville;
+//        if (ville == null || ville.isBlank()) {
+//            throw new IllegalArgumentException("La ville ne peut pas être vide.");
+//        }
+        this.ville = ville;// adresse peut être null
     }
 
     @Override

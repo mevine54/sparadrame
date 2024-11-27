@@ -13,11 +13,14 @@ public class TypeMedicament {
         setTmTypeNom(tmTypeNom);
     }
 
-    public int getTmTypeId() {
+    public Integer getTmTypeId() {
         return tmTypeId;
     }
 
-    public void setTmTypeId(int tmTypeId) {
+    public void setTmTypeId(Integer tmTypeId) {
+        if (tmTypeId == null && tmTypeId < 0) {
+            throw new IllegalArgumentException("TmTypeId is null or negative");
+        }
         this.tmTypeId = tmTypeId;
     }
 
@@ -26,6 +29,9 @@ public class TypeMedicament {
     }
 
     public void setTmTypeNom(String tmTypeNom) {
+        if (tmTypeNom == null || tmTypeNom.isBlank()) {
+            throw new IllegalArgumentException("TmTypeNom is null or empty");
+        }
         this.tmTypeNom = tmTypeNom;
     }
 

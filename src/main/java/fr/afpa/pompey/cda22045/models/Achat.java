@@ -3,7 +3,7 @@ package fr.afpa.pompey.cda22045.models;
 import java.time.LocalDate;
 
 public class Achat {
-    private Integer id;
+    private Integer achId;
     private String type; // 'Direct' ou 'Ordonnance'
     private LocalDate dateAchat;
     private Integer utilisateurId; // FK vers Utilisateur
@@ -11,23 +11,23 @@ public class Achat {
     public Achat() {
     }
 
-    public Achat(Integer id, String type, LocalDate dateAchat, Integer utilisateurId) {
-        setId(id);
+    public Achat(Integer achId, String type, LocalDate dateAchat, Integer utilisateurId) {
+        setAchId(achId);
         setType(type);
         setDateAchat(dateAchat);
         setUtilisateurId(utilisateurId);
     }
 
     // Getters et setters
-    public Integer getId() {
-        return id;
+    public Integer getAchId() {
+        return achId;
     }
 
-    public void setId(Integer id) {
-        if (id != null && id < 0) {
+    public void setAchId(Integer achId) {
+        if (achId != null && achId < 0) {
             throw new IllegalArgumentException("L'ID de l'achat ne peut pas être négatif.");
         }
-        this.id = id;
+        this.achId = achId;
     }
 
     public String getType() {
@@ -69,7 +69,7 @@ public class Achat {
     @Override
     public String toString() {
         return "Achat{" +
-                "id=" + id +
+                "id=" + achId +
                 ", type='" + type + '\'' +
                 ", dateAchat=" + dateAchat +
                 ", utilisateurId=" + utilisateurId +

@@ -26,6 +26,6 @@ public class Specialiste extends Medecin {
     @Override
     public String toString() {
         return super.toString() + ", Type de Spécialiste: " +
-                (typeSpecialiste != null ? typeSpecialiste.getTypeNom() : "Aucun");
+                (typeSpecialiste != null ? typeSpecialiste.getTsTypeNom() : "Aucun");
     }
 }

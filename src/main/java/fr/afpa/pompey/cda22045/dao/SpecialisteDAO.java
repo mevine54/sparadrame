@@ -38,7 +38,7 @@ public class SpecialisteDAO extends DAO<Specialiste> {
 
                 // Insertion dans Specialiste
                 statementSpecialiste.setInt(1, obj.getUserId());
-                statementSpecialiste.setInt(2, obj.getTypeSpecialiste().getTypeId());
+                statementSpecialiste.setInt(2, obj.getTypeSpecialiste().getTsTypeId());
                 statementSpecialiste.executeUpdate();
 
                 connection.commit();
@@ -79,7 +79,7 @@ public class SpecialisteDAO extends DAO<Specialiste> {
         try (Connection connection = DatabaseConnection.getInstanceDB();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setInt(1, obj.getTypeSpecialiste().getTypeId());
+            statement.setInt(1, obj.getTypeSpecialiste().getTsTypeId());
             statement.setInt(2, obj.getUserId());
 
             int affectedRows = statement.executeUpdate();

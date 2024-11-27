@@ -31,7 +31,7 @@ public class AchatDAO extends DAO<Achat> {
 
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    obj.setId(generatedKeys.getInt(1));
+                    obj.setAchId(generatedKeys.getInt(1));
                 } else {
                     throw new SQLException("Échec de la création de l'achat : aucun ID généré.");
                 }
@@ -74,7 +74,7 @@ public class AchatDAO extends DAO<Achat> {
             statement.setString(1, obj.getType());
             statement.setDate(2, java.sql.Date.valueOf(obj.getDateAchat()));
             statement.setInt(3, obj.getUtilisateurId());
-            statement.setInt(4, obj.getId());
+            statement.setInt(4, obj.getAchId());
 
             int affectedRows = statement.executeUpdate();
             return affectedRows > 0; // Retourne `true` si une ligne a été mise à jour
