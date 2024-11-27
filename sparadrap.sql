@@ -59,7 +59,7 @@ CREATE TABLE MUTUELLE (
     mut_taux_prise_en_charge TINYINT
 );
 
-select * from achat;
+select * from MUTUELLE;
 
 
 -- Table : TYPEMEDICAMENT
@@ -101,7 +101,7 @@ ADD CONSTRAINT fk_achat_utilisateur FOREIGN KEY (uti_id) REFERENCES utilisateur(
 
 ALTER TABLE achat ADD UNIQUE KEY (ach_type, ach_date, uti_id);
 
-
+ 
 select  * from achat;
 INSERT INTO achat (ach_type, ach_date, uti_id) VALUES ('Direct', '2024-11-26', 2);
 
