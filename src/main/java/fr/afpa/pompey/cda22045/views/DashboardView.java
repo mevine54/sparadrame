@@ -1,5 +1,10 @@
 package fr.afpa.pompey.cda22045.views;
 
+import fr.afpa.pompey.cda22045.models.TypeMedicament;
+import fr.afpa.pompey.cda22045.models.TypeSpecialite;
+import fr.afpa.pompey.cda22045.enums.enumTypeMedicament;
+import fr.afpa.pompey.cda22045.enums.enumTypeSpecialite;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -146,8 +151,10 @@ public class DashboardView extends JFrame {
 
         // Sélection des médicaments
         JLabel labelMedicament = new JLabel("Sélectionner un médicament:");
-        String[] medicaments = {"Paracétamol", "Ibuprofène", "Aspirine"};
-        JComboBox<String> medicamentCombo = new JComboBox<>(medicaments);
+        TypeMedicament[] medicaments = Arrays.stream(enumTypeMedicament.values())
+                .map(TypeMedicament::fromEnum)
+                .toArray(TypeMedicament[]::new);
+        JComboBox<TypeMedicament> medicamentCombo = new JComboBox<>(medicaments);
 
         // Prix unitaire et quantité
         JLabel labelPrixUnitaire = new JLabel("Prix unitaire:");
@@ -182,7 +189,7 @@ public class DashboardView extends JFrame {
         // Bouton pour ajouter le médicament
         JButton btnAjouterMedicament = new JButton("Ajouter médicament");
         btnAjouterMedicament.addActionListener(e -> {
-            String selectedMedicament = (String) medicamentCombo.getSelectedItem();
+            TypeMedicament selectedMedicament = (TypeMedicament) medicamentCombo.getSelectedItem();
             String quantite = quantiteField.getText();
             if (isValidQuantity(quantite)) {
                 double prixUnitaire = Double.parseDouble(prixUnitaireField.getText());
@@ -207,8 +214,10 @@ public class DashboardView extends JFrame {
 
         // Ajout dynamique pour le choix du médecin et du client si "Achat via ordonnance"
         JLabel labelMedecin = new JLabel("Sélectionner un médecin traitant:");
-        JComboBox<String> medecinCombo = new JComboBox<>(getListeMedecins());
-
+        TypeSpecialite[] specialites = Arrays.stream(enumTypeSpecialite.values())
+                .map(TypeSpecialite::fromEnum)
+                .toArray(TypeSpecialite[]::new);
+        JComboBox<TypeSpecialite> medecinCombo = new JComboBox<>(specialites);
         JLabel labelClient = new JLabel("Sélectionner un client:");
         JComboBox<String> clientCombo = new JComboBox<>(getListeClients());
 
@@ -257,7 +266,7 @@ public class DashboardView extends JFrame {
 
             if ("Achat via ordonnance".equals(typeAchat)) {
                 // Si c'est un achat avec ordonnance, récupérer le médecin et le client
-                medecinSelectionne = (String) medecinCombo.getSelectedItem();
+                medecinSelectionne = ((TypeSpecialite) medecinCombo.getSelectedItem()).getTsTypeNom();
                 clientSelectionne = (String) clientCombo.getSelectedItem();
             }
 
@@ -344,15 +353,18 @@ public class DashboardView extends JFrame {
                 // Ouvre une boîte de dialogue pour modifier le médicament, la quantité, le médecin et le client
                 String date = (String) tableAchats.getValueAt(selectedRow, 0);
                 String client = (String) tableAchats.getValueAt(selectedRow, 1);
-                String medicament = (String) tableAchats.getValueAt(selectedRow, 2);
+                TypeMedicament medicament = (TypeMedicament) tableAchats.getValueAt(selectedRow, 2);
                 String quantite = (String) tableAchats.getValueAt(selectedRow, 3);
-                String medecin = (String) tableAchats.getValueAt(selectedRow, 5);
+                TypeSpecialite medecin = (TypeSpecialite) tableAchats.getValueAt(selectedRow, 5);
 
                 double prixUnitaire = 5.00; // Prix unitaire par défaut (tu peux l'adapter si nécessaire)
 
                 JPanel modificationPanel = new JPanel(new GridLayout(4, 2));
                 modificationPanel.add(new JLabel("Médicament:"));
-                JTextField medicamentField = new JTextField(medicament);
+                JComboBox<TypeMedicament> medicamentField = new JComboBox<>(Arrays.stream(enumTypeMedicament.values())
+                        .map(TypeMedicament::fromEnum)
+                        .toArray(TypeMedicament[]::new));
+                medicamentField.setSelectedItem(medicament);
                 modificationPanel.add(medicamentField);
 
                 modificationPanel.add(new JLabel("Quantité:"));
@@ -366,9 +378,10 @@ public class DashboardView extends JFrame {
                 modificationPanel.add(clientCombo);
 
                 modificationPanel.add(new JLabel("Médecin:"));
-                String[] medecinsAvecAucun = addOptionAucun(getListeMedecins());
-                JComboBox<String> medecinCombo = new JComboBox<>(medecinsAvecAucun);
-                medecinCombo.setSelectedItem(medecin != null && !medecin.isEmpty() ? medecin : "Aucun");  // Sélectionner "Aucun" si le médecin est vide
+                JComboBox<TypeSpecialite> medecinCombo = new JComboBox<>(Arrays.stream(enumTypeSpecialite.values())
+                        .map(TypeSpecialite::fromEnum)
+                        .toArray(TypeSpecialite[]::new));
+                medecinCombo.setSelectedItem(medecin != null ? medecin : TypeSpecialite.fromEnum(enumTypeSpecialite.CARDIOLOGIE));  // Sélectionner "Aucun" si le médecin est vide
                 modificationPanel.add(medecinCombo);
 
                 int result = JOptionPane.showConfirmDialog(this, modificationPanel, "Modifier l'achat",
@@ -377,8 +390,8 @@ public class DashboardView extends JFrame {
                 if (result == JOptionPane.OK_OPTION) {
                     // Parcourir toutes les lignes de la table pour mettre à jour uniquement les lignes de l'achat sélectionné
                     String nouveauClient = (String) clientCombo.getSelectedItem();
-                    String nouveauMedecin = (String) medecinCombo.getSelectedItem();
-                    String nouveauMedicament = medicamentField.getText();
+                    TypeSpecialite nouveauMedecin = (TypeSpecialite) medecinCombo.getSelectedItem();
+                    TypeMedicament nouveauMedicament = (TypeMedicament) medicamentField.getSelectedItem();
                     String nouvelleQuantite = quantiteField.getText();
 
                     if (isValidQuantity(nouvelleQuantite)) {
@@ -386,7 +399,7 @@ public class DashboardView extends JFrame {
                         for (int i = 0; i < tableAchats.getRowCount(); i++) {
                             String currentDate = (String) tableAchats.getValueAt(i, 0);
                             String currentClient = (String) tableAchats.getValueAt(i, 1);
-                            String currentMedicament = (String) tableAchats.getValueAt(i, 2);
+                            TypeMedicament currentMedicament = (TypeMedicament) tableAchats.getValueAt(i, 2);
 
                             if (currentDate.equals(date) && currentClient.equals(client) && currentMedicament.equals(medicament)) {
                                 // Mettre à jour uniquement cette ligne
@@ -443,9 +456,14 @@ public class DashboardView extends JFrame {
         panel.add(label, BorderLayout.NORTH);
 
         // Charger l'image
-        ImageIcon imageIcon = new ImageIcon("resources/images/logo.png");
-        JLabel imageLabel = new JLabel(imageIcon);
-        panel.add(imageLabel, BorderLayout.CENTER);
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/images/caducv.jpg"));
+        if (imageIcon.getImageLoadStatus() == MediaTracker.ERRORED) {
+            JOptionPane.showMessageDialog(this, "Erreur de chargement de l'image",
+                    "Erreur", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JLabel imageLabel = new JLabel(imageIcon);
+            panel.add(imageLabel, BorderLayout.CENTER);
+        }
 
         // Remplacer le contenu du panneau central
         panelCentral.removeAll();

@@ -1,19 +1,19 @@
 package fr.afpa.pompey.cda22045.models;
 
-import fr.afpa.pompey.cda22045.enums.TypeMedicament;
+import fr.afpa.pompey.cda22045.enums.enumTypeMedicament;
 
 import java.time.LocalDate;
 
 public class Medicament {
     private Integer mediId;
     private String mediNom;
-    private TypeMedicament typeMedicament;
+    private enumTypeMedicament typeMedicament;
     private double mediPrix;
     private LocalDate mediDateMiseEnService;
     private int mediQuantite;
 
     // Constructeur
-    public Medicament(Integer mediId, String mediNom, TypeMedicament typeMedicament, double mediPrix,
+    public Medicament(Integer mediId, String mediNom, enumTypeMedicament typeMedicament, double mediPrix,
                       LocalDate mediDateMiseEnService, int mediQuantite) {
         setMediId(mediId);
         setMediNom(mediNom);
@@ -46,11 +46,11 @@ public class Medicament {
         this.mediNom = mediNom;
     }
 
-    public TypeMedicament getTypeMedicament() {
+    public enumTypeMedicament getTypeMedicament() {
         return typeMedicament;
     }
 
-    public void setTypeMedicament(TypeMedicament typeMedicament) {
+    public void setTypeMedicament(enumTypeMedicament typeMedicament) {
         if (typeMedicament == null) {
             throw new IllegalArgumentException("Le type du médicament ne peut pas être null.");
         }

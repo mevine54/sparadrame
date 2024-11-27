@@ -1,7 +1,7 @@
 package fr.afpa.pompey.cda22045.dao;
 
 import fr.afpa.pompey.cda22045.models.Specialiste;
-import fr.afpa.pompey.cda22045.models.TypeSpecialiste;
+import fr.afpa.pompey.cda22045.enums.enumTypeSpecialite;
 import fr.afpa.pompey.cda22045.utilities.DatabaseConnection;
 
 import java.sql.*;
@@ -38,7 +38,7 @@ public class SpecialisteDAO extends DAO<Specialiste> {
 
                 // Insertion dans Specialiste
                 statementSpecialiste.setInt(1, obj.getUserId());
-                statementSpecialiste.setInt(2, obj.getTypeSpecialiste().getTsTypeId());
+                statementSpecialiste.setInt(2, obj.getTypeSpecialite().getId());
                 statementSpecialiste.executeUpdate();
 
                 connection.commit();
@@ -79,7 +79,7 @@ public class SpecialisteDAO extends DAO<Specialiste> {
         try (Connection connection = DatabaseConnection.getInstanceDB();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setInt(1, obj.getTypeSpecialiste().getTsTypeId());
+            statement.setInt(1, obj.getTypeSpecialite().getId());
             statement.setInt(2, obj.getUserId());
 
             int affectedRows = statement.executeUpdate();
@@ -105,10 +105,7 @@ public class SpecialisteDAO extends DAO<Specialiste> {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    TypeSpecialiste typeSpecialiste = new TypeSpecialiste(
-                            resultSet.getInt("type_specialiste_id"),
-                            resultSet.getString("type_nom")
-                    );
+                    enumTypeSpecialite typeSpecialiste = enumTypeSpecialite.valueOf(resultSet.getString("type_nom"));
 
                     return new Specialiste(
                             resultSet.getInt("uti_id"),
@@ -142,10 +139,7 @@ public class SpecialisteDAO extends DAO<Specialiste> {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                TypeSpecialiste typeSpecialiste = new TypeSpecialiste(
-                        resultSet.getInt("type_specialiste_id"),
-                        resultSet.getString("type_nom")
-                );
+                enumTypeSpecialite typeSpecialiste = enumTypeSpecialite.valueOf(resultSet.getString("type_nom"));
 
                 specialistes.add(new Specialiste(
                         resultSet.getInt("uti_id"),

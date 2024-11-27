@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.time.LocalDate;
 
-public class ClientForm extends JFrame {
+public class ClientFormCreate extends JFrame {
     private JTextField nomField;
     private JTextField prenomField;
     private JTextField telephoneField;
@@ -39,7 +39,7 @@ public class ClientForm extends JFrame {
     private ClientDAO clientDAO = new ClientDAO();
     private AdresseDAO adresseDAO = new AdresseDAO();
 
-    public ClientForm() {
+    public ClientFormCreate() {
         setTitle("Enregistrer un Client");
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -175,7 +175,7 @@ public class ClientForm extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ClientForm().setVisible(true);
+                new ClientFormCreate().setVisible(true);
             }
         });
     }

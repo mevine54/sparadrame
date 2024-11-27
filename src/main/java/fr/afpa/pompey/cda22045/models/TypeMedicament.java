@@ -1,5 +1,7 @@
 package fr.afpa.pompey.cda22045.models;
 
+import fr.afpa.pompey.cda22045.enums.enumTypeMedicament;
+
 public class TypeMedicament {
     private Integer tmTypeId;
     private String tmTypeNom;
@@ -11,6 +13,21 @@ public class TypeMedicament {
     public TypeMedicament(Integer tmTypeId, String tmTypeNom) {
         setTmTypeId(tmTypeId);
         setTmTypeNom(tmTypeNom);
+    }
+
+    // Convertir un enum en modèle
+    public static TypeMedicament fromEnum(enumTypeMedicament enumType) {
+        return new TypeMedicament(enumType.getId(), enumType.getNom());
+    }
+
+    // Convertir un modèle en enum
+    public static enumTypeMedicament toEnum(TypeMedicament model) {
+        for (enumTypeMedicament enumType : enumTypeMedicament.values()) {
+            if (enumType.getId() == model.getTmTypeId()) {
+                return enumType;
+            }
+        }
+        throw new IllegalArgumentException("Aucun enum trouvé pour l'ID : " + model.getTmTypeId());
     }
 
     public Integer getTmTypeId() {

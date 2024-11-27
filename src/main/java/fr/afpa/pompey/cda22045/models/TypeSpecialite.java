@@ -1,16 +1,33 @@
 package fr.afpa.pompey.cda22045.models;
 
-public class TypeSpecialiste {
+import fr.afpa.pompey.cda22045.enums.enumTypeSpecialite;
+
+public class TypeSpecialite {
     private Integer tsTypeId;
     private String tsTypeNom;
 
     // Constructeur vide (par défaut)
-    public TypeSpecialiste() {}
+    public TypeSpecialite() {}
 
     // Constructeur avec tous les champs
-    public TypeSpecialiste(Integer tsTypeId, String tsTypeNom) {
+    public TypeSpecialite(Integer tsTypeId, String tsTypeNom) {
         this.tsTypeId = tsTypeId;
         this.tsTypeNom = tsTypeNom;
+    }
+
+    // Convertir un enum en modèle
+    public static TypeSpecialite fromEnum(enumTypeSpecialite enumType) {
+        return new TypeSpecialite(enumType.getId(), enumType.getNom());
+    }
+
+    // Convertir un modèle en enum
+    public static enumTypeSpecialite toEnum(TypeSpecialite model) {
+        for (enumTypeSpecialite enumType : enumTypeSpecialite.values()) {
+            if (enumType.getId() == model.getTsTypeId()) {
+                return enumType;
+            }
+        }
+        throw new IllegalArgumentException("Aucun enum trouvé pour l'ID : " + model.getTsTypeId());
     }
 
     // Getters et setters
@@ -36,7 +53,7 @@ public class TypeSpecialiste {
         this.tsTypeNom = tsTypeNom;
     }
 
-    // Méthode toString() pour affichage
+
     @Override
     public String toString() {
         return "TypeSpecialiste{" +
@@ -44,4 +61,5 @@ public class TypeSpecialiste {
                 ", typeNom='" + tsTypeNom + '\'' +
                 '}';
     }
+
 }
