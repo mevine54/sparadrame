@@ -8,6 +8,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.afpa.pompey.cda22045.utilities.DatabaseConnection.getConnection;
+
+
 public class MedecinDAO extends DAO<Medecin> {
 
     @Override
@@ -40,7 +43,7 @@ public class MedecinDAO extends DAO<Medecin> {
 
                 // Insertion dans médecin
                 statementMedecin.setInt(1, obj.getUserId());
-                statementMedecin.setString(2, obj.getNumeroAgrement());
+                statementMedecin.setString(2, obj.getMedNumAgreement());
                 statementMedecin.executeUpdate();
 
                 connection.commit();
@@ -80,7 +83,7 @@ public class MedecinDAO extends DAO<Medecin> {
         try (Connection connection = DatabaseConnection.getInstanceDB();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, obj.getNumeroAgrement());
+            statement.setString(1, obj.getMedNumAgreement());
             statement.setInt(2, obj.getUserId());
 
             int affectedRows = statement.executeUpdate();

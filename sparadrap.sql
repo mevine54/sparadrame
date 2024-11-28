@@ -228,3 +228,12 @@ INSERT INTO Delivrer (ord_id, medi_id, quantite_prescrite, duree_validite) VALUE
 (1, 1, 2, 30);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+select * from utilisateur;
+select * FROM client;
+INSERT INTO utilisateur (uti_nom, uti_prenom, uti_tel, uti_email) VALUES ('Dupont', 'Jean', '0123456789', 'jean.dupont@example.com');
+SELECT LAST_INSERT_ID();
+
+INSERT INTO client (cli_num_secu_social, cli_date_naissance, uti_id) VALUES ('123456789012345', '1980-01-01', LAST_INSERT_ID());
+SELECT LAST_INSERT_ID();  -- Vérifiez que le cli_id est généré correctement
+

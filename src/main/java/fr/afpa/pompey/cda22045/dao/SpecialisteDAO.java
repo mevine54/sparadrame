@@ -27,7 +27,7 @@ public class SpecialisteDAO extends DAO<Specialiste> {
 
                 // Insertion dans Medecin
                 statementMedecin.setInt(1, obj.getUserId());
-                statementMedecin.setString(2, obj.getNumeroAgrement());
+                statementMedecin.setString(2, obj.getMedNumAgreement());
                 statementMedecin.executeUpdate();
 
                 try (ResultSet generatedKeys = statementMedecin.getGeneratedKeys()) {

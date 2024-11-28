@@ -53,7 +53,11 @@ public class ClientDAO extends DAO<Client> {
             // Récupérer l'uti_id généré
             ResultSet generatedKeys = statementUtilisateur.getGeneratedKeys();
             if (generatedKeys.next()) {
-                obj.setUserId(generatedKeys.getInt(1));
+                int utiId = generatedKeys.getInt(1);
+                obj.setUserId(utiId);
+                System.out.println("uti_id généré: " + utiId);
+            } else {
+                throw new SQLException("Échec de la génération de la clé pour utilisateur");
             }
 
             // Insertion dans CLIENT
@@ -66,7 +70,11 @@ public class ClientDAO extends DAO<Client> {
             // Récupérer le cli_id généré
             ResultSet generatedKeysClient = statementClient.getGeneratedKeys();
             if (generatedKeysClient.next()) {
-                obj.setCliId(generatedKeysClient.getInt(1));
+                int cliId = generatedKeysClient.getInt(1);
+                obj.setCliId(cliId);
+                System.out.println("cli_id généré: " + cliId);
+            } else {
+                throw new SQLException("Échec de la génération de la clé pour client");
             }
 
             connection.commit();
@@ -293,5 +301,67 @@ public class ClientDAO extends DAO<Client> {
             e.printStackTrace();
         }
         return clients;
+    }
+
+    public Client findByName(String nom, String prenom) {
+        String query = "SELECT " +
+                "c.cli_id, u.uti_nom, u.uti_prenom, u.uti_tel, u.uti_email, " +
+                "c.cli_num_secu_social, c.cli_date_naissance, " +
+                "a.adr_id, a.adr_rue, a.adr_code_postal, a.adr_ville, " +
+                "mu.mut_id, mu.mut_nom, mu.mut_tel, mu.mut_email, mu.mut_departement, mu.mut_taux_prise_en_charge " +
+                "FROM client c " +
+                "JOIN utilisateur u ON c.uti_id = u.uti_id " +
+                "JOIN posseder p ON u.uti_id = p.uti_id " +
+                "JOIN adresse a ON p.adr_id = a.adr_id " +
+                "LEFT JOIN adherer ad ON c.cli_id = ad.cli_id " +
+                "LEFT JOIN mutuelle mu ON ad.mut_id = mu.mut_id " +
+                "WHERE u.uti_nom = ? AND u.uti_prenom = ?";
+        Client client = null;
+
+        try (Connection connection = DatabaseConnection.getInstanceDB();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, nom);
+            statement.setString(2, prenom);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                Integer cliId = resultSet.getInt("cli_id");
+                String telephone = resultSet.getString("uti_tel");
+                String email = resultSet.getString("uti_email");
+                String numeroSecuriteSocial = resultSet.getString("cli_num_secu_social");
+                LocalDate dateNaissance = resultSet.getDate("cli_date_naissance").toLocalDate();
+
+                // Adresse
+                Adresse adresse = new Adresse(
+                        resultSet.getInt("adr_id"),
+                        resultSet.getString("adr_rue"),
+                        resultSet.getString("adr_code_postal"),
+                        resultSet.getString("adr_ville")
+                );
+
+                // Mutuelle
+                Mutuelle mutuelle = null;
+                if (resultSet.getInt("mut_id") != 0) { // Vérifie si une mutuelle existe
+                    mutuelle = new Mutuelle(
+                            resultSet.getInt("mut_id"),
+                            resultSet.getString("mut_nom"),
+                            null, // Adresse de la mutuelle non prise en charge dans cette requête
+                            resultSet.getString("mut_tel"),
+                            resultSet.getString("mut_email"),
+                            resultSet.getString("mut_departement"),
+                            resultSet.getDouble("mut_taux_prise_en_charge")
+                    );
+                }
+
+                client = new Client(cliId, nom, prenom, adresse, telephone, email, numeroSecuriteSocial,
+                        dateNaissance, mutuelle, null);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return client;
     }
 }

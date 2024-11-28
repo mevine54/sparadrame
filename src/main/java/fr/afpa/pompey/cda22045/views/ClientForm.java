@@ -288,19 +288,19 @@ public class ClientForm extends JFrame {
             emailField.setText(client.getEmail());
             numeroSecuriteSocialField.setText(client.getNumeroSecuriteSocial());
             dateNaissanceField.setText(client.getDateNaissance().toString());
-            rueField.setText(client.getAdresse().getRue());
-            codePostalField.setText(client.getAdresse().getCodePostal());
-            villeField.setText(client.getAdresse().getVille());
-            mutuelleNomField.setText(client.getMutuelle().getNom());
-            mutuelleTelephoneField.setText(client.getMutuelle().getTelephone());
-            mutuelleEmailField.setText(client.getMutuelle().getEmail());
-            mutuelleDepartementField.setText(client.getMutuelle().getDepartement());
-            mutuelleTauxField.setText(String.valueOf(client.getMutuelle().getTauxPriseEnCharge()));
+            rueField.setText(client.getAdresse().getAdrRue());
+            codePostalField.setText(client.getAdresse().getAdrCodePostal());
+            villeField.setText(client.getAdresse().getAdrVille());
+            mutuelleNomField.setText(client.getMutuelle().getMutNom());
+            mutuelleTelephoneField.setText(client.getMutuelle().getMutTel());
+            mutuelleEmailField.setText(client.getMutuelle().getMutEmail());
+            mutuelleDepartementField.setText(client.getMutuelle().getMutDepartement());
+            mutuelleTauxField.setText(String.valueOf(client.getMutuelle().getMutTauxPriseEnCharge()));
             medecinNomField.setText(client.getMedecinTraitant().getNom());
             medecinPrenomField.setText(client.getMedecinTraitant().getPrenom());
             medecinTelephoneField.setText(client.getMedecinTraitant().getTelephone());
             medecinEmailField.setText(client.getMedecinTraitant().getEmail());
-            medecinNumeroAgrementField.setText(client.getMedecinTraitant().getNumeroAgrement());
+            medecinNumeroAgrementField.setText(client.getMedecinTraitant().getMedNumAgreement());
         } else {
             JOptionPane.showMessageDialog(this, "Aucun client trouvé avec cet ID.", "Erreur", JOptionPane.ERROR_MESSAGE);
         }

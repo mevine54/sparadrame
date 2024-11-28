@@ -19,9 +19,9 @@ public class AdresseDAO extends DAO<Adresse> {
         try (Connection connection = DatabaseConnection.getInstanceDB();
              PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            statement.setString(1, obj.getRue());
-            statement.setString(2, obj.getCodePostal());
-            statement.setString(3, obj.getVille());
+            statement.setString(1, obj.getAdrRue());
+            statement.setString(2, obj.getAdrCodePostal());
+            statement.setString(3, obj.getAdrVille());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
@@ -68,9 +68,9 @@ public class AdresseDAO extends DAO<Adresse> {
         try (Connection connection = DatabaseConnection.getInstanceDB();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, obj.getRue());
-            statement.setString(2, obj.getCodePostal());
-            statement.setString(3, obj.getVille());
+            statement.setString(1, obj.getAdrRue());
+            statement.setString(2, obj.getAdrCodePostal());
+            statement.setString(3, obj.getAdrVille());
             statement.setInt(4, obj.getAdrId());
 
             int affectedRows = statement.executeUpdate();

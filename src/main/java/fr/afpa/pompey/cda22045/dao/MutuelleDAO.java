@@ -20,11 +20,11 @@ public class MutuelleDAO extends DAO<Mutuelle> {
         try (Connection connection = DatabaseConnection.getInstanceDB();
              PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            statement.setString(1, obj.getNom());
-            statement.setString(2, obj.getTelephone());
-            statement.setString(3, obj.getEmail());
-            statement.setString(4, obj.getDepartement());
-            statement.setDouble(5, obj.getTauxPriseEnCharge());
+            statement.setString(1, obj.getMutNom());
+            statement.setString(2, obj.getMutTel());
+            statement.setString(3, obj.getMutEmail());
+            statement.setString(4, obj.getMutDepartement());
+            statement.setDouble(5, obj.getMutTauxPriseEnCharge());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
@@ -71,11 +71,11 @@ public class MutuelleDAO extends DAO<Mutuelle> {
         try (Connection connection = DatabaseConnection.getInstanceDB();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, obj.getNom());
-            statement.setString(2, obj.getTelephone());
-            statement.setString(3, obj.getEmail());
-            statement.setString(4, obj.getDepartement());
-            statement.setDouble(5, obj.getTauxPriseEnCharge());
+            statement.setString(1, obj.getMutNom());
+            statement.setString(2, obj.getMutTel());
+            statement.setString(3, obj.getMutEmail());
+            statement.setString(4, obj.getMutDepartement());
+            statement.setDouble(5, obj.getMutTauxPriseEnCharge());
             statement.setInt(6, obj.getMutId());
 
             int affectedRows = statement.executeUpdate();

@@ -1,5 +1,10 @@
 package fr.afpa.pompey.cda22045.views;
 
+import fr.afpa.pompey.cda22045.dao.ClientDAO;
+import fr.afpa.pompey.cda22045.dao.MedecinDAO;
+import fr.afpa.pompey.cda22045.dao.MutuelleDAO;
+import fr.afpa.pompey.cda22045.models.Adresse;
+import fr.afpa.pompey.cda22045.models.Client;
 import fr.afpa.pompey.cda22045.models.TypeMedicament;
 import fr.afpa.pompey.cda22045.models.TypeSpecialite;
 import fr.afpa.pompey.cda22045.enums.enumTypeMedicament;
@@ -8,6 +13,7 @@ import fr.afpa.pompey.cda22045.enums.enumTypeSpecialite;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -20,6 +26,11 @@ public class DashboardView extends JFrame {
     private ArrayList<Object[]> achatsHistorique = new ArrayList<>(); // Liste pour stocker les achats
     private ArrayList<String> listeMedicamentsAjoutes = new ArrayList<>();
     private ArrayList<Object[]> achatsValides = new ArrayList<>();
+    private JTextArea detailsClientArea;
+    private ClientDAO clientDAO = new ClientDAO();
+    private MutuelleDAO mutuelleDAO = new MutuelleDAO();
+    private MedecinDAO medecinDAO = new MedecinDAO();
+
 
     // Liste globale des clients
     private ArrayList<String> listeClients = new ArrayList<>(Arrays.asList(
@@ -27,6 +38,8 @@ public class DashboardView extends JFrame {
             "Marie Dupuis",
             "Jean Leclerc"
     ));
+
+//    private ArrayList<Client> listeClients = (ArrayList<Client>) clientDAO.getAll();
 
     // Méthode pour obtenir la liste des clients sous forme de tableau (pour l'utiliser dans JComboBox)
     private String[] getListeClients() {
@@ -704,6 +717,20 @@ public class DashboardView extends JFrame {
         panelCentral.repaint();
     }
 
+
+
+    private void afficherDetailsClient(Client client) {
+        if (client != null) {
+            detailsClientArea.setText("Détails du client: " + client.getNom() + " " + client.getPrenom() +
+                    "\nAdresse: " + client.getAdresse().getAdrRue() + ", " + client.getAdresse().getAdrCodePostal() + " " + client.getAdresse().getAdrVille() +
+                    "\nTéléphone: " + client.getTelephone() +
+                    "\nEmail: " + client.getEmail() +
+                    "\nNuméro de Sécurité Social: " + client.getNumeroSecuriteSocial() +
+                    "\nDate de Naissance: " + client.getDateNaissance());
+        } else {
+            detailsClientArea.setText("Détails du client non trouvés.");
+        }
+    }
     // Page pour afficher les détails d'un client
     private void afficherClientPanel() {
         panelCentral.removeAll();
@@ -723,14 +750,25 @@ public class DashboardView extends JFrame {
         JComboBox<String> clientCombo = new JComboBox<>(getListeClients());
 
         // Détails du client (affichage)
-        JTextArea detailsClientArea = new JTextArea(5, 30);
-        detailsClientArea.setEditable(false);
+//        JTextArea detailsClientArea = new JTextArea(5, 30);
+//        detailsClientArea.setEditable(false);
+
+        // Initialisation de detailsClientArea
+        detailsClientArea = new JTextArea(5, 30);
+        detailsClientArea.setEditable(true);
+
 
         // Afficher les informations du client sélectionné
         clientCombo.addActionListener(e -> {
             String clientSelectionne = (String) clientCombo.getSelectedItem();
             if (clientSelectionne != null) {
-                detailsClientArea.setText("Détails du client: " + clientSelectionne + "\nAdresse: Exemple Adresse\nTéléphone: 0123456789\nEmail: exemple@gmail.com");
+                String[] nomPrenom = clientSelectionne.split(" ");
+                if (nomPrenom.length == 2) {
+                    String nom = nomPrenom[0];
+                    String prenom = nomPrenom[1];
+                    Client client = clientDAO.findByName(nom, prenom);
+                    afficherDetailsClient(client);
+                }
             } else {
                 detailsClientArea.setText("");
             }
@@ -744,7 +782,7 @@ public class DashboardView extends JFrame {
         btnCreer.setPreferredSize(buttonSize);
         btnCreer.setMaximumSize(buttonSize);
         btnCreer.addActionListener(e -> {
-            JPanel nouveauClientPanel = new JPanel(new GridLayout(6, 2));
+            JPanel nouveauClientPanel = new JPanel(new GridLayout(7, 2));
             nouveauClientPanel.add(new JLabel("Nom:"));
             JTextField nomField = new JTextField();
             nouveauClientPanel.add(nomField);
@@ -760,6 +798,12 @@ public class DashboardView extends JFrame {
             nouveauClientPanel.add(new JLabel("Email:"));
             JTextField emailField = new JTextField();
             nouveauClientPanel.add(emailField);
+            nouveauClientPanel.add(new JLabel("Numéro de Sécurité Social:"));
+            JTextField numSecuField = new JTextField();
+            nouveauClientPanel.add(numSecuField);
+            nouveauClientPanel.add(new JLabel("Date de Naissance (AAAA-MM-JJ):"));
+            JTextField dateNaissanceField = new JTextField();
+            nouveauClientPanel.add(dateNaissanceField);
 
             int result = JOptionPane.showConfirmDialog(this, nouveauClientPanel, "Créer un nouveau client", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
@@ -769,12 +813,36 @@ public class DashboardView extends JFrame {
                     String adresse = adresseField.getText();
                     String telephone = telField.getText();
                     String email = emailField.getText();
+                    String numeroSecuriteSocial = numSecuField.getText();
+                    LocalDate dateNaissance = LocalDate.parse(dateNaissanceField.getText());
 
                     if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
-                        String nouveauClient = nom + " " + prenom;
-                        ajouterNouveauClient(nouveauClient);
-                        clientCombo.addItem(nouveauClient);
-                        JOptionPane.showMessageDialog(this, "Nouveau client créé !");
+                        Adresse adresseObj = new Adresse();
+                        adresseObj.setAdrRue(adresse);
+
+                        Client nouveauClient = new Client(
+                                null,  // cliId sera généré par la base de données
+                                nom,
+                                prenom,
+                                adresseObj,
+                                telephone,
+                                email,
+                                numeroSecuriteSocial,
+                                dateNaissance,
+                                null,  // Mutuelle peut être null
+                                null   // Medecin peut être null
+                        );
+
+                        Client createdClient = clientDAO.create(nouveauClient);
+                        if (createdClient != null) {
+                            ajouterNouveauClient(createdClient.getNom() + " " + createdClient.getPrenom());
+                            clientCombo.addItem(createdClient.getNom() + " " + createdClient.getPrenom());
+                            clientCombo.setSelectedItem(createdClient.getNom() + " " + createdClient.getPrenom());
+                            afficherDetailsClient(createdClient);
+                            JOptionPane.showMessageDialog(this, "Nouveau client créé !");
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Erreur lors de la création du client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le client.", "Erreur", JOptionPane.ERROR_MESSAGE);
                     }
@@ -791,47 +859,75 @@ public class DashboardView extends JFrame {
         btnModifier.addActionListener(e -> {
             String clientSelectionne = (String) clientCombo.getSelectedItem();
             if (clientSelectionne == null) {
-                JOptionPane.showMessageDialog(this, "Veuillez sélectionner un client à modifier.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                        "Veuillez sélectionner un client à modifier.",
+                        "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            JPanel modificationClientPanel = new JPanel(new GridLayout(6, 2));
-            modificationClientPanel.add(new JLabel("Nom:"));
-            JTextField nomField = new JTextField(clientSelectionne.split(" ")[0]); // Nom actuel
-            modificationClientPanel.add(nomField);
-            modificationClientPanel.add(new JLabel("Prénom:"));
-            JTextField prenomField = new JTextField(clientSelectionne.split(" ")[1]); // Prénom actuel
-            modificationClientPanel.add(prenomField);
-            modificationClientPanel.add(new JLabel("Adresse:"));
-            JTextField adresseField = new JTextField("Exemple Adresse");
-            modificationClientPanel.add(adresseField);
-            modificationClientPanel.add(new JLabel("Téléphone:"));
-            JTextField telField = new JTextField("0123456789");
-            modificationClientPanel.add(telField);
-            modificationClientPanel.add(new JLabel("Email:"));
-            JTextField emailField = new JTextField("exemple@gmail.com");
-            modificationClientPanel.add(emailField);
+            String[] nomPrenom = clientSelectionne.split(" ");
+            if (nomPrenom.length == 2) {
+                String nom = nomPrenom[0];
+                String prenom = nomPrenom[1];
+                Client client = clientDAO.findByName(nom, prenom);
+                if (client != null) {
+                    JPanel modificationClientPanel = new JPanel(new GridLayout(6, 2));
+                    modificationClientPanel.add(new JLabel("Nom:"));
+                    JTextField nomField = new JTextField(client.getNom());
+                    modificationClientPanel.add(nomField);
+                    modificationClientPanel.add(new JLabel("Prénom:"));
+                    JTextField prenomField = new JTextField(client.getPrenom());
+                    modificationClientPanel.add(prenomField);
+                    modificationClientPanel.add(new JLabel("Adresse:"));
+                    JTextField adresseField = new JTextField(client.getAdresse().getAdrRue());
+                    modificationClientPanel.add(adresseField);
+                    modificationClientPanel.add(new JLabel("Téléphone:"));
+                    JTextField telField = new JTextField(client.getTelephone());
+                    modificationClientPanel.add(telField);
+                    modificationClientPanel.add(new JLabel("Email:"));
+                    JTextField emailField = new JTextField(client.getEmail());
+                    modificationClientPanel.add(emailField);
 
-            int result = JOptionPane.showConfirmDialog(this, modificationClientPanel, "Modifier le client", JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                try {
-                    String nom = nomField.getText();
-                    String prenom = prenomField.getText();
-                    String adresse = adresseField.getText();
-                    String telephone = telField.getText();
-                    String email = emailField.getText();
+                    int result = JOptionPane.showConfirmDialog(this, modificationClientPanel,
+                            "Modifier le client", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        try {
+                            String nomModifie = nomField.getText();
+                            String prenomModifie = prenomField.getText();
+                            String adresseModifiee = adresseField.getText();
+                            String telephoneModifie = telField.getText();
+                            String emailModifie = emailField.getText();
 
-                    if (isValidName(nom) && isValidName(prenom) && isValidPhoneNumber(telephone) && isValidEmail(email)) {
-                        String nouveauClient = nom + " " + prenom;
-                        clientCombo.removeItem(clientSelectionne);
-                        clientCombo.addItem(nouveauClient);
-                        detailsClientArea.setText("Détails du client: " + nouveauClient + "\nAdresse: " + adresse + "\nTéléphone: " + telephone + "\nEmail: " + email);
-                        JOptionPane.showMessageDialog(this, "Client modifié !");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                            if (isValidName(nomModifie) && isValidName(prenomModifie) && isValidPhoneNumber(telephoneModifie) && isValidEmail(emailModifie)) {
+                                client.setNom(nomModifie);
+                                client.setPrenom(prenomModifie);
+                                client.getAdresse().setAdrRue(adresseModifiee);
+                                client.setTelephone(telephoneModifie);
+                                client.setEmail(emailModifie);
+
+                                if (clientDAO.update(client)) {
+                                    clientCombo.removeItem(clientSelectionne);
+                                    clientCombo.addItem(nomModifie + " " + prenomModifie);
+                                    detailsClientArea.setText("Détails du client: " + nomModifie + " " + prenomModifie +
+                                            "\nAdresse: " + adresseModifiee +
+                                            "\nTéléphone: " + telephoneModifie +
+                                            "\nEmail: " + emailModifie);
+                                    JOptionPane.showMessageDialog(this, "Client modifié !");
+                                } else {
+                                    JOptionPane.showMessageDialog(this, "Erreur lors de la modification du client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(this,
+                                        "Veuillez entrer des informations valides pour le client.",
+                                        "Erreur", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage(),
+                                    "Erreur", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Détails du client non trouvés.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -849,10 +945,24 @@ public class DashboardView extends JFrame {
 
             int confirmation = JOptionPane.showConfirmDialog(this, "Êtes-vous sûr de vouloir supprimer ce client ?", "Supprimer le client", JOptionPane.YES_NO_OPTION);
             if (confirmation == JOptionPane.YES_OPTION) {
-                clientCombo.removeItem(clientSelectionne);
-                supprimerClient(clientSelectionne);
-                detailsClientArea.setText("");
-                JOptionPane.showMessageDialog(this, "Client supprimé !");
+                String[] nomPrenom = clientSelectionne.split(" ");
+                if (nomPrenom.length == 2) {
+                    String nom = nomPrenom[0];
+                    String prenom = nomPrenom[1];
+                    Client client = clientDAO.findByName(nom, prenom);
+                    if (client != null) {
+                        if (clientDAO.delete(client.getCliId())) {
+                            clientCombo.removeItem(clientSelectionne);
+                            supprimerClient(clientSelectionne);
+                            detailsClientArea.setText("");
+                            JOptionPane.showMessageDialog(this, "Client supprimé !");
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Erreur lors de la suppression du client.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Détails du client non trouvés.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
         });
 

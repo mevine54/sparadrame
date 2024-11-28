@@ -2,22 +2,22 @@ package fr.afpa.pompey.cda22045.models;
 
 public class Mutuelle {
     private Integer mutId;
-    private String nom;
+    private String mutNom;
     private Adresse adresse;
-    private String telephone;
-    private String email;
-    private String departement;
-    private double tauxPriseEnCharge;
+    private String mutTel;
+    private String mutEmail;
+    private String mutDepartement;
+    private double mutTauxPriseEnCharge;
 
     // Constructeur
-    public Mutuelle(Integer mutId, String nom, Adresse adresse, String telephone, String email, String departement, double tauxPriseEnCharge) {
+    public Mutuelle(Integer mutId, String mutNom, Adresse adresse, String mutTel, String mutEmail, String mutDepartement, double mutTauxPriseEnCharge) {
         setMutId(mutId);
-        setNom(nom);
+        setMutNom(mutNom);
         setAdresse(adresse);
-        setTelephone(telephone);
-        setEmail(email);
-        setDepartement(departement);
-        setTauxPriseEnCharge(tauxPriseEnCharge);
+        setMutTel(mutTel);
+        setMutEmail(mutEmail);
+        setMutDepartement(mutDepartement);
+        setMutTauxPriseEnCharge(mutTauxPriseEnCharge);
     }
 
     // Getters et setters avec validations
@@ -32,15 +32,15 @@ public class Mutuelle {
         this.mutId = mutId;
     }
 
-    public String getNom() {
-        return nom;
+    public String getMutNom() {
+        return mutNom;
     }
 
-    public void setNom(String nom) {
-        if (nom == null || nom.isBlank()) {
+    public void setMutNom(String mutNom) {
+        if (mutNom == null || mutNom.isBlank()) {
             throw new IllegalArgumentException("Le nom de la mutuelle ne peut pas être vide.");
         }
-        this.nom = nom;
+        this.mutNom = mutNom;
     }
 
     public Adresse getAdresse() {
@@ -54,60 +54,60 @@ public class Mutuelle {
         this.adresse = adresse; // Autorise null si nécessaire
     }
 
-    public String getTelephone() {
-        return telephone;
+    public String getMutTel() {
+        return mutTel;
     }
 
-    public void setTelephone(String telephone) {
-        if (telephone == null || telephone.isBlank()) {
+    public void setMutTel(String mutTel) {
+        if (mutTel == null || mutTel.isBlank()) {
             throw new IllegalArgumentException("Le téléphone ne peut pas être vide.");
         }
-        this.telephone = telephone;
+        this.mutTel = mutTel;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMutEmail() {
+        return mutEmail;
     }
 
-    public void setEmail(String email) {
-        if (email == null || !email.matches("^[\\w.%+-]+@[\\w.-]+\\.\\w{2,}$")) {
+    public void setMutEmail(String mutEmail) {
+        if (mutEmail == null || !mutEmail.matches("^[\\w.%+-]+@[\\w.-]+\\.\\w{2,}$")) {
             throw new IllegalArgumentException("L'email est invalide.");
         }
-        this.email = email;
+        this.mutEmail = mutEmail;
     }
 
-    public String getDepartement() {
-        return departement;
+    public String getMutDepartement() {
+        return mutDepartement;
     }
 
-    public void setDepartement(String departement) {
-        if (departement == null || departement.isBlank()) {
+    public void setMutDepartement(String mutDepartement) {
+        if (mutDepartement == null || mutDepartement.isBlank()) {
             throw new IllegalArgumentException("Le département ne peut pas être vide.");
         }
-        this.departement = departement;
+        this.mutDepartement = mutDepartement;
     }
 
-    public double getTauxPriseEnCharge() {
-        return tauxPriseEnCharge;
+    public double getMutTauxPriseEnCharge() {
+        return mutTauxPriseEnCharge;
     }
 
-    public void setTauxPriseEnCharge(double tauxPriseEnCharge) {
-        if (tauxPriseEnCharge < 0 || tauxPriseEnCharge > 100) {
+    public void setMutTauxPriseEnCharge(double mutTauxPriseEnCharge) {
+        if (mutTauxPriseEnCharge < 0 || mutTauxPriseEnCharge > 100) {
             throw new IllegalArgumentException("Le taux de prise en charge doit être compris entre 0 et 100.");
         }
-        this.tauxPriseEnCharge = tauxPriseEnCharge;
+        this.mutTauxPriseEnCharge = mutTauxPriseEnCharge;
     }
 
     @Override
     public String toString() {
         return "Mutuelle{" +
                 "mutId=" + mutId +
-                ", nom='" + nom + '\'' +
+                ", nom='" + mutNom + '\'' +
                 ", adresse=" + adresse +
-                ", telephone='" + telephone + '\'' +
-                ", email='" + email + '\'' +
-                ", departement='" + departement + '\'' +
-                ", tauxPriseEnCharge=" + tauxPriseEnCharge +
+                ", telephone='" + mutTel + '\'' +
+                ", email='" + mutEmail + '\'' +
+                ", departement='" + mutDepartement + '\'' +
+                ", tauxPriseEnCharge=" + mutTauxPriseEnCharge +
                 '}';
     }
 }
