@@ -225,7 +225,7 @@ public class ClientDAO extends DAO<Client> {
                     Mutuelle mutuelle = new Mutuelle(
                             resultSet.getInt("mut_id"),
                             resultSet.getString("mut_nom"),
-                            null, // Adresse de la mutuelle si elle existe dans votre base
+                            adresse, // Adresse de la mutuelle si elle existe dans votre base
                             resultSet.getString("mut_tel"),
                             resultSet.getString("mut_email"),
                             resultSet.getString("mut_departement"),
@@ -285,7 +285,7 @@ public class ClientDAO extends DAO<Client> {
                     mutuelle = new Mutuelle(
                             resultSet.getInt("mut_id"),
                             resultSet.getString("mut_nom"),
-                            null, // Adresse de la mutuelle non prise en charge dans cette requête
+                            adresse, // Adresse de la mutuelle non prise en charge dans cette requête
                             resultSet.getString("mut_tel"),
                             resultSet.getString("mut_email"),
                             resultSet.getString("mut_departement"),
@@ -347,7 +347,7 @@ public class ClientDAO extends DAO<Client> {
                     mutuelle = new Mutuelle(
                             resultSet.getInt("mut_id"),
                             resultSet.getString("mut_nom"),
-                            null, // Adresse de la mutuelle non prise en charge dans cette requête
+                            adresse, // Adresse de la mutuelle non prise en charge dans cette requête
                             resultSet.getString("mut_tel"),
                             resultSet.getString("mut_email"),
                             resultSet.getString("mut_departement"),

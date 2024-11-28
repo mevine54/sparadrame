@@ -1,6 +1,7 @@
 package fr.afpa.pompey.cda22045.dao;
 
 import fr.afpa.pompey.cda22045.models.Achat;
+import fr.afpa.pompey.cda22045.models.Client;
 import fr.afpa.pompey.cda22045.utilities.DatabaseConnection;
 
 import java.sql.*;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AchatDAO extends DAO<Achat> {
+
+    private ClientDAO clientDAO;
 
     @Override
     public Achat create(Achat obj) {
@@ -22,7 +25,7 @@ public class AchatDAO extends DAO<Achat> {
 
             statement.setString(1, obj.getType());
             statement.setDate(2, Date.valueOf(obj.getDateAchat()));
-            statement.setInt(3, obj.getUtilisateurId());
+            statement.setInt(3, obj.getClient().getUserId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
@@ -73,7 +76,7 @@ public class AchatDAO extends DAO<Achat> {
 
             statement.setString(1, obj.getType());
             statement.setDate(2, java.sql.Date.valueOf(obj.getDateAchat()));
-            statement.setInt(3, obj.getUtilisateurId());
+            statement.setInt(3, obj.getClient().getUserId());
             statement.setInt(4, obj.getAchId());
 
             int affectedRows = statement.executeUpdate();
@@ -95,11 +98,12 @@ public class AchatDAO extends DAO<Achat> {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
+                    Client client = clientDAO.getById(resultSet.getInt("uti_id"));
                     return new Achat(
                             resultSet.getInt("ach_id"),
                             resultSet.getString("ach_type"),
                             resultSet.getDate("ach_date").toLocalDate(),
-                            resultSet.getInt("uti_id")
+                            client
                     );
                 }
             }
@@ -119,11 +123,13 @@ public class AchatDAO extends DAO<Achat> {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
+                Client client = clientDAO.getById(resultSet.getInt("uti_id"));
+
                 achats.add(new Achat(
                         resultSet.getInt("ach_id"),
                         resultSet.getString("ach_type"),
                         resultSet.getDate("ach_date").toLocalDate(),
-                        resultSet.getInt("uti_id")
+                        client
                 ));
             }
 

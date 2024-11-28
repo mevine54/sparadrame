@@ -6,16 +6,24 @@ public class Achat {
     private Integer achId;
     private String type; // 'Direct' ou 'Ordonnance'
     private LocalDate dateAchat;
-    private Integer utilisateurId; // FK vers Utilisateur
+    private Client client; // FK vers Utilisateur
 
     public Achat() {
     }
 
-    public Achat(Integer achId, String type, LocalDate dateAchat, Integer utilisateurId) {
+    public Achat(Integer achId, String type, LocalDate dateAchat, Client client) {
         setAchId(achId);
         setType(type);
         setDateAchat(dateAchat);
-        setUtilisateurId(utilisateurId);
+        setClient(client);
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     // Getters et setters
@@ -55,16 +63,7 @@ public class Achat {
         this.dateAchat = dateAchat;
     }
 
-    public Integer getUtilisateurId() {
-        return utilisateurId;
-    }
 
-    public void setUtilisateurId(Integer utilisateurId) {
-        if (utilisateurId != null && utilisateurId <= 0) {
-            throw new IllegalArgumentException("L'ID de l'utilisateur doit être positif.");
-        }
-        this.utilisateurId = utilisateurId;
-    }
 
     @Override
     public String toString() {
@@ -72,7 +71,7 @@ public class Achat {
                 "id=" + achId +
                 ", type='" + type + '\'' +
                 ", dateAchat=" + dateAchat +
-                ", utilisateurId=" + utilisateurId +
+                ", clientId=" + client.getCliId() +
                 '}';
     }
 }

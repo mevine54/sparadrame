@@ -214,6 +214,14 @@ INSERT INTO ACHAT (ach_type) VALUES
 INSERT INTO Effectuer (ach_id, uti_id, date_achat, mode_paiement) VALUES
 (1, 1, '2023-11-26', 'Carte');
 
+-- type medoc
+INSERT INTO typemedicament
+(`type_med_id`,
+`type_med_nom`)
+VALUES
+(1,"Antalgique");
+
+
 INSERT INTO MEDICAMENT (medi_nom, medi_prix, medi_date_mise_service, medi_quantite, type_med_id) VALUES
 ('Paracétamol', 3.50, '2021-02-15', 200, 1);
 
@@ -230,10 +238,38 @@ INSERT INTO Delivrer (ord_id, medi_id, quantite_prescrite, duree_validite) VALUE
 SET FOREIGN_KEY_CHECKS = 1;
 
 select * from utilisateur;
-select * FROM client;
+select * FROM posseder;
 INSERT INTO utilisateur (uti_nom, uti_prenom, uti_tel, uti_email) VALUES ('Dupont', 'Jean', '0123456789', 'jean.dupont@example.com');
 SELECT LAST_INSERT_ID();
 
 INSERT INTO client (cli_num_secu_social, cli_date_naissance, uti_id) VALUES ('123456789012345', '1980-01-01', LAST_INSERT_ID());
 SELECT LAST_INSERT_ID();  -- Vérifiez que le cli_id est généré correctement
+
+-- Adresse pour un médecin
+INSERT INTO posseder (uti_id, adr_id, type_possession) 
+VALUES (1, 1, 'Professionnel');
+
+-- Adresse pour un utilisateur général
+INSERT INTO posseder (uti_id, adr_id, type_possession) 
+VALUES (2, 2, 'Résidentiel');
+
+-- Adresse pour un client
+INSERT INTO posseder (uti_id, adr_id, type_possession) 
+VALUES
+(1, 3, 'Résidentiel'),
+(2, 1, 'Professionnel'),
+(6, 2, 'Autre'),
+(3, 3, 'Résidentiel'),
+(4, 1, 'Professionnel'),
+(5, 2, 'Autre'),
+(7, 3, 'Résidentiel'),
+(8, 1, 'Professionnel'),
+(9, 2, 'Autre'),
+(10, 3, 'Résidentiel'),
+(11, 1, 'Professionnel'),
+(12, 2, 'Autre');
+
+
+
+
 

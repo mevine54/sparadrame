@@ -111,7 +111,7 @@ public class MedecinDAO extends DAO<Medecin> {
                             null, // Adresse à ajouter si nécessaire
                             resultSet.getString("uti_tel"),
                             resultSet.getString("uti_email"),
-                            resultSet.getString("numero_agrement")
+                            resultSet.getString("med_num_agreement")
                     );
                 }
             }
@@ -138,7 +138,9 @@ public class MedecinDAO extends DAO<Medecin> {
                         null, // Adresse peut être ajoutée si nécessaire
                         resultSet.getString("uti_tel"),
                         resultSet.getString("uti_email"),
-                        resultSet.getString("numero_agrement")
+                        resultSet.getString("med_num_agreement")
+
+
                 ));
             }
         } catch (SQLException e) {

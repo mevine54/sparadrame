@@ -1,6 +1,9 @@
 package fr.afpa.pompey.cda22045;
 
 import fr.afpa.pompey.cda22045.dao.ClientDAO;
+import fr.afpa.pompey.cda22045.dao.MedecinDAO;
+import fr.afpa.pompey.cda22045.dao.MedicamentDAO;
+import fr.afpa.pompey.cda22045.dao.UtilisateurDAO;
 import fr.afpa.pompey.cda22045.models.Adresse;
 import fr.afpa.pompey.cda22045.models.Utilisateur;
 import fr.afpa.pompey.cda22045.views.DashboardView;
@@ -18,6 +21,13 @@ public class App {
 
         // Créer une instance de la classe App
         App app = new App();
+
+
+        MedicamentDAO medicamentDAO = new MedicamentDAO();
+        System.out.println(medicamentDAO.getAll());
+
+
+        MedecinDAO medecinDAO = new MedecinDAO();
 
 //         Appeler la méthode propertiesConnection
 //        Connection connection = app.propertiesConnection();

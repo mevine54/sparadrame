@@ -60,13 +60,18 @@ public class Adresse {
         this.adrVille = adrVille;// adresse peut être null
     }
 
+//    @Override
+//    public String toString() {
+//        return "Adresse{" +
+//                "adrId=" + adrId +
+//                ", rue='" + adrRue + '\'' +
+//                ", codePostal='" + adrCodePostal + '\'' +
+//                ", ville='" + adrVille + '\'' +
+//                '}';
+//    }
+
     @Override
     public String toString() {
-        return "Adresse{" +
-                "adrId=" + adrId +
-                ", rue='" + adrRue + '\'' +
-                ", codePostal='" + adrCodePostal + '\'' +
-                ", ville='" + adrVille + '\'' +
-                '}';
+        return  adrRue + " "+ adrCodePostal + " "+ adrVille ;
     }
 }
