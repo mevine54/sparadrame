@@ -3,10 +3,11 @@ package fr.afpa.pompey.cda22045.models;
 public class Medecin extends Utilisateur {
     private Integer medId;
     private String medNumAgreement;
+    public TypeSpecialite APOLLIN = new TypeSpecialite();
 
     // Constructeur complet
     public Medecin(Integer medId, String nom, String prenom, Adresse adresse, String telephone, String email, String medNumAgreement) {
-        super(medId, nom, prenom, adresse, telephone, email);
+        super(medId, nom, prenom, new Adresse(), telephone, email);
         setMedId(medId);
         setMedNumAgreement(medNumAgreement);
     }
@@ -40,6 +41,7 @@ public class Medecin extends Utilisateur {
 
     @Override
     public String toString() {
-        return super.toString() + ", Numéro d'agrément: " + medNumAgreement;
+        return "Dr." + this.getNom() + " " + this.getPrenom();
+        //return super.toString() + ", Numéro d'agrément: " + medNumAgreement;
     }
 }

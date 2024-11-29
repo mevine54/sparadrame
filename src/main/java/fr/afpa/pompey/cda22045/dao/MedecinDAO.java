@@ -4,7 +4,11 @@ import fr.afpa.pompey.cda22045.models.Medecin;
 import fr.afpa.pompey.cda22045.models.Adresse;
 import fr.afpa.pompey.cda22045.utilities.DatabaseConnection;
 
-import java.sql.*;
+//import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,18 +135,18 @@ public class MedecinDAO extends DAO<Medecin> {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                medecins.add(new Medecin(
+                Medecin medecin = new Medecin(
                         resultSet.getInt("uti_id"),
                         resultSet.getString("uti_nom"),
                         resultSet.getString("uti_prenom"),
-                        null, // Adresse peut être ajoutée si nécessaire
+                        null, // Adresse à ajouter si nécessaire
                         resultSet.getString("uti_tel"),
                         resultSet.getString("uti_email"),
                         resultSet.getString("med_num_agreement")
-
-
-                ));
+                );
+                medecins.add(medecin);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

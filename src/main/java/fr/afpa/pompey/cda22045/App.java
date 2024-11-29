@@ -23,11 +23,11 @@ public class App {
         App app = new App();
 
 
-        MedicamentDAO medicamentDAO = new MedicamentDAO();
-        System.out.println(medicamentDAO.getAll());
-
-
-        MedecinDAO medecinDAO = new MedecinDAO();
+//        MedicamentDAO medicamentDAO = new MedicamentDAO();
+//        System.out.println(medicamentDAO.getAll());
+//
+//
+//        MedecinDAO medecinDAO = new MedecinDAO();
 
 //         Appeler la méthode propertiesConnection
 //        Connection connection = app.propertiesConnection();
@@ -39,9 +39,9 @@ public class App {
         //System.out.println(conn1);
         //System.out.println(conn2);
 
-        ClientDAO  clientDAO = new ClientDAO();
-        clientDAO.getAll();
-        clientDAO.getById(1);
+//        ClientDAO  clientDAO = new ClientDAO();
+//        clientDAO.getAll();
+//        clientDAO.getById(1);
 //
 //        try {
 //            selectFromUtilisateur(conn);

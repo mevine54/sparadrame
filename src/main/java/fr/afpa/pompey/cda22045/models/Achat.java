@@ -8,6 +8,9 @@ public class Achat {
     private LocalDate dateAchat;
     private Client client; // FK vers Utilisateur
 
+    public static final String TYPE_DIRECT = "Achat direct";
+    public static final String TYPE_ORDONNANCE = "Achat via ordonnance";
+
     public Achat() {
     }
 
@@ -43,8 +46,8 @@ public class Achat {
     }
 
     public void setType(String type) {
-        if (type == null || (!type.equalsIgnoreCase("Direct") && !type.equalsIgnoreCase("Ordonnance"))) {
-            throw new IllegalArgumentException("Le type d'achat doit être 'Direct' ou 'Ordonnance'.");
+        if (type == null || (!type.equalsIgnoreCase("Achat direct") && !type.equalsIgnoreCase("Achat via ordonnance"))) {
+            throw new IllegalArgumentException("Le type d'achat doit être 'Direct' ou avec 'Ordonnance'.");
         }
         this.type = type.trim();
     }

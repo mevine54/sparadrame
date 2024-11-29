@@ -188,7 +188,7 @@ INSERT INTO CLIENT (cli_num_secu_social, cli_date_naissance, uti_id) VALUES
 ('543210987654321', '1990-02-02', 2);
 
 INSERT INTO MEDECIN (med_num_agreement, uti_id) VALUES
-('123456789012345', 3);
+('123456789012345145', 3);
 
 INSERT INTO SPECIALISTE (spe_nom, spe_specialite, med_id) VALUES
 ('Dr. Smith', 'Cardiologue', 1);
@@ -258,16 +258,8 @@ INSERT INTO posseder (uti_id, adr_id, type_possession)
 VALUES
 (1, 3, 'Résidentiel'),
 (2, 1, 'Professionnel'),
-(6, 2, 'Autre'),
 (3, 3, 'Résidentiel'),
-(4, 1, 'Professionnel'),
-(5, 2, 'Autre'),
-(7, 3, 'Résidentiel'),
-(8, 1, 'Professionnel'),
-(9, 2, 'Autre'),
-(10, 3, 'Résidentiel'),
-(11, 1, 'Professionnel'),
-(12, 2, 'Autre');
+(4, 1, 'Professionnel');
 
 
 

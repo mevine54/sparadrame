@@ -1,5 +1,4 @@
 package fr.afpa.pompey.cda22045.views;
-
 import fr.afpa.pompey.cda22045.dao.ClientDAO;
 import fr.afpa.pompey.cda22045.dao.MedecinDAO;
 import fr.afpa.pompey.cda22045.dao.MedicamentDAO;
@@ -7,7 +6,6 @@ import fr.afpa.pompey.cda22045.dao.MutuelleDAO;
 import fr.afpa.pompey.cda22045.models.*;
 import fr.afpa.pompey.cda22045.enums.enumTypeMedicament;
 import fr.afpa.pompey.cda22045.enums.enumTypeSpecialite;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -15,11 +13,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import static fr.afpa.pompey.cda22045.utilities.ValidationUtils.*;
 
 public class DashboardView extends JFrame {
-
+    //<editor-fold defaultstate="collapsed" desc="P R O P R I E T E">
     private MutuelleDAO mutuelleDAO = new MutuelleDAO();
     private MedecinDAO medecinDAO = new MedecinDAO();
     private MedicamentDAO medicamentDAO = new MedicamentDAO();
@@ -34,28 +31,34 @@ public class DashboardView extends JFrame {
     private JComboBox<TypeSpecialite> specialiteCombo = new JComboBox<>();
     private List<Medecin> listeMedecins = new ArrayList<>();
     private List<Medicament> listeMedicaments = new ArrayList<>();
-
-
-    // Liste globale des clients
     private List<Client> listeClients = new ArrayList<>();
+    //</editor-fold>
 
-//    private ArrayList<Client> listeClients = (ArrayList<Client>) clientDAO.getAll();
 
-    // Méthode pour obtenir la liste des clients sous forme de tableau (pour l'utiliser dans JComboBox)
-//    private Client[] getListeClients() {
-//        return listeClients.toArray(new Client[0]);
-//    }
+    //<editor-fold defaultstate="collapsed" desc="D A S H B O A R D">
+    // Méthode pour revenir à la page d'accueil
+    private void revenirAccueil() {
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel label = new JLabel("Bienvenue dans la Pharmacie Sparadrap", SwingConstants.CENTER);
+        label.setFont(new Font("Arial", Font.BOLD, 18));
+        panel.add(label, BorderLayout.NORTH);
 
-    // Méthode pour ajouter un nouveau client à la liste globale
-    private void ajouterNouveauClient(Client client) {
-        listeClients.add(client);
+        // Charger l'image
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/images/caducv.jpg"));
+        if (imageIcon.getImageLoadStatus() == MediaTracker.ERRORED) {
+            JOptionPane.showMessageDialog(this, "Erreur de chargement de l'image",
+                    "Erreur", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JLabel imageLabel = new JLabel(imageIcon);
+            panel.add(imageLabel, BorderLayout.CENTER);
+        }
+
+        // Remplacer le contenu du panneau central
+        panelCentral.removeAll();
+        panelCentral.add(panel);
+        panelCentral.revalidate();
+        panelCentral.repaint();
     }
-
-    // Méthode pour supprimer un client de la liste globale
-    private void supprimerClient(Client client) {
-        listeClients.remove(client);
-    }
-
     public DashboardView() {
         // Paramètres de base de la fenêtre
         setTitle("Pharmacie Sparadrap - Dashboard");
@@ -89,7 +92,6 @@ public class DashboardView extends JFrame {
 
         setVisible(true);
     }
-
     private JPanel createSidebar() {
         JPanel sidebar = new JPanel() {
             @Override
@@ -130,7 +132,6 @@ public class DashboardView extends JFrame {
 
         return sidebar;
     }
-
     private JButton createVisibleGradientButton(String text) {
         JButton button = new JButton(text) {
             @Override
@@ -152,7 +153,10 @@ public class DashboardView extends JFrame {
         button.setContentAreaFilled(false);
         return button;
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="A C H A T S">
+    // Méthode pour réinitialiser les listes de médicaments ajoutés et d'achats valides
     // Page d'achat restaurée avec tout le contenu
     private void afficherAchatPanel() {
         // Réinitialiser les listes de médicaments ajoutés et d'achats valides
@@ -317,20 +321,22 @@ public class DashboardView extends JFrame {
             }
 
             // Ajouter l'achat à l'historique
-
+            ArrayList<Object> achat = new ArrayList();
             for (Achat achatsValide  : achatsValides) {
-                Object[] achat = new Object[0];
-                Object[] achatHistorique = {
-                        "13/10/2024",
-                        "Achat direct".equals(typeAchat) ? "" : clientSelectionne, // Nom du client pour achat direct est vide
-                        achat[0], // Médicament
-                        achat[1], // Quantité
-                        String.format("%.2f", achat[2]), // Prix total
-                        "Achat direct".equals(typeAchat) ? "" : medecinSelectionne // Nom du médecin pour achat direct est vide
-                };
-                achatsHistorique.add(achatHistorique); // Ajouter à la liste d'historique
-            }
 
+//                Object[] achat = new Object[0];
+//                Object[] achatHistorique = {
+//                        "13/10/2024",
+//                        "Achat direct".equals(typeAchat) ? "" : clientSelectionne, // Nom du client pour achat direct est vide
+//                        achat[0], // Médicament
+//                        achat[1], // Quantité
+//                        String.format("%.2f", achat[2]), // Prix total
+//                        "Achat direct".equals(typeAchat) ? "" : medecinSelectionne // Nom du médecin pour achat direct est vide
+//                };
+                achat.add(achatsValide);
+                 // Ajouter à la liste d'historique
+            }
+            achatsHistorique.add(achat.toArray());
             revenirAccueil();  // Retourner à l'accueil après validation
         });
 
@@ -369,13 +375,13 @@ public class DashboardView extends JFrame {
         panelCentral.revalidate();
         panelCentral.repaint();
     }
-
-    // Méthode pour réinitialiser les listes de médicaments ajoutés et d'achats valides
     private void resetAchatState() {
         listeMedicamentsAjoutes.clear();
         achatsValides.clear();
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="H I S T O R I Q U E S">
     // Page d'historique des achats avec possibilité de modifier
     private void afficherHistoriquePanel() {
         panelCentral.removeAll();
@@ -501,31 +507,9 @@ public class DashboardView extends JFrame {
         panelCentral.revalidate();
         panelCentral.repaint();
     }
+    //</editor-fold>
 
-    // Méthode pour revenir à la page d'accueil
-    private void revenirAccueil() {
-        JPanel panel = new JPanel(new BorderLayout());
-        JLabel label = new JLabel("Bienvenue dans la Pharmacie Sparadrap", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 18));
-        panel.add(label, BorderLayout.NORTH);
-
-        // Charger l'image
-        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/images/caducv.jpg"));
-        if (imageIcon.getImageLoadStatus() == MediaTracker.ERRORED) {
-            JOptionPane.showMessageDialog(this, "Erreur de chargement de l'image",
-                    "Erreur", JOptionPane.ERROR_MESSAGE);
-        } else {
-            JLabel imageLabel = new JLabel(imageIcon);
-            panel.add(imageLabel, BorderLayout.CENTER);
-        }
-
-        // Remplacer le contenu du panneau central
-        panelCentral.removeAll();
-        panelCentral.add(panel);
-        panelCentral.revalidate();
-        panelCentral.repaint();
-    }
-
+    //<editor-fold defaultstate="collapsed" desc="M E D E C I N S">
     // Page pour afficher les détails d'un médecin / spécialiste
     private void afficherMedecinPanel() {
         panelCentral.removeAll();
@@ -541,20 +525,20 @@ public class DashboardView extends JFrame {
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-
         // Label pour le titre
         JLabel labelMedecin = new JLabel("Détails des médecins / spécialistes");
         labelMedecin.setFont(new Font("Arial", Font.BOLD, 18));
         panelMedecin.add(labelMedecin, gbc);
-
         gbc.gridy++;
         // Liste déroulante pour sélectionner un médecin
         JLabel labelSelectMedecin = new JLabel("Sélectionner un médecin:");
         panelMedecin.add(labelSelectMedecin, gbc);
-
         gbc.gridy++;
 //        JComboBox<Medecin> medecinCombo = new JComboBox<>(getListeMedecins());
 //        JComboBox<Medecin> medecinCombo = new JComboBox<>( listeMedecins);
+//        DefaultComboBoxModel<Medecin> comboBoxModelMedecin = new DefaultComboBoxModel<>(listeMedecins.toArray(new Medecin[0]));
+//        DefaultComboBoxModel<TypeSpecialite> comboBoxModelMedecin = new DefaultComboBoxModel<>(new TypeSpecialite[]{new TypeSpecialite()});
+//        JComboBox<TypeSpecialite> medecinCombo = new JComboBox<>(comboBoxModelMedecin);
         DefaultComboBoxModel<Medecin> comboBoxModelMedecin = new DefaultComboBoxModel<>(listeMedecins.toArray(new Medecin[0]));
         JComboBox<Medecin> medecinCombo = new JComboBox<>(comboBoxModelMedecin);
 //        medecinCombo.setRenderer(new DefaultListCellRenderer() {
@@ -575,26 +559,57 @@ public class DashboardView extends JFrame {
         JTextArea detailsMedecinArea = new JTextArea(5, 30);
         detailsMedecinArea.setEditable(false);
         panelMedecin.add(new JScrollPane(detailsMedecinArea), gbc);
-
-        // Afficher les informations du médecin sélectionné
-        medecinCombo.addActionListener(e -> {
-            TypeSpecialite medecinSelectionne = (TypeSpecialite) medecinCombo.getSelectedItem();
-            if (medecinSelectionne != null) {
-                detailsMedecinArea.setText("Détails du médecin: " + medecinSelectionne.getTsTypeNom() + "\nAdresse: Exemple Adresse\nTéléphone: 0123456789\nEmail: exemple@gmail.com");
-            } else {
-                detailsMedecinArea.setText("");
-            }
-        });
-
         // Taille uniforme pour les boutons
         Dimension buttonSize = new Dimension(150, 30);
-
         gbc.gridy++;
         gbc.gridwidth = 1;
         // Bouton pour créer un nouveau médecin
         JButton btnCreer = new JButton("Créer");
         btnCreer.setPreferredSize(buttonSize);
         btnCreer.setMaximumSize(buttonSize);
+        panelMedecin.add(btnCreer, gbc);
+        gbc.gridx++;
+        // Bouton pour modifier un médecin
+        JButton btnModifier = new JButton("Modifier");
+        btnModifier.setPreferredSize(buttonSize);
+        btnModifier.setMaximumSize(buttonSize);
+        panelMedecin.add(btnModifier, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        // Bouton pour supprimer un médecin
+        JButton btnSupprimer = new JButton("Supprimer");
+        btnSupprimer.setPreferredSize(buttonSize);
+        btnSupprimer.setMaximumSize(buttonSize);
+        panelMedecin.add(btnSupprimer, gbc);
+        gbc.gridx++;
+        // Bouton pour rechercher un médecin
+        JButton btnRechercher = new JButton("Rechercher");
+        btnRechercher.setPreferredSize(buttonSize);
+        btnRechercher.setMaximumSize(buttonSize);
+        panelMedecin.add(btnRechercher, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        // Bouton retour
+        JButton btnRetour = new JButton("Retour");
+        btnRetour.setPreferredSize(buttonSize);
+        btnRetour.setMaximumSize(buttonSize);
+        panelMedecin.add(btnRetour, gbc);
+        gbc.gridx++;
+        // Bouton quitter
+        JButton btnQuitter = new JButton("Quitter");
+        btnQuitter.setPreferredSize(buttonSize);
+        btnQuitter.setMaximumSize(buttonSize);
+        panelMedecin.add(btnQuitter, gbc);
+        // Afficher les informations du médecin sélectionné
+        medecinCombo.addActionListener(e -> {
+            Medecin medecinSelectionne = (Medecin) medecinCombo.getSelectedItem();
+            if (medecinSelectionne != null) {
+                detailsMedecinArea.setText("Détails du médecin: " + medecinSelectionne + "\nAdresse: Exemple Adresse\nTéléphone: 0123456789\nEmail: exemple@gmail.com");
+            } else {
+                detailsMedecinArea.setText("");
+            }
+        });
         btnCreer.addActionListener(e -> {
             JPanel nouveauMedecinPanel = new JPanel(new GridLayout(7, 2));
             nouveauMedecinPanel.add(new JLabel("Nom:"));
@@ -647,7 +662,7 @@ public class DashboardView extends JFrame {
                                 email,
                                 medNumAgreement
                         );
-                        medecinCombo.addItem(nouveauMedecin);
+                        //medecinCombo.addItem(nouveauMedecin);
                         JOptionPane.showMessageDialog(this, "Nouveau médecin créé !");
                     } else {
                         JOptionPane.showMessageDialog(this, "Veuillez entrer des informations valides pour le médecin.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -657,13 +672,7 @@ public class DashboardView extends JFrame {
                 }
             }
         });
-        panelMedecin.add(btnCreer, gbc);
 
-        gbc.gridx++;
-        // Bouton pour modifier un médecin
-        JButton btnModifier = new JButton("Modifier");
-        btnModifier.setPreferredSize(buttonSize);
-        btnModifier.setMaximumSize(buttonSize);
         btnModifier.addActionListener(e -> {
 //            TypeSpecialite medecinSelectionne = (TypeSpecialite) medecinCombo.getSelectedItem();
             Medecin medecinSelectionne = (Medecin) medecinCombo.getSelectedItem();
@@ -673,7 +682,7 @@ public class DashboardView extends JFrame {
                 return;
             }
 
-            JPanel modificationMedecinPanel = new JPanel(new GridLayout(6, 2));
+            JPanel modificationMedecinPanel = new JPanel(new GridLayout(7, 2));
             modificationMedecinPanel.add(new JLabel("Nom:"));
             JTextField nomField = new JTextField(medecinSelectionne.getNom());
             modificationMedecinPanel.add(nomField);
@@ -706,7 +715,7 @@ public class DashboardView extends JFrame {
                     String adrCodePostal = adresseField.getText();
                     String adrVille = adresseField.getText();
                     Adresse adresse = new Adresse(
-                             null,
+                            null,
                             adresseField.getText(),
                             adrCodePostal,
                             adrVille
@@ -733,16 +742,8 @@ public class DashboardView extends JFrame {
                 }
             }
         });
-        panelMedecin.add(btnModifier, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        // Bouton pour supprimer un médecin
-        JButton btnSupprimer = new JButton("Supprimer");
-        btnSupprimer.setPreferredSize(buttonSize);
-        btnSupprimer.setMaximumSize(buttonSize);
         btnSupprimer.addActionListener(e -> {
-            TypeSpecialite medecinSelectionne = (TypeSpecialite) medecinCombo.getSelectedItem();
+            Medecin medecinSelectionne = (Medecin) medecinCombo.getSelectedItem();
             if (medecinSelectionne == null) {
                 JOptionPane.showMessageDialog(this, "Veuillez sélectionner un médecin à supprimer.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -755,13 +756,6 @@ public class DashboardView extends JFrame {
                 JOptionPane.showMessageDialog(this, "Médecin supprimé !");
             }
         });
-        panelMedecin.add(btnSupprimer, gbc);
-
-        gbc.gridx++;
-        // Bouton pour rechercher un médecin
-        JButton btnRechercher = new JButton("Rechercher");
-        btnRechercher.setPreferredSize(buttonSize);
-        btnRechercher.setMaximumSize(buttonSize);
         btnRechercher.addActionListener(e -> {
             String searchQuery = JOptionPane.showInputDialog(this, "Entrez le nom ou prénom du médecin à rechercher:");
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
@@ -774,34 +768,17 @@ public class DashboardView extends JFrame {
                 JOptionPane.showMessageDialog(this, "Aucun médecin correspondant trouvé.", "Résultat", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        panelMedecin.add(btnRechercher, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 1;
-        // Bouton retour
-        JButton btnRetour = new JButton("Retour");
-        btnRetour.setPreferredSize(buttonSize);
-        btnRetour.setMaximumSize(buttonSize);
         btnRetour.addActionListener(e -> revenirAccueil());
-        panelMedecin.add(btnRetour, gbc);
-
-        gbc.gridx++;
-        // Bouton quitter
-        JButton btnQuitter = new JButton("Quitter");
-        btnQuitter.setPreferredSize(buttonSize);
-        btnQuitter.setMaximumSize(buttonSize);
         btnQuitter.addActionListener(e -> System.exit(0));
-        panelMedecin.add(btnQuitter, gbc);
-
         // Remplacer le contenu du panneau central
         panelCentral.add(panelMedecin);
         panelCentral.revalidate();
         panelCentral.repaint();
     }
+    //</editor-fold>
 
-
-
+    //<editor-fold defaultstate="collapsed" desc="C L I E N T S">
+    // Page pour afficher les détails d'un client
     private void afficherDetailsClient(Client client) {
         if (client != null) {
             detailsClientArea.setText("Détails du client: " + client.getNom() + " " + client.getPrenom() +
@@ -814,7 +791,6 @@ public class DashboardView extends JFrame {
             detailsClientArea.setText("Détails du client non trouvés.");
         }
     }
-    // Page pour afficher les détails d'un client
     private void afficherClientPanel() {
         panelCentral.removeAll();
 
@@ -906,8 +882,8 @@ public class DashboardView extends JFrame {
                     String email = emailField.getText();
                     String numeroSecuriteSocial = numSecuField.getText();
                     LocalDate dateNaissance = LocalDate.parse(dateNaissanceField.getText());
-                    String adrCodePostal = adresseField.getText();
-                    String adrVille = adresseField.getText();
+                    String adrCodePostal = codePostalField.getText();
+                    String adrVille = villeField.getText();
                     Adresse adresseClient = new Adresse(
                             null,
                             adresseField.getText(),
@@ -961,7 +937,7 @@ public class DashboardView extends JFrame {
                 return;
             }
 
-            JPanel modificationClientPanel = new JPanel(new GridLayout(6, 2));
+            JPanel modificationClientPanel = new JPanel(new GridLayout(8, 2));
             modificationClientPanel.add(new JLabel("Nom:"));
             JTextField nomField = new JTextField(clientSelectionne.getNom());
             modificationClientPanel.add(nomField);
@@ -1094,27 +1070,18 @@ public class DashboardView extends JFrame {
         panelCentral.revalidate();
         panelCentral.repaint();
     }
-
-    // Liste simulée des médecins
-//    private String[] getListeMedecins() {
-//        return new String[]{
-//                "Dr Jean Dupont (Généraliste)",
-//                "Dr Claire Martin (Cardiologue)",
-//                "Dr Pierre Bernard (Dermatologue)"
-//        };
-//    }
-
-    // Méthode utilitaire pour ajouter l'option "Aucun" à une liste
-//    private String[] addOptionAucun(List<Client> liste) {
-//        String[] listeAvecAucun = new String[liste.length + 1];
-//        listeAvecAucun[0] = "Aucun";  // Ajouter l'option "Aucun" en première position
-//        System.arraycopy(liste, 0, listeAvecAucun, 1, liste.length);
-//        return listeAvecAucun;
-//    }
+    // Méthode pour ajouter un nouveau client à la liste globale
+    private void ajouterNouveauClient(Client client) {
+        listeClients.add(client);
+    }
+    // Méthode pour supprimer un client de la liste globale
+    private void supprimerClient(Client client) {
+        listeClients.remove(client);
+    }
+    //</editor-fold>
 
     // Méthode principale
     public static void main(String[] args) {
         SwingUtilities.invokeLater(DashboardView::new);
     }
 }
-

@@ -13,6 +13,10 @@ public class AchatDAO extends DAO<Achat> {
 
     private ClientDAO clientDAO;
 
+    public AchatDAO() {
+        this.clientDAO = new ClientDAO(); // Initialisation de clientDAO
+    }
+
     @Override
     public Achat create(Achat obj) {
         if (obj == null) {
@@ -123,6 +127,9 @@ public class AchatDAO extends DAO<Achat> {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
+                if (clientDAO == null) {
+                    throw new IllegalStateException("ClientDAO n'est pas initialisé.");
+                }
                 Client client = clientDAO.getById(resultSet.getInt("uti_id"));
 
                 achats.add(new Achat(

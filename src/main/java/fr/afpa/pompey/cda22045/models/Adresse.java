@@ -35,7 +35,7 @@ public class Adresse {
 //        if (adrRue == null || adrRue.isBlank()) {
 //            throw new IllegalArgumentException("La rue ne peut pas être vide.");
 //        }
-        this.adrRue = adrRue; // adresse peut être null
+        this.adrRue = rue; // adresse peut être null
     }
 
     public String getAdrCodePostal() {
@@ -46,7 +46,7 @@ public class Adresse {
 //        if (adrCodePostal == null || !adrCodePostal.matches("\\d{5}")) {
 //            throw new IllegalArgumentException("Le code postal doit contenir exactement 5 chiffres.");
 //        }
-        this.adrCodePostal = adrCodePostal;// adresse peut être null
+        this.adrCodePostal = codePostal;// adresse peut être null
     }
 
     public String getAdrVille() {
@@ -57,7 +57,7 @@ public class Adresse {
 //        if (adrVille == null || adrVille.isBlank()) {
 //            throw new IllegalArgumentException("La ville ne peut pas être vide.");
 //        }
-        this.adrVille = adrVille;// adresse peut être null
+        this.adrVille = ville;// adresse peut être null
     }
 
 //    @Override
