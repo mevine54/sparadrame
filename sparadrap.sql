@@ -59,7 +59,7 @@ CREATE TABLE MUTUELLE (
     mut_taux_prise_en_charge TINYINT
 );
 
-select * from MUTUELLE;
+select * from client;
 
 
 -- Table : TYPEMEDICAMENT
@@ -101,8 +101,8 @@ ADD CONSTRAINT fk_achat_utilisateur FOREIGN KEY (uti_id) REFERENCES utilisateur(
 
 ALTER TABLE achat ADD UNIQUE KEY (ach_type, ach_date, uti_id);
 
- 
-select  * from achat;
+
+select  * from utilisateur;
 INSERT INTO achat (ach_type, ach_date, uti_id) VALUES ('Direct', '2024-11-26', 2);
 
 CREATE TABLE Session (
@@ -188,7 +188,7 @@ INSERT INTO CLIENT (cli_num_secu_social, cli_date_naissance, uti_id) VALUES
 ('543210987654321', '1990-02-02', 2);
 
 INSERT INTO MEDECIN (med_num_agreement, uti_id) VALUES
-('123456789012345145', 3);
+('123456789012345', 3);
 
 INSERT INTO SPECIALISTE (spe_nom, spe_specialite, med_id) VALUES
 ('Dr. Smith', 'Cardiologue', 1);
@@ -214,14 +214,6 @@ INSERT INTO ACHAT (ach_type) VALUES
 INSERT INTO Effectuer (ach_id, uti_id, date_achat, mode_paiement) VALUES
 (1, 1, '2023-11-26', 'Carte');
 
--- type medoc
-INSERT INTO typemedicament
-(`type_med_id`,
-`type_med_nom`)
-VALUES
-(1,"Antalgique");
-
-
 INSERT INTO MEDICAMENT (medi_nom, medi_prix, medi_date_mise_service, medi_quantite, type_med_id) VALUES
 ('Paracétamol', 3.50, '2021-02-15', 200, 1);
 
@@ -236,32 +228,3 @@ INSERT INTO Delivrer (ord_id, medi_id, quantite_prescrite, duree_validite) VALUE
 (1, 1, 2, 30);
 
 SET FOREIGN_KEY_CHECKS = 1;
-
-select * from utilisateur;
-select * FROM posseder;
-INSERT INTO utilisateur (uti_nom, uti_prenom, uti_tel, uti_email) VALUES ('Dupont', 'Jean', '0123456789', 'jean.dupont@example.com');
-SELECT LAST_INSERT_ID();
-
-INSERT INTO client (cli_num_secu_social, cli_date_naissance, uti_id) VALUES ('123456789012345', '1980-01-01', LAST_INSERT_ID());
-SELECT LAST_INSERT_ID();  -- Vérifiez que le cli_id est généré correctement
-
--- Adresse pour un médecin
-INSERT INTO posseder (uti_id, adr_id, type_possession) 
-VALUES (1, 1, 'Professionnel');
-
--- Adresse pour un utilisateur général
-INSERT INTO posseder (uti_id, adr_id, type_possession) 
-VALUES (2, 2, 'Résidentiel');
-
--- Adresse pour un client
-INSERT INTO posseder (uti_id, adr_id, type_possession) 
-VALUES
-(1, 3, 'Résidentiel'),
-(2, 1, 'Professionnel'),
-(3, 3, 'Résidentiel'),
-(4, 1, 'Professionnel');
-
-
-
-
-

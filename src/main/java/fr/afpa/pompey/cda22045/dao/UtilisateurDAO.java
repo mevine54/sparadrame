@@ -24,17 +24,17 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 
             statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
-            statement.setString(1, obj.getNom());
-            statement.setString(2, obj.getPrenom());
+            statement.setString(1, obj.getUtiNom());
+            statement.setString(2, obj.getUtiPrenom());
 //            statement.setInt(3, obj.getAdresse().getAdrId());
-            statement.setString(4, obj.getTelephone());
-            statement.setString(5, obj.getEmail());
+            statement.setString(4, obj.getUtiTel());
+            statement.setString(5, obj.getUtiEmail());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        obj.setUserId(generatedKeys.getInt(1));
+                        obj.setUtiId(generatedKeys.getInt(1));
                     }
                 }
             }
@@ -109,12 +109,12 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
             connection.setAutoCommit(false);
 
             statement = connection.prepareStatement(sql);
-            statement.setString(1, obj.getNom());
-            statement.setString(2, obj.getPrenom());
+            statement.setString(1, obj.getUtiNom());
+            statement.setString(2, obj.getUtiPrenom());
 //            statement.setInt(3, obj.getAdresse().getAdrId());
-            statement.setString(4, obj.getTelephone());
-            statement.setString(5, obj.getEmail());
-            statement.setInt(6, obj.getUserId());
+            statement.setString(4, obj.getUtiTel());
+            statement.setString(5, obj.getUtiEmail());
+            statement.setInt(6, obj.getUtiId());
 
             int affectedRows = statement.executeUpdate();
             connection.commit();

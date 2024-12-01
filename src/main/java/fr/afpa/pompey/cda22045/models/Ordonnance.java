@@ -91,7 +91,7 @@ public class Ordonnance {
 
     @Override
     public String toString() {
-        return "Ordonnance du " + date + " pour le patient: " + patient.getNom() +
-                " par le Dr " + medecin.getNom();
+        return "Ordonnance du " + date + " pour le patient: " + patient.getUtiNom() +
+                " par le Dr " + medecin.getUtiNom();
     }
 }

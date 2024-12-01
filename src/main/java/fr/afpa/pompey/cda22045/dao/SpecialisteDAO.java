@@ -26,18 +26,18 @@ public class SpecialisteDAO extends DAO<Specialiste> {
                  PreparedStatement statementSpecialiste = connection.prepareStatement(sqlSpecialiste, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
                 // Insertion dans Medecin
-                statementMedecin.setInt(1, obj.getUserId());
+                statementMedecin.setInt(1, obj.getUtiId());
                 statementMedecin.setString(2, obj.getMedNumAgreement());
                 statementMedecin.executeUpdate();
 
                 try (ResultSet generatedKeys = statementMedecin.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        obj.setUserId(generatedKeys.getInt(1)); // L'ID utilisateur est aussi l'ID médecin
+                        obj.setUtiId(generatedKeys.getInt(1)); // L'ID utilisateur est aussi l'ID médecin
                     }
                 }
 
                 // Insertion dans Specialiste
-                statementSpecialiste.setInt(1, obj.getUserId());
+                statementSpecialiste.setInt(1, obj.getUtiId());
                 statementSpecialiste.setInt(2, obj.getTypeSpecialite().getId());
                 statementSpecialiste.executeUpdate();
 
@@ -80,7 +80,7 @@ public class SpecialisteDAO extends DAO<Specialiste> {
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, obj.getTypeSpecialite().getId());
-            statement.setInt(2, obj.getUserId());
+            statement.setInt(2, obj.getUtiId());
 
             int affectedRows = statement.executeUpdate();
             return affectedRows > 0;

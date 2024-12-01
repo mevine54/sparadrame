@@ -1,19 +1,6 @@
 package fr.afpa.pompey.cda22045;
 
-import fr.afpa.pompey.cda22045.dao.ClientDAO;
-import fr.afpa.pompey.cda22045.dao.MedecinDAO;
-import fr.afpa.pompey.cda22045.dao.MedicamentDAO;
-import fr.afpa.pompey.cda22045.dao.UtilisateurDAO;
-import fr.afpa.pompey.cda22045.models.Adresse;
-import fr.afpa.pompey.cda22045.models.Utilisateur;
-import fr.afpa.pompey.cda22045.views.DashboardView;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
-import java.util.Properties;
 import javax.swing.*;
-import java.util.Arrays;
 
 public class App {
     public static void main(String[] args) {

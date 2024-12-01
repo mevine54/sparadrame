@@ -10,14 +10,14 @@ public class OrdonnanceView {
     // Afficher les détails d'une ordonnance
     public void afficherOrdonnance(Ordonnance ordonnance) {
         System.out.println("Date de l'ordonnance : " + ordonnance.getDate());
-        System.out.println("Médecin : " + ordonnance.getMedecin().getNom());
-        System.out.println("Patient : " + ordonnance.getPatient().getNom());
+        System.out.println("Médecin : " + ordonnance.getMedecin().getUtiNom());
+        System.out.println("Patient : " + ordonnance.getPatient().getUtiNom());
         System.out.println("Liste des médicaments : ");
         for (Medicament medicament : ordonnance.getMedicaments()) {
             System.out.println(" - " + medicament.getMediNom() + " (Quantité: " + medicament.getMediQuantite() + ", Catégorie: " + medicament.getTypeMedicament() + ")");
         }
         if (ordonnance.getSpecialiste() != null) {
-            System.out.println("Spécialiste : " + ordonnance.getSpecialiste().getNom() + " (" + ordonnance.getSpecialiste().getTypeSpecialite() + ")");
+            System.out.println("Spécialiste : " + ordonnance.getSpecialiste().getUtiNom() + " (" + ordonnance.getSpecialiste().getTypeSpecialite() + ")");
         }
     }
 

@@ -1,58 +1,58 @@
 package fr.afpa.pompey.cda22045.models;
 
 public class Utilisateur {
-    private Integer userId;
-    private String nom;
-    private String prenom;
+    private Integer utiId;
+    private String utiNom;
+    private String utiPrenom;
     private Adresse adresse;
-    private String telephone;
-    private String email;
+    private String utiTel;
+    private String utiEmail;
 
     // Constructeur par défaut
     public Utilisateur() {}
 
     // Constructeur avec paramètres
-    public Utilisateur(Integer userId, String nom, String prenom, Adresse adresse, String telephone, String email) {
-        setUserId(userId);
-        setNom(nom);
-        setPrenom(prenom);
+    public Utilisateur(Integer utiId, String utiNom, String utiPrenom, Adresse adresse, String utiTel, String utiEmail) {
+        setUtiId(utiId);
+        setUtiNom(utiNom);
+        setUtiPrenom(utiPrenom);
         setAdresse(adresse);
-        setTelephone(telephone);
-        setEmail(email);
+        setUtiTel(utiTel);
+        setUtiEmail(utiEmail);
     }
 
     // Getters et setters
-    public Integer getUserId() {
-        return userId;
+    public Integer getUtiId() {
+        return utiId;
     }
 
-    public void setUserId(Integer userId) {
-        if (userId != null && userId < 0) {
+    public void setUtiId(Integer utiId) {
+        if (utiId != null && utiId < 0) {
             throw new IllegalArgumentException("L'id utilisateur ne peut pas être négatif.");
         }
-        this.userId = userId;
+        this.utiId = utiId;
     }
 
-    public String getNom() {
-        return nom;
+    public String getUtiNom() {
+        return utiNom;
     }
 
-    public void setNom(String nom) {
-        if (nom == null || nom.isBlank()) {
+    public void setUtiNom(String utiNom) {
+        if (utiNom == null || utiNom.isBlank()) {
             throw new IllegalArgumentException("Le nom ne peut pas être vide.");
         }
-        this.nom = nom;
+        this.utiNom = utiNom;
     }
 
-    public String getPrenom() {
-        return prenom;
+    public String getUtiPrenom() {
+        return utiPrenom;
     }
 
-    public void setPrenom(String prenom) {
-        if (prenom == null || prenom.isBlank()) {
+    public void setUtiPrenom(String utiPrenom) {
+        if (utiPrenom == null || utiPrenom.isBlank()) {
             throw new IllegalArgumentException("Le prénom ne peut pas être vide.");
         }
-        this.prenom = prenom;
+        this.utiPrenom = utiPrenom;
     }
 
     public Adresse getAdresse() {
@@ -66,30 +66,30 @@ public class Utilisateur {
         this.adresse = adresse;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public String getUtiTel() {
+        return utiTel;
     }
 
-    public void setTelephone(String telephone) {
-        if (telephone == null || telephone.isBlank()) {
+    public void setUtiTel(String utiTel) {
+        if (utiTel == null || utiTel.isBlank()) {
             throw new IllegalArgumentException("Le téléphone ne peut pas être vide.");
         }
-        this.telephone = telephone;
+        this.utiTel = utiTel;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUtiEmail() {
+        return utiEmail;
     }
 
-    public void setEmail(String email) {
-        if (email == null || !email.matches("^[\\w.%+-]+@[\\w.-]+\\.\\w{2,}$")) {
+    public void setUtiEmail(String email) {
+        if (email == null || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
             throw new IllegalArgumentException("L'adresse email est invalide.");
         }
-        this.email = email;
+        this.utiEmail = utiEmail;
     }
 
     @Override
     public String toString() {
-        return nom + " " + prenom + ", " + adresse.toString() + ", Tel: " + telephone + ", Email: " + email;
+        return utiNom + " " + utiPrenom + ", " + adresse.toString() + ", Tel: " + utiTel + ", Email: " + utiEmail;
     }
 }

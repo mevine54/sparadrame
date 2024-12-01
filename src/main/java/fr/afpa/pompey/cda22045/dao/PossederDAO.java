@@ -19,8 +19,8 @@ public class PossederDAO extends DAO<Posseder> {
         try (Connection connection = DatabaseConnection.getInstanceDB();
              PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            statement.setInt(1, obj.getUtilisateurId());
-            statement.setInt(2, obj.getAdresseId());
+            statement.setInt(1, obj.getUtiId());
+            statement.setInt(2, obj.getAdrId());
             statement.setString(3, obj.getTypePossession());
 
             int affectedRows = statement.executeUpdate();
@@ -65,8 +65,8 @@ public class PossederDAO extends DAO<Posseder> {
         try (Connection connection = DatabaseConnection.getInstanceDB();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setInt(1, obj.getUtilisateurId());
-            statement.setInt(2, obj.getAdresseId());
+            statement.setInt(1, obj.getUtiId());
+            statement.setInt(2, obj.getAdrId());
             statement.setString(3, obj.getTypePossession());
             statement.setInt(4, obj.getPossId());
 

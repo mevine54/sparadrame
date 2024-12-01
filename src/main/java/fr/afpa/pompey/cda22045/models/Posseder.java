@@ -2,15 +2,15 @@ package fr.afpa.pompey.cda22045.models;
 
 public class Posseder {
     private Integer possId;
-    private Integer utilisateurId;
-    private Integer adresseId;
+    private Integer utiId;
+    private Integer adrId;
     private String typePossession;
 
     // Constructeur
-    public Posseder(Integer possId, Integer utilisateurId, Integer adresseId, String typePossession) {
+    public Posseder(Integer possId, Integer utiId, Integer adrId, String typePossession) {
         setPossId(possId);
-        setUtilisateurId(utilisateurId);
-        setAdresseId(adresseId);
+        setUtiId(utiId);
+        setAdrId(adrId);
         setTypePossession(typePossession);
     }
 
@@ -26,26 +26,26 @@ public class Posseder {
         this.possId = possId;
     }
 
-    public Integer getUtilisateurId() {
-        return utilisateurId;
+    public Integer getUtiId() {
+        return utiId;
     }
 
-    public void setUtilisateurId(Integer utilisateurId) {
-        if (utilisateurId == null || utilisateurId < 0) {
+    public void setUtiId(Integer utilisateurId) {
+        if (utiId == null || utiId < 0) {
             throw new IllegalArgumentException("L'id utilisateur ne peut pas être négatif.");
         }
-        this.utilisateurId = utilisateurId;
+        this.utiId = utiId;
     }
 
-    public Integer getAdresseId() {
-        return adresseId;
+    public Integer getAdrId() {
+        return adrId;
     }
 
-    public void setAdresseId(Integer adresseId) {
-        if (adresseId == null || adresseId < 0) {
+    public void setAdrId(Integer adrId) {
+        if (adrId == null || adrId < 0) {
             throw new IllegalArgumentException("L'id adresse ne peut pas être négatif.");
         }
-        this.adresseId = adresseId;
+        this.adrId = adrId;
     }
 
     public String getTypePossession() {
@@ -66,8 +66,8 @@ public class Posseder {
     public String toString() {
         return "Posseder{" +
                 "possId=" + possId +
-                ", utilisateurId=" + utilisateurId +
-                ", adresseId=" + adresseId +
+                ", utilisateurId=" + utiId +
+                ", adresseId=" + adrId +
                 ", typePossession='" + typePossession + '\'' +
                 '}';
     }

@@ -35,26 +35,26 @@ public class ClientDAO extends DAO<Client> {
             connection.setAutoCommit(false);
 
             // Vérification des valeurs avant l'insertion
-            System.out.println("Nom: " + obj.getNom());
-            System.out.println("Prenom: " + obj.getPrenom());
-            System.out.println("Telephone: " + obj.getTelephone());
-            System.out.println("Email: " + obj.getEmail());
+            System.out.println("Nom: " + obj.getUtiNom());
+            System.out.println("Prenom: " + obj.getUtiPrenom());
+            System.out.println("Telephone: " + obj.getUtiTel());
+            System.out.println("Email: " + obj.getUtiEmail());
             System.out.println("NumeroSecuriteSocial: " + obj.getNumeroSecuriteSocial());
             System.out.println("DateNaissance: " + obj.getDateNaissance());
 
             // Insertion dans UTILISATEUR
             statementUtilisateur = connection.prepareStatement(sqlUtilisateur, PreparedStatement.RETURN_GENERATED_KEYS);
-            statementUtilisateur.setString(1, obj.getNom());
-            statementUtilisateur.setString(2, obj.getPrenom());
-            statementUtilisateur.setString(3, obj.getTelephone());
-            statementUtilisateur.setString(4, obj.getEmail());
+            statementUtilisateur.setString(1, obj.getUtiNom());
+            statementUtilisateur.setString(2, obj.getUtiPrenom());
+            statementUtilisateur.setString(3, obj.getUtiTel());
+            statementUtilisateur.setString(4, obj.getUtiEmail());
             statementUtilisateur.executeUpdate();
 
             // Récupérer l'uti_id généré
             ResultSet generatedKeys = statementUtilisateur.getGeneratedKeys();
             if (generatedKeys.next()) {
                 int utiId = generatedKeys.getInt(1);
-                obj.setUserId(utiId);
+                obj.setUtiId(utiId);
                 System.out.println("uti_id généré: " + utiId);
             } else {
                 throw new SQLException("Échec de la génération de la clé pour utilisateur");
@@ -64,7 +64,7 @@ public class ClientDAO extends DAO<Client> {
             statementClient = connection.prepareStatement(sqlClient, PreparedStatement.RETURN_GENERATED_KEYS);
             statementClient.setString(1, obj.getNumeroSecuriteSocial());
             statementClient.setDate(2, java.sql.Date.valueOf(obj.getDateNaissance()));
-            statementClient.setInt(3, obj.getUserId());
+            statementClient.setInt(3, obj.getUtiId());
             statementClient.executeUpdate();
 
             // Récupérer le cli_id généré
@@ -149,15 +149,15 @@ public class ClientDAO extends DAO<Client> {
             connection.setAutoCommit(false); // désactive l'auto-commit
 
             statement = connection.prepareStatement(sql);
-            statement.setString(1, obj.getNom());
-            statement.setString(2, obj.getPrenom());
+            statement.setString(1, obj.getUtiNom());
+            statement.setString(2, obj.getUtiPrenom());
             statement.setInt(3, obj.getAdresse().getAdrId());
-            statement.setString(4, obj.getTelephone());
-            statement.setString(5, obj.getEmail());
+            statement.setString(4, obj.getUtiTel());
+            statement.setString(5, obj.getUtiEmail());
             statement.setString(6, obj.getNumeroSecuriteSocial());
             statement.setDate(7, java.sql.Date.valueOf(obj.getDateNaissance()));
             statement.setInt(8, obj.getMutuelle().getMutId());
-            statement.setInt(9, obj.getMedecinTraitant().getUserId());
+            statement.setInt(9, obj.getMedecinTraitant().getUtiId());
             statement.setInt(10, obj.getCliId());
 
             int affectedRows = statement.executeUpdate();

@@ -1,19 +1,11 @@
 package fr.afpa.pompey.cda22045.dao;
 
 import fr.afpa.pompey.cda22045.models.Medecin;
-import fr.afpa.pompey.cda22045.models.Adresse;
 import fr.afpa.pompey.cda22045.utilities.DatabaseConnection;
 
-//import java.sql.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static fr.afpa.pompey.cda22045.utilities.DatabaseConnection.getConnection;
-
 
 public class MedecinDAO extends DAO<Medecin> {
 
@@ -23,30 +15,30 @@ public class MedecinDAO extends DAO<Medecin> {
             throw new IllegalArgumentException("Le médecin ne peut pas être null.");
         }
 
-        String sqlUtilisateur = "INSERT INTO utilisateur (uti_nom, uti_prenom, uti_tel, uti_email) VALUES (?, ?, ?, ?)";
-        String sqlMedecin = "INSERT INTO medecin (uti_id, numero_agrement) VALUES (?, ?)";
+        String sqlUtilisateur = "INSERT INTO utilisateur (Uti_nom, Uti_prenom, Uti_tel, Uti_email) VALUES (?, ?, ?, ?)";
+        String sqlMedecin = "INSERT INTO medecin (uti_id, med_num_agreement) VALUES (?, ?)";
 
         try (Connection connection = DatabaseConnection.getInstanceDB()) {
             connection.setAutoCommit(false);
 
             try (PreparedStatement statementUtilisateur = connection.prepareStatement(sqlUtilisateur, PreparedStatement.RETURN_GENERATED_KEYS);
-                 PreparedStatement statementMedecin = connection.prepareStatement(sqlMedecin, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                 PreparedStatement statementMedecin = connection.prepareStatement(sqlMedecin)) {
 
                 // Insertion dans utilisateur
-                statementUtilisateur.setString(1, obj.getNom());
-                statementUtilisateur.setString(2, obj.getPrenom());
-                statementUtilisateur.setString(3, obj.getTelephone());
-                statementUtilisateur.setString(4, obj.getEmail());
+                statementUtilisateur.setString(1, obj.getUtiNom());
+                statementUtilisateur.setString(2, obj.getUtiPrenom());
+                statementUtilisateur.setString(3, obj.getUtiTel());
+                statementUtilisateur.setString(4, obj.getUtiEmail());
                 statementUtilisateur.executeUpdate();
 
                 try (ResultSet generatedKeys = statementUtilisateur.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        obj.setUserId(generatedKeys.getInt(1));
+                        obj.setUtiId(generatedKeys.getInt(1));
                     }
                 }
 
                 // Insertion dans médecin
-                statementMedecin.setInt(1, obj.getUserId());
+                statementMedecin.setInt(1, obj.getUtiId());
                 statementMedecin.setString(2, obj.getMedNumAgreement());
                 statementMedecin.executeUpdate();
 
@@ -83,15 +75,34 @@ public class MedecinDAO extends DAO<Medecin> {
             throw new IllegalArgumentException("Le médecin ne peut pas être null.");
         }
 
-        String sql = "UPDATE medecin SET numero_agrement = ? WHERE uti_id = ?";
-        try (Connection connection = DatabaseConnection.getInstanceDB();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        String sqlUtilisateur = "UPDATE utilisateur SET Uti_nom = ?, Uti_prenom = ?, Uti_tel = ?, Uti_email = ? WHERE id = ?";
+        String sqlMedecin = "UPDATE medecin SET med_num_agreement = ? WHERE uti_id = ?";
 
-            statement.setString(1, obj.getMedNumAgreement());
-            statement.setInt(2, obj.getUserId());
+        try (Connection connection = DatabaseConnection.getInstanceDB()) {
+            connection.setAutoCommit(false);
 
-            int affectedRows = statement.executeUpdate();
-            return affectedRows > 0;
+            try (PreparedStatement statementUtilisateur = connection.prepareStatement(sqlUtilisateur);
+                 PreparedStatement statementMedecin = connection.prepareStatement(sqlMedecin)) {
+
+                // Mise à jour de l'utilisateur
+                statementUtilisateur.setString(1, obj.getUtiNom());
+                statementUtilisateur.setString(2, obj.getUtiPrenom());
+                statementUtilisateur.setString(3, obj.getUtiTel());
+                statementUtilisateur.setString(4, obj.getUtiEmail());
+                statementUtilisateur.setInt(5, obj.getUtiId());
+                statementUtilisateur.executeUpdate();
+
+                // Mise à jour du médecin
+                statementMedecin.setString(1, obj.getMedNumAgreement());
+                statementMedecin.setInt(2, obj.getUtiId());
+                statementMedecin.executeUpdate();
+
+                connection.commit();
+                return true;
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -109,7 +120,7 @@ public class MedecinDAO extends DAO<Medecin> {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return new Medecin(
-                            resultSet.getInt("uti_id"),
+                            resultSet.getInt("med_id"),
                             resultSet.getString("uti_nom"),
                             resultSet.getString("uti_prenom"),
                             null, // Adresse à ajouter si nécessaire
@@ -136,7 +147,7 @@ public class MedecinDAO extends DAO<Medecin> {
 
             while (resultSet.next()) {
                 Medecin medecin = new Medecin(
-                        resultSet.getInt("uti_id"),
+                        resultSet.getInt("med_id"),
                         resultSet.getString("uti_nom"),
                         resultSet.getString("uti_prenom"),
                         null, // Adresse à ajouter si nécessaire
@@ -152,4 +163,5 @@ public class MedecinDAO extends DAO<Medecin> {
         }
         return medecins;
     }
+
 }

@@ -31,9 +31,9 @@ public class OrdonnanceDAO extends DAO<Ordonnance> {
 
                 // Insertion dans Ordonnance
                 statementOrdonnance.setDate(1, Date.valueOf(obj.getDate()));
-                statementOrdonnance.setInt(2, obj.getMedecin().getUserId());
+                statementOrdonnance.setInt(2, obj.getMedecin().getUtiId());
                 statementOrdonnance.setInt(3, obj.getPatient().getCliId());
-                statementOrdonnance.setInt(4, obj.getSpecialiste().getUserId());
+                statementOrdonnance.setInt(4, obj.getSpecialiste().getUtiId());
                 statementOrdonnance.executeUpdate();
 
                 // Récupération de l'ID généré pour l'ordonnance
@@ -90,9 +90,9 @@ public class OrdonnanceDAO extends DAO<Ordonnance> {
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setDate(1, Date.valueOf(obj.getDate()));
-            statement.setInt(2, obj.getMedecin().getUserId());
+            statement.setInt(2, obj.getMedecin().getUtiId());
             statement.setInt(3, obj.getPatient().getCliId());
-            statement.setInt(4, obj.getSpecialiste().getUserId());
+            statement.setInt(4, obj.getSpecialiste().getUtiId());
             statement.setInt(5, obj.getOrdId());
 
             int affectedRows = statement.executeUpdate();

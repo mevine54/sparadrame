@@ -29,7 +29,7 @@ public class AchatDAO extends DAO<Achat> {
 
             statement.setString(1, obj.getType());
             statement.setDate(2, Date.valueOf(obj.getDateAchat()));
-            statement.setInt(3, obj.getClient().getUserId());
+            statement.setInt(3, obj.getClient().getUtiId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
@@ -80,7 +80,7 @@ public class AchatDAO extends DAO<Achat> {
 
             statement.setString(1, obj.getType());
             statement.setDate(2, java.sql.Date.valueOf(obj.getDateAchat()));
-            statement.setInt(3, obj.getClient().getUserId());
+            statement.setInt(3, obj.getClient().getUtiId());
             statement.setInt(4, obj.getAchId());
 
             int affectedRows = statement.executeUpdate();

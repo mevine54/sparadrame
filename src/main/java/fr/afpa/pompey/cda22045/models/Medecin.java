@@ -41,7 +41,7 @@ public class Medecin extends Utilisateur {
 
     @Override
     public String toString() {
-        return "Dr." + this.getNom() + " " + this.getPrenom();
+        return "Dr." + this.getUtiNom() + " " + this.getUtiPrenom();
         //return super.toString() + ", Numéro d'agrément: " + medNumAgreement;
     }
 }
