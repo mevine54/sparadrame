@@ -82,10 +82,14 @@ public class Utilisateur {
     }
 
     public void setUtiEmail(String email) {
-        if (email == null || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
+        if (!isValidEmail(email)) {
             throw new IllegalArgumentException("L'adresse email est invalide.");
         }
-        this.utiEmail = utiEmail;
+        this.utiEmail = email;
+    }
+
+    public static boolean isValidEmail(String email) {
+        return email != null && email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
     }
 
     @Override

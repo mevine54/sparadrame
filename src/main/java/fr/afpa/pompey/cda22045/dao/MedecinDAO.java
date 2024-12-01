@@ -15,32 +15,42 @@ public class MedecinDAO extends DAO<Medecin> {
             throw new IllegalArgumentException("Le médecin ne peut pas être null.");
         }
 
-        String sqlUtilisateur = "INSERT INTO utilisateur (Uti_nom, Uti_prenom, Uti_tel, Uti_email) VALUES (?, ?, ?, ?)";
+        String sqlUtilisateur = "INSERT INTO utilisateur (uti_nom, uti_prenom, uti_tel, uti_email) VALUES (?, ?, ?, ?)";
         String sqlMedecin = "INSERT INTO medecin (uti_id, med_num_agreement) VALUES (?, ?)";
 
         try (Connection connection = DatabaseConnection.getInstanceDB()) {
             connection.setAutoCommit(false);
 
-            try (PreparedStatement statementUtilisateur = connection.prepareStatement(sqlUtilisateur, PreparedStatement.RETURN_GENERATED_KEYS);
-                 PreparedStatement statementMedecin = connection.prepareStatement(sqlMedecin)) {
+            try {
+                // Vérifier si l'utilisateur existe déjà
+                Integer existingUserId = getUserIdIfExists(connection, obj.getUtiEmail());
+                if (existingUserId == null) {
+                    // Insertion dans utilisateur
+                    try (PreparedStatement statementUtilisateur = connection.prepareStatement(sqlUtilisateur, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                        statementUtilisateur.setString(1, obj.getUtiNom());
+                        statementUtilisateur.setString(2, obj.getUtiPrenom());
+                        statementUtilisateur.setString(3, obj.getUtiTel());
+                        statementUtilisateur.setString(4, obj.getUtiEmail());
+                        statementUtilisateur.executeUpdate();
 
-                // Insertion dans utilisateur
-                statementUtilisateur.setString(1, obj.getUtiNom());
-                statementUtilisateur.setString(2, obj.getUtiPrenom());
-                statementUtilisateur.setString(3, obj.getUtiTel());
-                statementUtilisateur.setString(4, obj.getUtiEmail());
-                statementUtilisateur.executeUpdate();
-
-                try (ResultSet generatedKeys = statementUtilisateur.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        obj.setUtiId(generatedKeys.getInt(1));
+                        try (ResultSet generatedKeys = statementUtilisateur.getGeneratedKeys()) {
+                            if (generatedKeys.next()) {
+                                obj.setUtiId(generatedKeys.getInt(1));
+                            } else {
+                                throw new SQLException("Échec de la création de l'utilisateur, aucun ID généré.");
+                            }
+                        }
                     }
+                } else {
+                    obj.setUtiId(existingUserId);
                 }
 
                 // Insertion dans médecin
-                statementMedecin.setInt(1, obj.getUtiId());
-                statementMedecin.setString(2, obj.getMedNumAgreement());
-                statementMedecin.executeUpdate();
+                try (PreparedStatement statementMedecin = connection.prepareStatement(sqlMedecin)) {
+                    statementMedecin.setInt(1, obj.getUtiId());
+                    statementMedecin.setString(2, obj.getMedNumAgreement());
+                    statementMedecin.executeUpdate();
+                }
 
                 connection.commit();
                 return obj;
@@ -52,6 +62,19 @@ public class MedecinDAO extends DAO<Medecin> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private Integer getUserIdIfExists(Connection connection, String email) throws SQLException {
+        String sql = "SELECT uti_id FROM utilisateur WHERE uti_email = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("uti_id");
+                }
+            }
+        }
+        return null;
     }
 
     @Override
