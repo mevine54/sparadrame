@@ -3,11 +3,17 @@ package fr.afpa.pompey.cda22045.models;
 public class Medecin extends Utilisateur {
     private Integer medId;
     private String medNumAgreement;
-    public TypeSpecialite APOLLIN = new TypeSpecialite();
 
     // Constructeur complet
     public Medecin(Integer medId, String nom, String prenom, Adresse adresse, String telephone, String email, String medNumAgreement) {
-        super(medId, nom, prenom, new Adresse(), telephone, email);
+        super(medId, nom, prenom, adresse, telephone, email);
+        setMedId(medId);
+        setMedNumAgreement(medNumAgreement);
+    }
+
+    // Constructeur sans adresse
+    public Medecin(Integer medId, String nom, String prenom, String telephone, String email, String medNumAgreement) {
+        super(medId, nom, prenom, telephone, email);
         setMedId(medId);
         setMedNumAgreement(medNumAgreement);
     }
@@ -33,8 +39,8 @@ public class Medecin extends Utilisateur {
     }
 
     public void setMedNumAgreement(String medNumAgreement) {
-        if (medNumAgreement == null || !medNumAgreement.matches("\\d{18}")) {
-            throw new IllegalArgumentException("Le numéro d'agrément doit contenir 18 chiffres.");
+        if (medNumAgreement == null) {
+            throw new IllegalArgumentException("Le numéro d'agrément doit contenir 8 chiffres.");
         }
         this.medNumAgreement = medNumAgreement;
     }
@@ -42,6 +48,5 @@ public class Medecin extends Utilisateur {
     @Override
     public String toString() {
         return "Dr." + this.getUtiNom() + " " + this.getUtiPrenom();
-        //return super.toString() + ", Numéro d'agrément: " + medNumAgreement;
     }
 }

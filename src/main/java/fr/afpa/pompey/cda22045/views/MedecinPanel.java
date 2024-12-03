@@ -41,7 +41,7 @@ public class MedecinPanel extends JPanel {
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 2;
-        JButton btnCreer = new JButton("Créer");
+        JButton btnCreer = new JButton("Créer un médecin");
         add(btnCreer, gbc);
         gbc.gridx = 1;
         JButton btnModifier = new JButton("Modifier");
@@ -61,13 +61,26 @@ public class MedecinPanel extends JPanel {
         JButton btnRetour = new JButton("Retour");
         add(btnRetour, gbc);
 
+        // Ajouter des boutons pour créer un médecin et un spécialiste
+//        gbc.gridx = 0;
+//        gbc.gridy = 5;
+//        gbc.gridwidth = 1;
+//        JButton btnCreerMedecin = new JButton("Créer un Médecin");
+//        add(btnCreerMedecin, gbc);
+//
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.gridwidth = 1;
+        JButton btnCreerSpecialiste = new JButton("Créer un Spécialiste");
+        add(btnCreerSpecialiste, gbc);
+
         medecinComboBox.addActionListener(e -> afficherDetailsMedecin());
         btnCreer.addActionListener(e -> creerMedecin());
         btnModifier.addActionListener(e -> modifierMedecin());
         btnSupprimer.addActionListener(e -> supprimerMedecin());
         btnRechercher.addActionListener(e -> rechercherMedecin());
-
         btnRetour.addActionListener(e -> SwingUtilities.getWindowAncestor(this).dispose());
+
     }
 
     private void updateMedecinComboBox() {
@@ -236,7 +249,8 @@ public class MedecinPanel extends JPanel {
     }
 
     private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         return email != null && email.matches(emailRegex);
     }
+
 }

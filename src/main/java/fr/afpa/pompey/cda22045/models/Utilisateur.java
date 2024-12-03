@@ -21,6 +21,15 @@ public class Utilisateur {
         setUtiEmail(utiEmail);
     }
 
+    // Constructeur sans adresse
+    public Utilisateur(Integer utiId, String utiNom, String utiPrenom, String utiTel, String utiEmail) {
+        setUtiId(utiId);
+        setUtiNom(utiNom);
+        setUtiPrenom(utiPrenom);
+        setUtiTel(utiTel);
+        setUtiEmail(utiEmail);
+    }
+
     // Getters et setters
     public Integer getUtiId() {
         return utiId;
@@ -60,10 +69,7 @@ public class Utilisateur {
     }
 
     public void setAdresse(Adresse adresse) {
-        if (adresse == null) {
-            throw new IllegalArgumentException("L'adresse ne peut pas être null.");
-        }
-        this.adresse = adresse;
+        this.adresse = adresse; // Permettre une adresse null
     }
 
     public String getUtiTel() {
@@ -94,6 +100,6 @@ public class Utilisateur {
 
     @Override
     public String toString() {
-        return utiNom + " " + utiPrenom + ", " + adresse.toString() + ", Tel: " + utiTel + ", Email: " + utiEmail;
+        return utiNom + " " + utiPrenom + ", " + (adresse != null ? adresse.toString() : "Adresse non définie") + ", Tel: " + utiTel + ", Email: " + utiEmail;
     }
 }

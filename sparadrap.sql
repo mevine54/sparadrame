@@ -10,10 +10,8 @@ CREATE TABLE UTILISATEUR (
     uti_nom VARCHAR(30),
     uti_prenom VARCHAR(30),
     uti_tel VARCHAR(14),
-    uti_email VARCHAR(50)
+    uti_email VARCHAR(50) UNIQUE
 );
-
-select * from utilisateur;
 
 -- Table : ADRESSE
 CREATE TABLE ADRESSE (
@@ -59,9 +57,6 @@ CREATE TABLE MUTUELLE (
     mut_taux_prise_en_charge TINYINT
 );
 
-select * from client;
-
-
 -- Table : TYPEMEDICAMENT
 CREATE TABLE TYPEMEDICAMENT (
     type_med_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -91,27 +86,11 @@ CREATE TABLE ORDONNANCE (
 -- Table : ACHAT
 CREATE TABLE ACHAT (
     ach_id INT AUTO_INCREMENT PRIMARY KEY,
-    ach_type ENUM('Direct', 'Ordonnance')
+    ach_type ENUM('Direct', 'Ordonnance'),
+    ach_date DATE,
+    uti_id INT,
+    FOREIGN KEY (uti_id) REFERENCES UTILISATEUR(uti_id)
 );
-
-ALTER TABLE ACHAT
-ADD ach_date DATE AFTER ach_type,
-ADD uti_id INT AFTER ach_date,
-ADD CONSTRAINT fk_achat_utilisateur FOREIGN KEY (uti_id) REFERENCES utilisateur(uti_id);
-
-ALTER TABLE achat ADD UNIQUE KEY (ach_type, ach_date, uti_id);
-
-
-select  * from utilisateur;
-INSERT INTO achat (ach_type, ach_date, uti_id) VALUES ('Direct', '2024-11-26', 2);
-
-CREATE TABLE Session (
-    session_id INT AUTO_INCREMENT PRIMARY KEY,
-    uti_id INT UNIQUE, -- Associe un utilisateur à une session
-    session_start TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (uti_id) REFERENCES Utilisateur(uti_id)
-);
-
 
 -- Association : Posséder (Utilisateur - Adresse)
 CREATE TABLE Posseder (
@@ -199,14 +178,12 @@ INSERT INTO TypeSpecialite (type_spe_nom) VALUES
 INSERT INTO ORDONNANCE (ord_date, ord_nom_client, ord_nom_medecin, ord_nom_specialiste) VALUES
 ('2023-01-10', 'Jean Dupont', 'Dr. Durand', 'Dr. Bernard');
 
-
 INSERT INTO Fournir (spe_id, type_spe_id, date_debut, date_fin) VALUES
 (1, 1, '2020-01-01', NULL);
 
 INSERT INTO Adherer (cli_id, mut_id, date_adhesion, niveau_couverture) VALUES
 (1, 1, '2020-01-01', 'Standard'), -- Jean Dupont - Mutuelle Santé
 (2, 2, '2021-06-15', 'Premium');  -- Marie Martin - Mutuelle Plus
-
 
 INSERT INTO ACHAT (ach_type) VALUES
 ('Direct'), ('Ordonnance');
@@ -217,12 +194,10 @@ INSERT INTO Effectuer (ach_id, uti_id, date_achat, mode_paiement) VALUES
 INSERT INTO MEDICAMENT (medi_nom, medi_prix, medi_date_mise_service, medi_quantite, type_med_id) VALUES
 ('Paracétamol', 3.50, '2021-02-15', 200, 1);
 
-
 INSERT INTO MUTUELLE (mut_nom, mut_tel, mut_email, mut_departement, mut_taux_prise_en_charge) VALUES
 ('Mutuelle Santé', 1234567890, 'contact@mutuellesante.com', '75', 80),
 ('Mutuelle Plus', 9876543210, 'contact@mutuelleplus.com', '69', 70),
 ('AssurVie', 1122334455, 'contact@assurvie.com', '13', 85);
-
 
 INSERT INTO Delivrer (ord_id, medi_id, quantite_prescrite, duree_validite) VALUES
 (1, 1, 2, 30);
